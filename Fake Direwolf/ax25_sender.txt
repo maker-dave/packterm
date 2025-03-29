@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+# ax25_sender.py - Sends AX.25 packets to local Fake Direwolf and displays received packets
+
+import socket
+import threading
+import sys
+import time
+import curses
+import logging
+import crcmod
+from collections import deque
+
+# Configuration
+KISS_PORT = 8001          # Local Fake Direwolf KISS port
+BUFFER_SIZE = 1024
+MAX_LOG_LINES = 20
+
+# Global state
+packet_log = deque(maxlen=MAX_LOG_LINES)  # (timestamp, direction, frame_hex)
+screen_lock = threading.Lock()
+screen_dirty = True
+stop_event = threading.Event()
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+log = logging.info
+
+def build_ax25_packet(source, dest, payload):
+    """Build a simple AX.25 UI packet."""
+    crc16 = crcmod.predefined.mkCrcFun('crc-ccitt-false')
+    
+    def encode_callsign(callsign, ssid=0, last=False):
+        callsign = callsign.ljust(6)[:6].upper()
+        ssid_byte = (0x60 | (ssid << 1) | (1 if last else 0))
+        return bytes([ord(c) << 1 for c in callsign]) + bytes([ssid_byte])
+    
+    address = encode_callsign(dest) + encode_callsign(source, last=True)
+    control = b'\x03'  # UI frame
+    pid = b'\xF0'      # No layer 3
+    info = payload.encode()
+    
+    frame = address + control + pid + info
+    fcs = crc16(frame).to_bytes(2, 'little')
+    return b'\x7E' + frame + fcs + b'\x7E'
+
+def build_kiss_packet(ax25_packet):
+    """Wrap AX.25 in KISS frame."""
+    kiss_data = ax25_packet.replace(b'\xC0', b'\xDB\xDC').replace(b'\xDB', b'\xDB\xDD')
+    return b'\xC0\x00' + kiss_data + b'\xC0'
+
+def receive_packets(direwolf_socket):
+    global screen_dirty
+    buffer = b""
+    while not stop_event.is_set():
+        try:
+            data = direwolf_socket.recv(BUFFER_SIZE)
+            if not data:
+                log("Direwolf disconnected")
+                break
+            buffer += data
+            while b'\xC0' in buffer[1:]:
+                end = buffer.find(b'\xC0', 1)
+                if end == -1:
+                    break
+                frame = buffer[:end + 1]
+                buffer = buffer[end + 1:]
+                if len(frame) > 2 and frame[0] == 0xC0 and frame[-1] == 0xC0:
+                    with screen_lock:
+                        packet_log.append((time.strftime('%H:%M:%S'), "Received", frame.hex()))
+                        screen_dirty = True
+                    log(f"Received KISS frame: {frame.hex()}")
+        except Exception as e:
+            log(f"Receive error: {e}")
+            break
+
+def status_display(stdscr):
+    global screen_dirty
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    stdscr.nodelay(True)
+
+    # Connect to local Fake Direwolf
+    direwolf_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        direwolf_socket.connect(('localhost', KISS_PORT))
+        log(f"Connected to Fake Direwolf on localhost:{KISS_PORT}")
+    except Exception as e:
+        log(f"Failed to connect to Fake Direwolf: {e}")
+        sys.exit(1)
+
+    receive_thread = threading.Thread(target=receive_packets, args=(direwolf_socket,), daemon=True)
+    receive_thread.start()
+
+    sequence = 0
+    while True:
+        if screen_dirty:
+            with screen_lock:
+                stdscr.clear()
+                max_y, max_x = stdscr.getmaxyx()
+                border = "=" * (max_x - 2)
+                stdscr.addstr(0, 0, border, curses.color_pair(1))
+                stdscr.addstr(1, 2, f"AX.25 Sender - KISS Port: {KISS_PORT}", curses.color_pair(3))
+                stdscr.addstr(2, 2, "Commands: S=Send Packet  Q=Quit", curses.color_pair(3))
+                stdscr.addstr(3, 2, "Packet Log:", curses.color_pair(3))
+                for i, (ts, direction, frame) in enumerate(packet_log, start=4):
+                    if i < max_y - 2:
+                        line = f"{ts} {direction}: {frame[:max_x-20]}"
+                        stdscr.addstr(i, 4, line, curses.color_pair(2))
+                stdscr.addstr(max_y - 1, 0, border, curses.color_pair(1))
+                stdscr.refresh()
+                screen_dirty = False
+
+        char = stdscr.getch()
+        if char == ord('q') or char == ord('Q'):
+            log("Shutting down via UI")
+            stop_event.set()
+            direwolf_socket.close()
+            sys.exit(0)
+        elif char == ord('s') or char == ord('S'):
+            payload = f"TEST{sequence:03d}"
+            ax25_packet = build_ax25_packet("N0CALL", "APDWLF", payload)
+            kiss_packet = build_kiss_packet(ax25_packet)
+            try:
+                direwolf_socket.send(kiss_packet)
+                with screen_lock:
+                    packet_log.append((time.strftime('%H:%M:%S'), "Sent", kiss_packet.hex()))
+                    screen_dirty = True
+                log(f"Sent KISS frame: {kiss_packet.hex()}")
+                sequence += 1
+            except Exception as e:
+                log(f"Send error: {e}")
+        time.sleep(0.1)
+
+def main():
+    curses.wrapper(status_display)
+
+if __name__ == "__main__":
+    main()

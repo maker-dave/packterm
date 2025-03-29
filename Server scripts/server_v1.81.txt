@@ -1,0 +1,693 @@
+#!/usr/bin/env python3
+# server.py
+# Version 1.81 - 2025-03-07
+
+# Chunk 1 v1.81 - Imports and Config
+# DESIGN: Core setup—config, dirs, logging for server ops
+import os
+import sys
+import time
+import socket
+import threading
+import hashlib
+import logging
+import shutil
+import curses
+import glob
+import select
+import traceback
+import configparser
+import re
+from datetime import datetime
+
+HOME_DIR = os.path.expanduser('~/terminal')
+CONFIG_FILE = os.path.join(HOME_DIR, 'server.conf')
+CONFIG_DIR = HOME_DIR
+FORMS_DIR = os.path.join(CONFIG_DIR, 'forms')
+DATA_DIR = os.path.join(CONFIG_DIR, 'server_data')
+LOG_FILE = os.path.join(DATA_DIR, 'server.log')
+BACKUP_DIR = os.path.join(CONFIG_DIR, 'backups')
+SERVER_HOST = '0.0.0.0'
+SERVER_PORT = 12345
+
+# CHANGE: Added VERSION constant for logging
+VERSION = "1.81"
+
+if os.path.exists(LOG_FILE):
+    os.remove(LOG_FILE)
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format='%(asctime)s - %(message)s')
+
+config = configparser.ConfigParser()
+if not os.path.exists(CONFIG_FILE):
+    config['Settings'] = {
+        'callsign': '',
+        'log_client_details': 'True',
+        'log_form_sync': 'True',
+        'log_submissions': 'False',
+        'broadcast_interval': '60',
+        'client_timeout': '600',
+        'log_submission_details': 'True'  # Added for detailed submission tracking
+    }
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    with open(CONFIG_FILE, 'w') as configfile:
+        config.write(configfile)
+config.read(CONFIG_FILE)
+CALLSIGN = config.get('Settings', 'callsign', fallback='')
+LOG_CLIENT_DETAILS = config.getboolean('Settings', 'log_client_details', fallback=True)
+LOG_FORM_SYNC = config.getboolean('Settings', 'log_form_sync', fallback=True)
+LOG_SUBMISSIONS = config.getboolean('Settings', 'log_submissions', fallback=False)
+BROADCAST_INTERVAL = config.getint('Settings', 'broadcast_interval', fallback=60)
+CLIENT_TIMEOUT = config.getint('Settings', 'client_timeout', fallback=600)
+LOG_SUBMISSION_DETAILS = config.getboolean('Settings', 'log_submission_details', fallback=True)
+
+# Chunk 2 v1.7 - Global State
+comms_log = []
+screen_dirty = True
+clients = []  # (socket, address, callsign, last_data_time)
+clients_lock = threading.Lock()
+forms_md5 = None
+last_mtime = 0
+show_menu = False
+menu_selection = 0
+
+# Chunk 3 v1.9 - Utility Functions
+def log_event(message, ui=True, submission_details=False):
+    logging.info(message)
+    if ui:
+        comms_log.append((message, datetime.now().strftime('%H:%M:%S')))
+        if len(comms_log) > 20:
+            comms_log.pop(0)
+        global screen_dirty
+        screen_dirty = True
+    if submission_details and LOG_SUBMISSION_DETAILS:
+        logging.info(f"Submission Detail: {message}")
+
+def backup_script():
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    backup_path = os.path.join(BACKUP_DIR, f"server_{timestamp}.py")
+    shutil.copy2(__file__, backup_path)
+    log_event(f"Backed up to {backup_path}", ui=True)  # Always on
+
+def get_callsign(stdscr):
+    global CALLSIGN
+    if not CALLSIGN:
+        stdscr.clear()
+        stdscr.addstr(0, 0, "Enter Server Callsign (e.g., KC8QKU): ", curses.color_pair(2))
+        stdscr.refresh()
+        curses.echo()
+        CALLSIGN = stdscr.getstr(1, 0, 10).decode().strip().upper()
+        curses.noecho()
+        config['Settings']['callsign'] = CALLSIGN
+        with open(CONFIG_FILE, 'w') as configfile:
+            config.write(configfile)
+        log_event(f"Callsign set to {CALLSIGN}")
+    return CALLSIGN
+
+# Chunk 4 v1.78 - Form Sync Functions
+def hash_forms_dir():
+    hasher = hashlib.md5()
+    for filename in sorted(glob.glob(os.path.join(FORMS_DIR, '*.txt'))):
+        with open(filename, 'rb') as f:
+            hasher.update(f.read())
+    return hasher.hexdigest()
+
+def check_forms_changed():
+    global last_mtime
+    current_mtime = max([os.path.getmtime(f) for f in glob.glob(os.path.join(FORMS_DIR, '*.txt'))] or [0])
+    if current_mtime > last_mtime:
+        last_mtime = current_mtime
+        log_event(f"Forms directory changed, new mtime: {current_mtime}", ui=LOG_FORM_SYNC)
+        return True
+    return False
+
+def update_forms_index():
+    md5_hash = hash_forms_dir()
+    if LOG_FORM_SYNC and check_forms_changed():
+        log_event(f"Forms changed, new MD5: {md5_hash}")
+    return md5_hash
+
+def broadcast_forms_md5(stop_event):
+    global forms_md5
+    log_event("Starting broadcast_forms_md5 thread", ui=LOG_FORM_SYNC)
+    while not stop_event.is_set():
+        start_time = time.time()
+        if check_forms_changed() or not forms_md5:
+            forms_md5 = update_forms_index()
+            log_event(f"Computed forms MD5: {forms_md5}", ui=LOG_FORM_SYNC)
+        packet = f"MD5_forms:{forms_md5}:{CALLSIGN}\n\n"
+        log_event(f"Preparing broadcast packet: {packet[:50]}", ui=LOG_FORM_SYNC)
+        with clients_lock:
+            active_clients = []
+            for client_socket, addr, callsign, last_data_time in clients[:]:
+                if client_socket is None:
+                    log_event(f"Skipping null socket for {addr}", ui=LOG_FORM_SYNC)
+                    continue
+                try:
+                    client_socket.send(packet.encode())
+                    log_event(f"TCP broadcast MD5_forms:{forms_md5} to {addr} ({callsign or 'Unknown'})", ui=LOG_FORM_SYNC)
+                    active_clients.append((client_socket, addr, callsign, last_data_time))
+                except Exception as e:
+                    log_event(f"Broadcast error to {addr}: {str(e)} - removing client", ui=LOG_FORM_SYNC)
+            clients[:] = active_clients
+            log_event(f"Broadcast completed, active clients: {len(active_clients)}", ui=LOG_FORM_SYNC)
+        elapsed = time.time() - start_time
+        sleep_time = max(0, BROADCAST_INTERVAL - elapsed)
+        log_event(f"Broadcast took {elapsed:.2f}s, sleeping for {sleep_time:.2f}s", ui=LOG_FORM_SYNC)
+        time.sleep(sleep_time)
+
+# Chunk 5 v1.81 - Submission Handling - Updated 2025-03-07
+def handle_client(client_socket, address):
+    log_event(f"Client connected: {address}")
+    client_callsign = None
+    last_data_time = time.time()
+    with clients_lock:
+        clients.append((client_socket, address, None, last_data_time))
+    while True:
+        readable, _, _ = select.select([client_socket], [], [], 1.0)
+        if readable:
+            try:
+                log_event(f"Receiving data from {address}", ui=LOG_CLIENT_DETAILS)
+                data = client_socket.recv(512).decode().strip()
+                if not data:
+                    raise ConnectionError("Client closed")
+                last_data_time = time.time()
+                if LOG_CLIENT_DETAILS:
+                    log_event(f"Received from {address}: {data[:100]}")
+                if data.startswith('I:'):
+                    # CHANGE: Corrected seq:total parsing with extra logging
+                    parts = data.split(':', 5)
+                    if len(parts) == 6:
+                        _, callsign, form_id, seq_total_str, _, payload = parts
+                        # CHANGE: Log parts to debug split
+                        if LOG_SUBMISSION_DETAILS:
+                            log_event(f"Split parts: {parts}", submission_details=True)
+                        client_callsign = callsign
+                        with clients_lock:
+                            for i, (cs, addr, _, ls) in enumerate(clients):
+                                if cs == client_socket:
+                                    clients[i] = (cs, addr, client_callsign, last_data_time)
+                                    break
+                        log_event(f"Client {address} identified as {client_callsign}")
+                        try:
+                            # CHANGE: Explicitly split and validate seq_total_str
+                            seq_total_parts = seq_total_str.split(':')
+                            if len(seq_total_parts) != 2:
+                                log_event(f"Invalid seq_total format from {address}: {seq_total_str}", ui=LOG_CLIENT_DETAILS)
+                                continue
+                            seq, total = map(int, seq_total_parts)
+                            if LOG_SUBMISSION_DETAILS:
+                                log_event(f"Parsed seq={seq}, total={total}, payload={payload[:50]}", submission_details=True)
+                            if not hasattr(handle_client, 'segments'):
+                                handle_client.segments = {}
+                            key = f"{callsign}:{form_id}"
+                            handle_client.segments.setdefault(key, {})[seq] = payload
+                            log_event(f"Stored segment {seq}/{total} for {key}", ui=LOG_SUBMISSIONS)
+                            if len(handle_client.segments[key]) == total:
+                                submission = ''.join(handle_client.segments[key][i+1] for i in range(total))
+                                csv_path = os.path.join(DATA_DIR, f"{form_id}_submissions.csv")
+                                os.makedirs(DATA_DIR, exist_ok=True)
+                                with open(csv_path, 'a') as f:
+                                    f.write(f"{int(time.time())},{callsign},{submission}\n")
+                                log_event(f"Submission saved to {csv_path}", ui=LOG_SUBMISSIONS)
+                                if LOG_SUBMISSION_DETAILS:
+                                    log_event(f"Full submission: {submission[:100]}", submission_details=True)
+                                client_socket.send("ACK\n".encode())
+                                log_event(f"Sent ACK to {address}", ui=LOG_SUBMISSIONS)
+                                del handle_client.segments[key]
+                        except ValueError as e:
+                            log_event(f"Invalid seq_total from {address}: {seq_total_str} - {str(e)}", ui=LOG_CLIENT_DETAILS)
+                            continue
+                    else:
+                        log_event(f"Malformed I: packet from {address}: {data[:100]}", ui=LOG_CLIENT_DETAILS)
+                elif data.startswith('REQ_UPDATE:'):
+                    log_event(f"Processing REQ_UPDATE from {address}: {data[:50]}", ui=LOG_FORM_SYNC)
+                    parts = data.split(':')
+                    if len(parts) >= 3:
+                        client_md5, client_callsign = parts[1], parts[2]
+                        with clients_lock:
+                            for i, (cs, addr, _, ls) in enumerate(clients):
+                                if cs == client_socket:
+                                    clients[i] = (cs, addr, client_callsign, last_data_time)
+                                    break
+                        server_md5 = forms_md5 or update_forms_index()
+                        if client_md5 != server_md5:
+                            log_event(f"MD5 mismatch - client: {client_md5}, server: {server_md5}", ui=LOG_FORM_SYNC)
+                            for fname in glob.glob(os.path.join(FORMS_DIR, '*.txt')):
+                                with open(fname, 'r') as f:
+                                    content = f.read()
+                                packet = f"FORMS:{os.path.basename(fname)}:1.0:{content}"
+                                client_socket.send(packet.encode())
+                                log_event(f"Sent FORMS packet for {os.path.basename(fname)} to {address}", ui=LOG_FORM_SYNC)
+                    else:
+                        log_event(f"Malformed REQ_UPDATE from {address}: {data[:100]}", ui=LOG_FORM_SYNC)
+                elif data.startswith('INDEX:'):
+                    log_event(f"Processing INDEX from {address}: {data[:50]}", ui=LOG_FORM_SYNC)
+                    parts = data.split(':', 2)
+                    if len(parts) == 3:
+                        client_callsign, index = parts[1], parts[2]
+                        with clients_lock:
+                            for i, (cs, addr, _, ls) in enumerate(clients):
+                                if cs == client_socket:
+                                    clients[i] = (cs, addr, client_callsign, last_data_time)
+                                    break
+                        client_forms = dict(f.split(':') for f in index.split('|') if f)
+                        server_forms = {os.path.basename(f)[:-4]: hashlib.md5(open(f, 'rb').read()).hexdigest()
+                                        for f in glob.glob(os.path.join(FORMS_DIR, '*.txt'))}
+                        for fname, server_md5 in server_forms.items():
+                            client_md5 = client_forms.get(fname)
+                            if client_md5 != server_md5:
+                                with open(os.path.join(FORMS_DIR, f"{fname}.txt"), 'r') as f:
+                                    content = f.read()
+                                packet = f"FORMS:{fname}:1.0:{content}\n\n"
+                                client_socket.send(packet.encode())
+                                log_event(f"Sent FORMS diff for {fname} to {address}", ui=LOG_FORM_SYNC)
+                    else:
+                        log_event(f"Malformed INDEX from {address}: {data[:100]}", ui=LOG_FORM_SYNC)
+            except Exception as e:
+                log_event(f"Client error {address}: {str(e)} - traceback: {traceback.format_exc()}")
+                break
+        time.sleep(0.1)
+    client_socket.close()
+    with clients_lock:
+        for i, (cs, addr, cc, ls) in enumerate(clients):
+            if cs == client_socket:
+                clients[i] = (None, addr, cc, ls)
+                break
+    log_event(f"Client disconnected: {address}")
+
+# Chunk 6 v1.7 - Forms Management Utils
+def load_form_data(form_id):
+    file_path = os.path.join(FORMS_DIR, f"{form_id}.txt")
+    if not os.path.exists(file_path):
+        log_event(f"Form file not found: {file_path}")
+        return None
+    form_data = {'desc': '', 'fields': {}}
+    with open(file_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith('desc:'):
+                form_data['desc'] = line.split(':', 1)[1]
+            else:
+                fid, label, row, col, length = line.split(',')
+                form_data['fields'][fid] = {
+                    'label': label,
+                    'row': int(row),
+                    'col': int(col),
+                    'len': int(length)
+                }
+    return form_data
+
+def create_form(form_id, desc, fields):
+    file_path = os.path.join(FORMS_DIR, f"{form_id}.txt")
+    with open(file_path, 'w') as f:
+        f.write(f"desc:{desc}\n")
+        for fid, field in fields.items():
+            f.write(f"{fid},{field['label']},{field['row']},{field['col']},{field['len']}\n")
+    log_event(f"Created/Updated form: {form_id}")
+
+def delete_form(form_id):
+    file_path = os.path.join(FORMS_DIR, f"{form_id}.txt")
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        log_event(f"Deleted form: {form_id}")
+    else:
+        log_event(f"Form {form_id} not found")
+
+# Chunk 7 v1.73 - People.csv Initialization
+def init_people_csv():
+    people_file = os.path.join(DATA_DIR, 'people.csv')
+    if not os.path.exists(people_file) or os.path.getsize(people_file) == 0:
+        log_event(f"Seeding {people_file} with initial data")
+        with open(people_file, 'w') as f:
+            f.write("id,name\n")
+            f.write("P001,John Doe\n")
+            f.write("P002,Jane Smith\n")
+            f.write("P003,Alice Johnson\n")
+            f.write("P004,Bob Brown\n")
+            f.write("P005,Carol White\n")
+            f.write("P006,David Green\n")
+        log_event(f"Seeded {people_file} with 6 entries")
+
+# Chunk 8 v1.76 - UI Functions
+def init_colors():
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_CYAN, curses.COLOR_BLACK)
+
+def forms_management_screen(stdscr):
+    curses.curs_set(0)
+    stdscr.nodelay(True)
+    selection = 0
+    screen_dirty = True
+    while True:
+        forms = sorted([f for f in os.listdir(FORMS_DIR) if re.match(r'[A-Z][A-Z][0-9][0-9]\.txt', f, re.IGNORECASE)])
+        if screen_dirty:
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Forms Management", curses.color_pair(4))
+            stdscr.addstr(2, 2, "Current Forms:", curses.color_pair(4))
+            for i, form in enumerate(forms[:15], start=3):
+                if i - 3 == selection:
+                    stdscr.addstr(i, 4, form[:-4], curses.color_pair(2) | curses.A_REVERSE)
+                else:
+                    stdscr.addstr(i, 4, form[:-4], curses.color_pair(2))
+            if forms and selection < len(forms):
+                form_id = forms[selection][:-4]
+                form_data = load_form_data(form_id)
+                if form_data:
+                    stdscr.addstr(2, 40, f"Form: {form_id}", curses.color_pair(4))
+                    stdscr.addstr(3, 40, f"Desc: {form_data['desc'][:36]}", curses.color_pair(2))
+                    stdscr.addstr(4, 40, "ID:Label (Row,Col,Len)", curses.color_pair(4))
+                    line = 5
+                    for fid, field in sorted(form_data['fields'].items()):
+                        if line < 18:
+                            text = f"{fid}:{field['label']} ({field['row']},{field['col']},{field['len']})"
+                            stdscr.addstr(line, 42, text[:36], curses.color_pair(2))
+                            line += 1
+            stdscr.addstr(19, 2, "C=Create Enter=Edit D=Delete Esc=Back", curses.color_pair(2))
+            stdscr.refresh()
+            screen_dirty = False
+        char = stdscr.getch()
+        if char == -1:
+            continue
+        if char == curses.KEY_UP and selection > 0:
+            selection -= 1
+            screen_dirty = True
+        elif char == curses.KEY_DOWN and selection < len(forms) - 1 and selection < 14:
+            selection += 1
+            screen_dirty = True
+        elif char == ord('c') or char == ord('C'):
+            form_edit_screen(stdscr, None)
+            screen_dirty = True
+        elif char == 10 and forms:
+            form_id = forms[selection][:-4]
+            form_edit_screen(stdscr, form_id)
+            screen_dirty = True
+        elif char == ord('d') or char == ord('D') and forms:
+            form_id = forms[selection][:-4]
+            stdscr.clear()
+            stdscr.addstr(0, 0, f"Delete Form: {form_id}", curses.color_pair(4))
+            stdscr.addstr(2, 2, "Confirm Delete (Y/N)? ", curses.color_pair(2))
+            stdscr.refresh()
+            stdscr.nodelay(False)
+            char = stdscr.getch()
+            stdscr.nodelay(True)
+            if char == ord('y') or char == ord('Y'):
+                delete_form(form_id)
+            screen_dirty = True
+        elif char == 27:
+            return
+
+def form_edit_screen(stdscr, form_id):
+    curses.curs_set(0)
+    stdscr.nodelay(True)
+    screen_dirty = True
+    selection = 0 if not form_id else 2
+    if form_id:
+        form_data = load_form_data(form_id) or {'desc': '', 'fields': {}}
+        form_id_val = form_id
+        form_desc = form_data['desc']
+    else:
+        form_data = {'desc': '', 'fields': {}}
+        form_id_val = ""
+        form_desc = ""
+    fields_list = sorted(form_data['fields'].items(), key=lambda x: x[0]) if form_data['fields'] else []
+    while True:
+        if screen_dirty:
+            stdscr.clear()
+            stdscr.addstr(0, 0, f"{'Edit' if form_id else 'Create'} Form", curses.color_pair(4))
+            stdscr.addstr(2, 2, "Options:", curses.color_pair(4))
+            stdscr.addstr(2, 26, "Input:", curses.color_pair(4))
+            stdscr.addstr(2, 48, "Preview:", curses.color_pair(4))
+            if not form_id:
+                items = ["Enter Form ID", "Enter Form Desc", "Add Input Field", "Submit", "Cancel"]
+                editable = [True, True, True, True, True]
+                inputs = ["", "", "", "", ""]
+                preview = [form_id_val, form_desc[:28]] + [f"{fid}: {field['label']}" for fid, field in fields_list] + ["", ""]
+            else:
+                items = [f"Form ID: {form_id_val}", f"Desc: {form_data['desc'][:13]}"] + \
+                        [f"{fid}: {field['label']}" for fid, field in fields_list] + ["Add Field", "Submit", "Cancel"]
+                editable = [False, False] + [True] * len(fields_list) + [True, True, True]
+                inputs = [""] * len(items)
+                preview = items[:-2] + ["", ""]
+            for i, (item, can_edit) in enumerate(zip(items[:15], editable[:15]), start=3):
+                if i - 3 == selection and can_edit:
+                    stdscr.addstr(i, 4, item[:20], curses.color_pair(2) | curses.A_REVERSE)
+                else:
+                    stdscr.addstr(i, 4, item[:20], curses.color_pair(2))
+            for i, inp in enumerate(inputs[:15], start=3):
+                stdscr.addstr(i, 26, inp[:20], curses.color_pair(2))
+            for i, pre in enumerate(preview[:15], start=3):
+                stdscr.addstr(i, 48, pre[:30], curses.color_pair(2))
+            stdscr.refresh()
+            screen_dirty = False
+        char = stdscr.getch()
+        if char == -1:
+            continue
+        if char == curses.KEY_UP and selection > (0 if not form_id else 2):
+            selection -= 1
+            screen_dirty = True
+        elif char == curses.KEY_DOWN and selection < len(items) - 1 and selection < 14:
+            selection += 1
+            screen_dirty = True
+        elif char == 10 and selection < len(editable) and editable[selection]:
+            stdscr.nodelay(False)
+            curses.curs_set(1)
+            stdscr.addstr(selection + 3, 26, " " * 20, curses.color_pair(2))
+            if not form_id:
+                if selection == 0:
+                    stdscr.addstr(selection + 3, 26, "ID (XX01): ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    new_id = stdscr.getstr(selection + 3, 37, 4).decode().strip()
+                    curses.noecho()
+                    if new_id and re.match(r'[A-Za-z][A-Za-z][0-9][0-9]', new_id):
+                        form_id_val = new_id
+                        preview[0] = form_id_val
+                        inputs[selection] = new_id
+                elif selection == 1:
+                    stdscr.addstr(selection + 3, 26, "Desc: ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    form_desc = stdscr.getstr(selection + 3, 32, 20).decode().strip()
+                    curses.noecho()
+                    if form_desc:
+                        preview[1] = form_desc[:28]
+                        inputs[selection] = form_desc[:20]
+                elif selection == 2:
+                    new_fid = f"{len(fields_list) + 1:02d}"
+                    stdscr.addstr(selection + 3, 26, f"{new_fid} Label: ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    new_label = stdscr.getstr(selection + 3, 35, 20).decode().strip()
+                    curses.noecho()
+                    if new_label:
+                        fields_list.append((new_fid, {'label': new_label, 'row': 3 + len(fields_list), 'col': 12, 'len': 256}))
+                        items.insert(-2, f"{new_fid}: {new_label}")
+                        inputs.insert(-2, new_label[:20])
+                        editable.insert(-2, True)
+                        preview.insert(-2, f"{new_fid}: {new_label}"[:30])
+            elif form_id:
+                if selection == len(items) - 3:
+                    new_fid = f"{len(fields_list) + 1:02d}"
+                    stdscr.addstr(selection + 3, 26, f"{new_fid} Label: ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    new_label = stdscr.getstr(selection + 3, 35, 20).decode().strip()
+                    curses.noecho()
+                    if new_label:
+                        fields_list.append((new_fid, {'label': new_label, 'row': 3 + len(fields_list), 'col': 12, 'len': 256}))
+                        items.insert(-2, f"{new_fid}: {new_label}")
+                        inputs.insert(-2, new_label[:20])
+                        editable.insert(-2, True)
+                        preview.insert(-2, f"{new_fid}: {new_label}"[:30])
+                elif 2 <= selection < len(items) - 3:
+                    idx = selection - 2
+                    fid = fields_list[idx][0]
+                    stdscr.addstr(selection + 3, 26, f"{fid} Label: ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    new_label = stdscr.getstr(selection + 3, 35, 20).decode().strip()
+                    curses.noecho()
+                    if new_label:
+                        fields_list[idx] = (fid, {'label': new_label, 'row': fields_list[idx][1]['row'], 'col': 12, 'len': 256})
+                        items[selection] = f"{fid}: {new_label}"
+                        inputs[selection] = new_label[:20]
+                        preview[selection] = f"{fid}: {new_label}"[:30]
+            if selection == len(items) - 2:
+                if form_id_val and form_desc and fields_list:
+                    fields_dict = {fid: field for fid, field in fields_list}
+                    create_form(form_id_val, form_desc, fields_dict)
+                    stdscr.nodelay(True)
+                    curses.curs_set(0)
+                    return
+            elif selection == len(items) - 1:
+                stdscr.nodelay(True)
+                curses.curs_set(0)
+                return
+            stdscr.nodelay(True)
+            curses.curs_set(0)
+            screen_dirty = True
+        elif char == 27:
+            return
+
+def update_ui(stdscr):
+    global screen_dirty, show_menu, menu_selection
+    if not screen_dirty:
+        return
+    max_y, max_x = stdscr.getmaxyx()
+    stdscr.clear()
+    border = "=" * (max_x - 1)
+    stdscr.addstr(0, 0, border, curses.color_pair(1))
+    stdscr.addstr(1, 2, "Packet Radio Server Status", curses.color_pair(4))
+    stdscr.addstr(2, 2, "Recent Clients:", curses.color_pair(4))
+    with clients_lock:
+        now = time.time()
+        clients[:] = [(cs, addr, cc, ls) for cs, addr, cc, ls in clients if now - ls < CLIENT_TIMEOUT]
+        for i, (cs, addr, cc, ls) in enumerate(clients[:max_y-4], start=3):
+            timestamp = datetime.fromtimestamp(ls).strftime('%H:%M:%S')
+            display = f"{cc or 'Unknown'} ({addr[0]}) - {timestamp}"
+            stdscr.addstr(i, 4, display[:max_x//2-6], curses.color_pair(2))
+    log_x = max_x // 2 + 1
+    stdscr.addstr(1, log_x, "Comms Log", curses.color_pair(4))
+    stdscr.addstr(2, log_x, "=" * ((max_x - log_x - 1) // 2), curses.color_pair(1))
+    for i, (msg, ts) in enumerate(comms_log[-(max_y-5):], start=3):
+        if i < max_y-2:
+            stdscr.addstr(i, log_x, f"{msg[:max_x-log_x-1]} - {ts}"[:max_x-log_x-1], curses.color_pair(2))
+    stdscr.addstr(max_y-1, 0, border, curses.color_pair(1))
+    stdscr.addstr(max_y-2, 2, "= Press Q to Quit D=Menu =", curses.color_pair(2))
+    if show_menu:
+        menu_width = 22
+        menu_height = 8
+        menu_y = (max_y - menu_height) // 2
+        menu_x = (max_x - menu_width) // 2
+        options = [("Main Screen", True), ("Forms Management", True), ("Quit", True)]
+        stdscr.addstr(menu_y, menu_x, "+====================+", curses.color_pair(1))
+        for i, (opt, active) in enumerate(options):
+            color = 2 if active else 1
+            if i == menu_selection:
+                stdscr.addstr(menu_y + 1 + i, menu_x, f"| {opt:<18} |", curses.color_pair(color) | curses.A_REVERSE)
+            else:
+                stdscr.addstr(menu_y + 1 + i, menu_x, f"| {opt:<18} |", curses.color_pair(color))
+        stdscr.addstr(menu_y + 4, menu_x, "| Up/Down=Move       |", curses.color_pair(2))
+        stdscr.addstr(menu_y + 5, menu_x, "| Enter=Sel Esc=Back |", curses.color_pair(2))
+        stdscr.addstr(menu_y + 6, menu_x, "+====================+", curses.color_pair(1))
+    stdscr.refresh()
+    screen_dirty = False
+
+# Chunk 9 v1.75 - Server Comms
+def accept_clients(server, stop_event):
+    log_event("Starting accept_clients thread")
+    while not stop_event.is_set():
+        try:
+            client_socket, address = server.accept()
+            log_event(f"Accepted connection from {address}")
+            client_thread = threading.Thread(target=handle_client, args=(client_socket, address))
+            client_thread.daemon = True
+            client_thread.start()
+        except Exception as e:
+            log_event(f"Accept error: {str(e)}")
+        time.sleep(0.1)
+
+# Chunk 10 v1.81 - Main Loop
+def main(stdscr):
+    global CALLSIGN, screen_dirty, show_menu, menu_selection
+    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(FORMS_DIR, exist_ok=True)
+    CALLSIGN = get_callsign(stdscr)
+    init_colors()
+    stdscr.clear()
+    stdscr.nodelay(True)
+    stdscr.refresh()
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server.bind((SERVER_HOST, SERVER_PORT))
+    server.listen(5)
+    # CHANGE: Added version to startup log
+    log_event(f"Server running on {SERVER_HOST}:{SERVER_PORT} (v{VERSION})")
+    init_people_csv()
+    stop_event = threading.Event()
+    broadcast_thread = threading.Thread(target=broadcast_forms_md5, args=(stop_event,))
+    broadcast_thread.daemon = True
+    broadcast_thread.start()
+    accept_thread = threading.Thread(target=accept_clients, args=(server, stop_event))
+    accept_thread.daemon = True
+    accept_thread.start()
+    while True:
+        update_ui(stdscr)
+        char = stdscr.getch()
+        if char == ord('q') or char == ord('Q') and not show_menu:
+            log_event("Quitting via Q")
+            stop_event.set()
+            log_event("Server shutdown complete")
+            break
+        elif char == ord('d') or char == ord('D'):
+            show_menu = not show_menu
+            menu_selection = 0
+            screen_dirty = True
+        elif show_menu:
+            if char == curses.KEY_UP and menu_selection > 0:
+                menu_selection -= 1
+                screen_dirty = True
+            elif char == curses.KEY_DOWN and menu_selection < 2:
+                menu_selection += 1
+                screen_dirty = True
+            elif char == 10:
+                if menu_selection == 0:
+                    show_menu = False
+                elif menu_selection == 1:
+                    forms_management_screen(stdscr)
+                elif menu_selection == 2:
+                    log_event("Quitting via menu")
+                    stop_event.set()
+                    log_event("Server shutdown complete")
+                    break
+                screen_dirty = True
+            elif char == 27:
+                show_menu = False
+                screen_dirty = True
+        time.sleep(0.05)
+    server.close()
+
+# Chunk 11 v1.81 - Design Goals and Statuses
+# DESIGN GOALS:
+# - v1.73: Save "I:" submissions to FORMID_submissions.csv (timestamp,callsign,payload) - Done
+# - v1.73: Seed people.csv with 6 names/ID#s (temp, remove in v1.74) - Done
+# - Future: Separate people.csv sync (MD5_people:) from forms sync
+# - Future: Parse names from payloads, assign IDs, update people.csv, sync to clients
+# - Future: Client submits ID#s, not names, via dropdown from people.csv
+# NOTES TO SELF:
+# - v1.75: Fixed packet parsing in handle_client to skip invalid seq_total, adjusted broadcast timing, added FORMS: send logging.
+# - v1.76: For next session—fixed broadcast_forms_md5 to use 60s (matches 1200 baud), updated handle_client to grab callsign from REQ_UPDATE,
+#          renamed "Connected Clients" to "Recent Clients" with callsign/timestamp in update_ui. No code cut—comment out only with permission.
+#          LOG_SUBMISSIONS off by default, backups logging always on.
+# - v1.77: Added INDEX: parsing in handle_client to send FORMS: diffs based on client index, kept REQ_UPDATE: for backward compatibility.
+# CHANGES:
+# - v1.73: Added submission saving in handle_client (Chunk 5)
+# - v1.73: Added people.csv seeding in init_people_csv (Chunk 7)
+# - v1.73: Added LOG_SUBMISSIONS config option (Chunk 1)
+# - v1.73: Reintroduced chunked layout (10-15 blocks)
+# - v1.74: Enhanced debug logging in broadcast_forms_md5, handle_client, and accept_clients
+# - v1.75: Fixed handle_client to validate seq_total, skip bad packets; adjusted broadcast_forms_md5 timing; added FORMS: send logs
+# - v1.76: Set BROADCAST_INTERVAL to 60s (Chunk 1), updated handle_client to parse callsign from REQ_UPDATE (Chunk 5),
+#          changed "Connected Clients" to "Recent Clients" in update_ui (Chunk 8), turned off LOG_SUBMISSIONS by default (Chunk 1)
+# - v1.77: Added INDEX: handling in handle_client (Chunk 5) to sync forms diffs based on client index
+# - v1.78: Added \n\n to MD5_forms in broadcast_forms_md5 (Chunk 4), fixed /n/n typo to \n\n in handle_client FORMS packets (Chunk 5)
+# - v1.79: Attempted seq:total parsing fix in handle_client (Chunk 5), added log_submission_details (Chunk 1),
+#          updated log_event to support submission_details (Chunk 3)
+# - v1.80: Corrected seq:total parsing in handle_client by renaming and re-splitting seq_total_str (Chunk 5)
+# - v1.81: Added VERSION constant and logged it in main (Chunk 10),
+#          added Split parts logging and seq_total_parts validation in handle_client (Chunk 5) to debug parsing failure
+
+backup_script()
+
+# Chunk 12 v1.8 - Entry Point
+if __name__ == "__main__":
+    try:
+        curses.wrapper(main)
+    except Exception as e:
+        with open(LOG_FILE, 'a') as f:
+            f.write(f"{datetime.now()} - Fatal error: {str(e)} - traceback: {traceback.format_exc()}\n")
+        sys.exit(1)

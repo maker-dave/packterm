@@ -1,0 +1,124 @@
+2025-03-16 11:08:10,596 - Started new session
+2025-03-16 11:08:10,598 - Generated callsign: N5NLB
+2025-03-16 11:08:10,599 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:10,600 - UI update queued: connection at 1742137690.5999832
+2025-03-16 11:08:11,100 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:11,101 - UI update queued: connection at 1742137691.1011806
+2025-03-16 11:08:11,602 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:11,602 - UI update queued: connection at 1742137691.6022341
+2025-03-16 11:08:12,103 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:12,103 - UI update queued: connection at 1742137692.1033301
+2025-03-16 11:08:12,604 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:12,604 - UI update queued: connection at 1742137692.6043072
+2025-03-16 11:08:13,105 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:13,105 - UI update queued: connection at 1742137693.1056006
+2025-03-16 11:08:13,606 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:13,606 - UI update queued: connection at 1742137693.6065927
+2025-03-16 11:08:14,107 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:14,107 - UI update queued: connection at 1742137694.107611
+2025-03-16 11:08:14,608 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:14,608 - UI update queued: connection at 1742137694.6086016
+2025-03-16 11:08:15,109 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:15,109 - UI update queued: connection at 1742137695.109585
+2025-03-16 11:08:15,611 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:15,611 - UI update queued: connection at 1742137695.6116452
+2025-03-16 11:08:16,113 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:16,113 - UI update queued: connection at 1742137696.113557
+2025-03-16 11:08:16,615 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:16,615 - UI update queued: connection at 1742137696.6153634
+2025-03-16 11:08:17,116 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:17,117 - UI update queued: connection at 1742137697.1172175
+2025-03-16 11:08:17,618 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:17,619 - UI update queued: connection at 1742137697.6191833
+2025-03-16 11:08:18,120 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:18,121 - UI update queued: connection at 1742137698.120981
+2025-03-16 11:08:18,624 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:18,624 - UI update queued: connection at 1742137698.6246612
+2025-03-16 11:08:19,126 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:19,126 - UI update queued: connection at 1742137699.1265252
+2025-03-16 11:08:19,628 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:19,628 - UI update queued: connection at 1742137699.628463
+2025-03-16 11:08:20,129 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:20,130 - UI update queued: connection at 1742137700.1302614
+2025-03-16 11:08:20,631 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:20,632 - UI update queued: connection at 1742137700.6322157
+2025-03-16 11:08:21,133 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:21,134 - UI update queued: connection at 1742137701.1340983
+2025-03-16 11:08:21,635 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:21,636 - UI update queued: connection at 1742137701.636028
+2025-03-16 11:08:22,137 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:22,138 - UI update queued: connection at 1742137702.1379483
+2025-03-16 11:08:22,639 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:22,640 - UI update queued: connection at 1742137702.6399624
+2025-03-16 11:08:23,141 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:23,141 - UI update queued: connection at 1742137703.1417475
+2025-03-16 11:08:23,643 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:23,643 - UI update queued: connection at 1742137703.6437826
+2025-03-16 11:08:24,145 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:24,145 - UI update queued: connection at 1742137704.145507
+2025-03-16 11:08:24,647 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:24,647 - UI update queued: connection at 1742137704.6474307
+2025-03-16 11:08:25,152 - Failed to connect to Fake Direwolf: [Errno 111] Connection refused
+2025-03-16 11:08:25,152 - UI update queued: connection at 1742137705.1524973
+2025-03-16 11:08:25,653 - UI update queued: connection at 1742137705.6534681
+2025-03-16 11:08:25,653 - Connected to Fake Direwolf on localhost:8051
+2025-03-16 11:08:33,798 - UI update queued: input at 1742137713.7981706
+2025-03-16 11:08:40,966 - UI update queued: input at 1742137720.9663634
+2025-03-16 11:08:41,067 - UI update queued: input at 1742137721.0674381
+2025-03-16 11:08:42,170 - UI update queued: input at 1742137722.1704228
+2025-03-16 11:08:42,271 - UI update queued: input at 1742137722.2714615
+2025-03-16 11:08:52,745 - UI update queued: input at 1742137732.7452998
+2025-03-16 11:08:54,399 - Destination set to: W6DLV
+2025-03-16 11:08:54,400 - UI update queued: destination at 1742137734.3999746
+2025-03-16 11:08:54,400 - UI update queued: input at 1742137734.4002144
+2025-03-16 11:14:36,204 - UI update queued: packet_log at 1742138076.204005
+2025-03-16 11:14:36,204 - Sent KISS frame to W6DLV: payload=T38070001742138076, hex=c0007eae6c8898ac40609c6a9c9884406103f0543338303730303031373432313338303736798c7ec0
+2025-03-16 11:14:36,204 - Packet displayed at 1742138076.2043855, received at 1742138076.2040026, delta=0.000s
+2025-03-16 11:14:36,204 - Received at 1742138076.2046175: payload=T48880001742137886
+2025-03-16 11:14:36,204 - Received KISS frame: payload=T48880001742137886, hex=c0007e9c6a9c98844060ae6c8898ac406103f0543438383830303031373432313337383836c8787ec0
+2025-03-16 11:14:36,204 - UI update queued: packet_log at 1742138076.2046175
+2025-03-16 11:14:36,205 - Received at 1742138076.2050562: payload=T48880011742137926
+2025-03-16 11:14:36,205 - Received KISS frame: payload=T48880011742137926, hex=c0007e9c6a9c98844060ae6c8898ac406103f05434383838303031313734323133373932367a787ec0
+2025-03-16 11:14:36,205 - UI update queued: packet_log at 1742138076.2050562
+2025-03-16 11:14:36,205 - Received at 1742138076.205286: payload=T48880021742137964
+2025-03-16 11:14:36,205 - Received KISS frame: payload=T48880021742137964, hex=c0007e9c6a9c98844060ae6c8898ac406103f054343838383030323137343231333739363406ec7ec0
+2025-03-16 11:14:36,205 - UI update queued: packet_log at 1742138076.205286
+2025-03-16 11:14:37,205 - UI update queued: packet_log at 1742138077.205552
+2025-03-16 11:14:37,205 - Sent KISS frame to W6DLV: payload=T38070011742138077, hex=c0007eae6c8898ac40609c6a9c9884406103f054333830373030313137343231333830373711447ec0
+2025-03-16 11:14:37,206 - Packet displayed at 1742138077.2059288, received at 1742138077.2055502, delta=0.000s
+2025-03-16 11:14:37,206 - UI update queued: input at 1742138077.2063167
+2025-03-16 11:44:11,869 - UI update queued: input at 1742139851.8693614
+2025-03-16 11:44:22,043 - UI update queued: input at 1742139862.043403
+2025-03-16 11:44:25,854 - Destination set to: SW
+2025-03-16 11:44:25,855 - UI update queued: destination at 1742139865.855101
+2025-03-16 11:44:25,855 - UI update queued: input at 1742139865.8553495
+2025-03-16 11:44:27,660 - UI update queued: input at 1742139867.6602776
+2025-03-16 11:44:29,716 - UI update queued: input at 1742139869.716168
+2025-03-16 11:44:31,020 - UI update queued: input at 1742139871.0199516
+2025-03-16 11:44:31,872 - UI update queued: input at 1742139871.8727503
+2025-03-16 11:44:32,525 - UI update queued: input at 1742139872.5250285
+2025-03-16 11:44:33,227 - UI update queued: input at 1742139873.227261
+2025-03-16 11:44:34,230 - Destination set to: W6DLV
+2025-03-16 11:44:34,231 - UI update queued: destination at 1742139874.2309952
+2025-03-16 11:44:34,231 - UI update queued: input at 1742139874.2311845
+2025-03-16 11:45:33,465 - UI update queued: packet_log at 1742139933.4648838
+2025-03-16 11:45:33,465 - Sent KISS frame to W6DLV: payload=T38070021742139933, hex=c0007eae6c8898ac40609c6a9c9884406103f05433383037303032313734323133393933338e587ec0
+2025-03-16 11:45:33,465 - Packet displayed at 1742139933.465663, received at 1742139933.4648762, delta=0.001s
+2025-03-16 12:27:02,802 - UI update queued: packet_log at 1742142422.802464
+2025-03-16 12:27:02,802 - Sent KISS frame to W6DLV: payload=T38070031742142422, hex=c0007eae6c8898ac40609c6a9c9884406103f05433383037303033313734323134323432324d987ec0
+2025-03-16 12:27:02,803 - Packet displayed at 1742142422.8031435, received at 1742142422.8024614, delta=0.001s
+2025-03-16 12:27:02,803 - Received at 1742142422.8037786: payload=T48880031742141566
+2025-03-16 12:27:02,804 - Received KISS frame: payload=T48880031742141566, hex=c0007e9c6a9c98844060ae6c8898ac406103f054343838383030333137343231343135363621217ec0
+2025-03-16 12:27:02,804 - UI update queued: packet_log at 1742142422.8037786
+2025-03-16 12:27:02,804 - Received at 1742142422.8046343: payload=T48880041742141603
+2025-03-16 12:27:02,804 - Received KISS frame: payload=T48880041742141603, hex=c0007e9c6a9c98844060ae6c8898ac406103f0543438383830303431373432313431363033cfab7ec0
+2025-03-16 12:27:02,805 - UI update queued: packet_log at 1742142422.8046343
+2025-03-16 12:31:59,846 - UI update queued: packet_log at 1742142719.8465805
+2025-03-16 12:31:59,847 - Sent KISS frame to W6DLV: payload=T38070041742142719, hex=c0007eae6c8898ac40609c6a9c9884406103f0543338303730303431373432313432373139980c7ec0
+2025-03-16 12:31:59,848 - Packet displayed at 1742142719.8478484, received at 1742142719.8465703, delta=0.001s
+2025-03-16 12:35:33,877 - UI update queued: packet_log at 1742142933.876932
+2025-03-16 12:35:33,877 - Sent KISS frame to W6DLV: payload=T38070051742142933, hex=c0007eae6c8898ac40609c6a9c9884406103f0543338303730303531373432313432393333f8087ec0
+2025-03-16 12:35:33,877 - Packet displayed at 1742142933.8776665, received at 1742142933.876929, delta=0.001s
+2025-03-16 12:35:33,880 - UI update queued: packet_log at 1742142933.8805285
+2025-03-16 12:35:33,881 - Sent KISS frame to W6DLV: payload=T38070061742142933, hex=c0007eae6c8898ac40609c6a9c9884406103f054333830373030363137343231343239333302707ec0
+2025-03-16 12:35:33,881 - Packet displayed at 1742142933.8812594, received at 1742142933.8805254, delta=0.001s

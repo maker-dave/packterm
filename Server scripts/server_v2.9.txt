@@ -1,0 +1,1015 @@
+#!/usr/bin/env python3
+# server.py
+# Version 2.9 - 2025-03-16  # CHANGE v2.9: Replaced TCP with AX.25 via Fake Direwolf, added AX.25 logging
+
+# Chunk 1 v2.9 - Imports, Early Globals, and Utilities
+import os
+import sys
+import time
+import socket
+import threading
+import hashlib
+import logging
+import shutil
+import curses
+import glob
+import select
+import traceback
+import configparser
+import re
+import queue
+from datetime import datetime
+from collections import defaultdict  # CHANGE v2.3: Added for table row tracking in form_edit_screen
+
+comms_log = []
+screen_dirty = True
+clients = []  # (callsign, last_data_time) - CHANGE v2.9: Simplified, no sockets (AX.25 via Fake Direwolf)
+clients_lock = threading.Lock()
+forms_md5 = None
+last_mtime = 0
+show_menu = False
+menu_selection = 0
+syncing_clients = set()
+last_broadcast = {}
+kiss_socket = None  # CHANGE v2.9: Global socket for Fake Direwolf KISS connection
+
+def log_event(message, ui=False, submission_details=False, submissions=False, submission_payload=False, segment_failure=False, socket_state=False, retries=False, ui_transitions=False, search_query=False, search_results=False, search_parsing=False, csv_processing=False, client_state=False, packet_build=False, packet_parse=False, sync_state=False, sync_md5=False, sync_forms=False, client_packet=False, packet_integrity=False, form_deletion=False, sync_start=False, sync_completion=False, packet_queue=False, client_queue=False, ui_packet_handling=False, queue_state=False, startup_errors=False, backups=False, connection_attempts=False, packet_drop=False, thread_state=False, form_field_creation=False, form_preview=False, field_positioning=False, table_edit=False, form_save=False, ui_render=False, form_sync_error=False, packet_fragments=False, sync_mismatches=False, forms_management=False, kiss_framing=False, packet_timing=False, ax25_state=False):  # CHANGE v2.9: Added kiss_framing, packet_timing, ax25_state
+    logging.info(message)
+    if ui:
+        comms_log.append((message, datetime.now().strftime('%H:%M:%S')))
+        if len(comms_log) > 20:
+            comms_log.pop(0)
+        global screen_dirty
+        screen_dirty = True
+    if submission_details and LOG_SUBMISSION_DETAILS: logging.info("Submission Detail: " + message)
+    if submissions and LOG_SUBMISSIONS: logging.info("Submission: " + message)
+    if submission_payload and LOG_SUBMISSION_PAYLOAD: logging.info("Submission Payload: " + message)
+    if segment_failure and LOG_SEGMENT_FAILURE: logging.info("Segment Failure: " + message)
+    if socket_state and LOG_SOCKET_STATE: logging.info("Socket State: " + message)
+    if retries and LOG_RETRIES: logging.info("Retry: " + message)
+    if ui_transitions and LOG_UI_TRANSITIONS: logging.info("UI Transition: " + message)
+    if search_query and LOG_SEARCH_QUERY: logging.info("Search Query: " + message)
+    if search_results and LOG_SEARCH_RESULTS: logging.info("Search Results: " + message)
+    if search_parsing and LOG_SEARCH_PARSING: logging.info("Search Parsing: " + message)
+    if csv_processing and LOG_CSV_PROCESSING: logging.info("CSV Processing: " + message)
+    if client_state and LOG_CLIENT_STATE: logging.info("Client State: " + message)
+    if packet_build and LOG_PACKET_BUILD: logging.info("Packet Build: " + message)
+    if packet_parse and LOG_PACKET_PARSE: logging.info("Packet Parse: " + message)
+    if sync_state and LOG_SYNC_STATE: logging.info("Sync State: " + message)
+    if sync_md5 and LOG_SYNC_MD5: logging.info("Sync MD5: " + message)
+    if sync_forms and LOG_SYNC_FORMS: logging.info("Sync Forms: " + message)
+    if client_packet and LOG_CLIENT_PACKET: logging.info("Client Packet: " + message)
+    if packet_integrity and LOG_PACKET_INTEGRITY: logging.info("Packet Integrity: " + message)
+    if form_deletion and LOG_FORM_DELETION: logging.info("Form Deletion: " + message)
+    if sync_start and LOG_SYNC_START: logging.info("Sync Start: " + message)
+    if sync_completion and LOG_SYNC_COMPLETION: logging.info("Sync Completion: " + message)
+    if packet_queue and LOG_PACKET_QUEUE: logging.info("Packet Queue: " + message)
+    if client_queue and LOG_CLIENT_QUEUE: logging.info("Client Queue: " + message)
+    if ui_packet_handling and LOG_UI_PACKET_HANDLING: logging.info("UI Packet Handling: " + message)
+    if queue_state and LOG_QUEUE_STATE: logging.info("Queue State: " + message)
+    if startup_errors and LOG_STARTUP_ERRORS: logging.info("Startup Error: " + message)
+    if backups: logging.info("Backup: " + message)  # Always on
+    if connection_attempts and LOG_CONNECTION_ATTEMPTS: logging.info("Connection Attempt: " + message)
+    if packet_drop and LOG_PACKET_DROP: logging.info("Packet Drop: " + message)
+    if thread_state and LOG_THREAD_STATE: logging.info("Thread State: " + message)
+    if form_field_creation and LOG_FORM_FIELD_CREATION: logging.info("Form Field Creation: " + message)
+    if form_preview and LOG_FORM_PREVIEW: logging.info("Form Preview: " + message)
+    if field_positioning and LOG_FIELD_POSITIONING: logging.info("Field Positioning: " + message)
+    if table_edit and LOG_TABLE_EDIT: logging.info("Table Edit: " + message)
+    if form_save and LOG_FORM_SAVE: logging.info("Form Save: " + message)
+    if ui_render and LOG_UI_RENDER: logging.info("UI Render: " + message)
+    if form_sync_error and LOG_FORM_SYNC_ERROR: logging.info("Form Sync Error: " + message)
+    if packet_fragments and LOG_PACKET_FRAGMENTS: logging.info("Packet Fragments: " + message)
+    if sync_mismatches and LOG_SYNC_MISMATCHES: logging.info("Sync Mismatch: " + message)
+    if forms_management and LOG_FORMS_MANAGEMENT: logging.info("Forms Management: " + message)
+    if kiss_framing and LOG_KISS_FRAMING: logging.info("KISS Framing: " + message)  # CHANGE v2.9: New AX.25 log
+    if packet_timing and LOG_PACKET_TIMING: logging.info("Packet Timing: " + message)  # CHANGE v2.9: New AX.25 log
+    if ax25_state and LOG_AX25_STATE: logging.info("AX.25 State: " + message)  # CHANGE v2.9: New AX.25 log
+
+def log_comms(message):
+    log_event(message, ui=True)
+
+def backup_script():  # Unchanged
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    backup_path = os.path.join(BACKUP_DIR, "server_" + timestamp + ".py")
+    shutil.copy2(__file__, backup_path)
+    log_event("Backed up to " + backup_path, ui=False, backups=True)
+
+VERSION = "2.9"  # CHANGE v2.9: Updated for AX.25 integration
+PACLEN = 255
+
+config = configparser.ConfigParser()
+CONFIG_FILE = None
+if not os.path.exists(CONFIG_FILE or ''):
+    config['Settings'] = {
+        'callsign': 'SVR001',
+        'paclen': str(PACLEN),
+        'log_client_details': 'True',
+        'log_form_sync': 'True',
+        'log_submissions': 'True',
+        'broadcast_interval': '60',
+        'client_timeout': '1800',
+        'log_submission_details': 'True',
+        'log_packet_parsing': 'False',
+        'log_buffer_events': 'False',
+        'log_packet_content': 'False',
+        'log_payload_processing': 'False',
+        'log_submission_payload': 'True',
+        'log_segment_failure': 'True',
+        'log_socket_state': 'True',
+        'log_retries': 'True',
+        'log_ui_transitions': 'False',
+        'log_search_query': 'True',
+        'log_search_results': 'True',
+        'log_search_parsing': 'True',
+        'log_csv_processing': 'True',
+        'log_client_state': 'True',
+        'log_packet_build': 'True',
+        'log_packet_parse': 'False',  # Disabled to reduce spam
+        'log_sync_state': 'True',
+        'log_sync_md5': 'False',
+        'log_sync_forms': 'False',
+        'log_client_packet': 'True',
+        'log_packet_integrity': 'True',
+        'log_form_deletion': 'True',
+        'log_sync_start': 'True',
+        'log_sync_completion': 'True',
+        'log_packet_queue': 'True',
+        'log_client_queue': 'True',
+        'log_ui_packet_handling': 'True',
+        'log_queue_state': 'True',
+        'log_startup_errors': 'True',
+        'home_dir': os.path.expanduser('~/terminal'),
+        'server_host': '0.0.0.0',  # Retained for config compatibility
+        'server_port': '12345',    # Retained for config compatibility
+        'fake_direwolf_host': '127.0.0.1',  # CHANGE v2.9: Added for Fake Direwolf
+        'fake_direwolf_port': '8051',       # CHANGE v2.9: Default to Fake Direwolf port
+        'queue_maxsize': '100',
+        'log_connection_attempts': 'True',
+        'log_packet_drop': 'True',
+        'log_thread_state': 'True',
+        'log_form_field_creation': 'True',
+        'log_form_preview': 'True',
+        'log_field_positioning': 'False',
+        'log_table_edit': 'True',
+        'log_form_save': 'True',
+        'log_ui_render': 'True',
+        'log_form_sync_error': 'True',
+        'log_packet_fragments': 'True',
+        'log_sync_mismatches': 'True',
+        'log_forms_management': 'True',
+        'log_kiss_framing': 'True',    # CHANGE v2.9: New AX.25 log, enabled
+        'log_packet_timing': 'True',   # CHANGE v2.9: New AX.25 log, enabled
+        'log_ax25_state': 'True'       # CHANGE v2.9: New AX.25 log, enabled
+    }
+    HOME_DIR = config['Settings']['home_dir']
+    os.makedirs(HOME_DIR, exist_ok=True)
+    CONFIG_FILE = os.path.join(HOME_DIR, 'server.conf')
+    with open(CONFIG_FILE, 'w') as configfile:
+        config.write(configfile)
+config.read(CONFIG_FILE or os.path.join(os.path.expanduser('~/terminal'), 'server.conf'))
+HOME_DIR = config.get('Settings', 'home_dir', fallback=os.path.expanduser('~/terminal'))
+CONFIG_FILE = os.path.join(HOME_DIR, 'server.conf')
+FORMS_DIR = os.path.join(HOME_DIR, 'forms')
+DATA_DIR = os.path.join(HOME_DIR, 'server_data')
+LOG_FILE = os.path.join(DATA_DIR, 'server.log')
+BACKUP_DIR = os.path.join(HOME_DIR, 'backups')
+CALLSIGN = config.get('Settings', 'callsign', fallback='SVR001')
+PACLEN = config.getint('Settings', 'paclen', fallback=PACLEN)
+FAKE_DIREWOLF_HOST = config.get('Settings', 'fake_direwolf_host', fallback='127.0.0.1')  # CHANGE v2.9
+FAKE_DIREWOLF_PORT = config.getint('Settings', 'fake_direwolf_port', fallback=8051)      # CHANGE v2.9
+# Retained TCP config vars for compatibility, though unused
+SERVER_HOST = config.get('Settings', 'server_host', fallback='0.0.0.0')
+SERVER_PORT = config.getint('Settings', 'server_port', fallback=12345)
+LOG_CLIENT_DETAILS = config.getboolean('Settings', 'log_client_details', fallback=True)
+LOG_FORM_SYNC = config.getboolean('Settings', 'log_form_sync', fallback=True)
+LOG_SUBMISSIONS = config.getboolean('Settings', 'log_submissions', fallback=True)
+BROADCAST_INTERVAL = config.getint('Settings', 'broadcast_interval', fallback=60)
+CLIENT_TIMEOUT = config.getint('Settings', 'client_timeout', fallback=1800)
+LOG_SUBMISSION_DETAILS = config.getboolean('Settings', 'log_submission_details', fallback=True)
+LOG_PACKET_PARSING = config.getboolean('Settings', 'log_packet_parsing', fallback=False)
+LOG_BUFFER_EVENTS = config.getboolean('Settings', 'log_buffer_events', fallback=False)
+LOG_PACKET_CONTENT = config.getboolean('Settings', 'log_packet_content', fallback=False)
+LOG_PAYLOAD_PROCESSING = config.getboolean('Settings', 'log_payload_processing', fallback=False)
+LOG_SUBMISSION_PAYLOAD = config.getboolean('Settings', 'log_submission_payload', fallback=True)
+LOG_SEGMENT_FAILURE = config.getboolean('Settings', 'log_segment_failure', fallback=True)
+LOG_SOCKET_STATE = config.getboolean('Settings', 'log_socket_state', fallback=True)
+LOG_RETRIES = config.getboolean('Settings', 'log_retries', fallback=True)
+LOG_UI_TRANSITIONS = config.getboolean('Settings', 'log_ui_transitions', fallback=False)
+LOG_SEARCH_QUERY = config.getboolean('Settings', 'log_search_query', fallback=True)
+LOG_SEARCH_RESULTS = config.getboolean('Settings', 'log_search_results', fallback=True)
+LOG_SEARCH_PARSING = config.getboolean('Settings', 'log_search_parsing', fallback=True)
+LOG_CSV_PROCESSING = config.getboolean('Settings', 'log_csv_processing', fallback=True)
+LOG_CLIENT_STATE = config.getboolean('Settings', 'log_client_state', fallback=True)
+LOG_PACKET_BUILD = config.getboolean('Settings', 'log_packet_build', fallback=True)
+LOG_PACKET_PARSE = config.getboolean('Settings', 'log_packet_parse', fallback=False)
+LOG_SYNC_STATE = config.getboolean('Settings', 'log_sync_state', fallback=True)
+LOG_SYNC_MD5 = config.getboolean('Settings', 'log_sync_md5', fallback=False)
+LOG_SYNC_FORMS = config.getboolean('Settings', 'log_sync_forms', fallback=False)
+LOG_CLIENT_PACKET = config.getboolean('Settings', 'log_client_packet', fallback=True)
+LOG_PACKET_INTEGRITY = config.getboolean('Settings', 'log_packet_integrity', fallback=True)
+LOG_FORM_DELETION = config.getboolean('Settings', 'log_form_deletion', fallback=True)
+LOG_SYNC_START = config.getboolean('Settings', 'log_sync_start', fallback=True)
+LOG_SYNC_COMPLETION = config.getboolean('Settings', 'log_sync_completion', fallback=True)
+LOG_PACKET_QUEUE = config.getboolean('Settings', 'log_packet_queue', fallback=True)
+LOG_CLIENT_QUEUE = config.getboolean('Settings', 'log_client_queue', fallback=True)
+LOG_UI_PACKET_HANDLING = config.getboolean('Settings', 'log_ui_packet_handling', fallback=True)
+LOG_QUEUE_STATE = config.getboolean('Settings', 'log_queue_state', fallback=True)
+LOG_STARTUP_ERRORS = config.getboolean('Settings', 'log_startup_errors', fallback=True)
+LOG_CONNECTION_ATTEMPTS = config.getboolean('Settings', 'log_connection_attempts', fallback=True)
+LOG_PACKET_DROP = config.getboolean('Settings', 'log_packet_drop', fallback=True)
+LOG_THREAD_STATE = config.getboolean('Settings', 'log_thread_state', fallback=True)
+LOG_FORM_FIELD_CREATION = config.getboolean('Settings', 'log_form_field_creation', fallback=True)
+LOG_FORM_PREVIEW = config.getboolean('Settings', 'log_form_preview', fallback=True)
+LOG_FIELD_POSITIONING = config.getboolean('Settings', 'log_field_positioning', fallback=False)
+LOG_TABLE_EDIT = config.getboolean('Settings', 'log_table_edit', fallback=True)
+LOG_FORM_SAVE = config.getboolean('Settings', 'log_form_save', fallback=True)
+LOG_UI_RENDER = config.getboolean('Settings', 'log_ui_render', fallback=True)
+LOG_FORM_SYNC_ERROR = config.getboolean('Settings', 'log_form_sync_error', fallback=True)
+LOG_PACKET_FRAGMENTS = config.getboolean('Settings', 'log_packet_fragments', fallback=True)
+LOG_SYNC_MISMATCHES = config.getboolean('Settings', 'log_sync_mismatches', fallback=True)
+LOG_FORMS_MANAGEMENT = config.getboolean('Settings', 'log_forms_management', fallback=True)
+LOG_KISS_FRAMING = config.getboolean('Settings', 'log_kiss_framing', fallback=True)    # CHANGE v2.9
+LOG_PACKET_TIMING = config.getboolean('Settings', 'log_packet_timing', fallback=True)  # CHANGE v2.9
+LOG_AX25_STATE = config.getboolean('Settings', 'log_ax25_state', fallback=True)       # CHANGE v2.9
+QUEUE_MAXSIZE = config.getint('Settings', 'queue_maxsize', fallback=100)
+
+packet_queue = queue.Queue(maxsize=QUEUE_MAXSIZE)
+
+if os.path.exists(LOG_FILE):
+    os.remove(LOG_FILE)
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format='%(asctime)s - %(message)s')
+log_event("Deleted old log file", ui=False)
+log_event(f"Initial packet_queue size: {packet_queue.qsize()}", ui=False, queue_state=True)
+
+# Chunk 2 v2.9 - Utility Functions
+def get_callsign(stdscr):  # Unchanged
+    global CALLSIGN
+    if not CALLSIGN:
+        while True:
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Enter Server Callsign (e.g., KC8QKU, required): ", curses.color_pair(2))
+            stdscr.refresh()
+            curses.echo()
+            CALLSIGN = stdscr.getstr(1, 0, 10).decode().strip().upper()
+            curses.noecho()
+            if CALLSIGN:
+                break
+            stdscr.addstr(2, 0, "Callsign cannot be empty. Try again.", curses.color_pair(1))
+            stdscr.refresh()
+            time.sleep(1)
+        config['Settings']['callsign'] = CALLSIGN
+        with open(CONFIG_FILE, 'w') as configfile:
+            config.write(configfile)
+    log_event("Callsign set to " + CALLSIGN, ui=False)
+    return CALLSIGN
+
+# Chunk 3 v2.9 - Form Sync Functions
+def hash_forms_dir():  # Unchanged
+    hasher = hashlib.md5()
+    for filename in sorted(glob.glob(os.path.join(FORMS_DIR, '*.txt'))):
+        with open(filename, 'rb') as f:
+            content = f.read()
+            hasher.update(content)
+        if LOG_SYNC_FORMS:
+            with open(filename, 'r') as f:
+                log_event("Hashing " + filename + ": " + f.read()[:50], ui=False, sync_forms=True)
+    return hasher.hexdigest()
+
+def check_forms_changed():  # Unchanged
+    global last_mtime
+    current_mtime = max([os.path.getmtime(f) for f in glob.glob(os.path.join(FORMS_DIR, '*.txt'))] or [0])
+    if current_mtime > last_mtime:
+        last_mtime = current_mtime
+        log_event("Forms directory changed, new mtime: " + str(current_mtime), ui=False, sync_state=LOG_FORM_SYNC)
+        return True
+    return False
+
+def update_forms_index():  # Unchanged
+    md5_hash = hash_forms_dir()
+    if LOG_FORM_SYNC and check_forms_changed():
+        log_event("Forms changed, new MD5: " + md5_hash, ui=False, sync_state=True)
+    return md5_hash
+
+def broadcast_forms_md5(stop_event):
+    global forms_md5
+    log_event("Starting broadcast_forms_md5 thread", ui=False, thread_state=LOG_FORM_SYNC)
+    while not stop_event.is_set():
+        start_time = time.time()
+        forms_md5 = update_forms_index()
+        log_event("Computed forms MD5: " + forms_md5, ui=False, sync_state=LOG_FORM_SYNC)
+        packet = f"0{CALLSIGN}>ALL:MD5|{CALLSIGN}|NONE|{forms_md5}\n"  # CHANGE v2.9: Added AX.25 header
+        if LOG_PACKET_BUILD:
+            log_event("Built MD5 packet: " + packet.strip(), ui=False, packet_build=True)
+        log_comms(packet.strip())
+        kiss_frame = b'\xC0' + packet.encode() + b'\xC0'  # CHANGE v2.9: KISS framing
+        if LOG_KISS_FRAMING:
+            log_event(f"KISS frame built: {kiss_frame.hex()}", ui=False, kiss_framing=True)
+        with clients_lock:
+            active_clients = []
+            now = time.time()
+            for callsign, last_data_time in clients[:]:
+                if now - last_data_time < CLIENT_TIMEOUT:
+                    active_clients.append((callsign, last_data_time))
+                    last_sent = last_broadcast.get(callsign, 0)
+                    if now - last_sent < 10:
+                        if LOG_SYNC_STATE:
+                            log_event(f"Skipping MD5 broadcast to {callsign} (debounced)", ui=False, sync_state=True)
+                        continue
+                    try:
+                        kiss_socket.send(kiss_frame)
+                        last_broadcast[callsign] = now
+                        if LOG_SOCKET_STATE:
+                            log_event(f"Broadcast to {callsign} successful", ui=False, socket_state=True)
+                        if LOG_PACKET_TIMING:
+                            log_event(f"MD5 packet sent to {callsign} at {time.time()}", ui=False, packet_timing=True)
+                    except Exception as e:
+                        log_event(f"Broadcast to {callsign} failed: {e}", ui=False, segment_failure=True)
+            clients[:] = active_clients
+        log_event(f"Post-broadcast packet_queue size: {packet_queue.qsize()}", ui=False, queue_state=True)
+        elapsed = time.time() - start_time
+        time.sleep(max(0, BROADCAST_INTERVAL - elapsed))
+
+# Chunk 4 v2.9 - AX.25 Handling (replaces handle_client)
+def handle_ax25(stop_event):
+    global kiss_socket
+    log_event("Starting handle_ax25 thread", ui=False, thread_state=True)
+    kiss_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        kiss_socket.connect((FAKE_DIREWOLF_HOST, FAKE_DIREWOLF_PORT))
+        log_event(f"Connected to Fake Direwolf at {FAKE_DIREWOLF_HOST}:{FAKE_DIREWOLF_PORT}", ui=False, ax25_state=True)
+    except Exception as e:
+        log_event(f"Failed to connect to Fake Direwolf: {e}", ui=False, startup_errors=True)
+        stop_event.set()
+        return
+    buffer = b""
+    segments = {}
+    while not stop_event.is_set():
+        readable, _, _ = select.select([kiss_socket], [], [], 1.0)
+        if readable:
+            try:
+                data = kiss_socket.recv(512)
+                if not data:
+                    raise ConnectionError("Fake Direwolf disconnected")
+                buffer += data
+                if LOG_PACKET_TIMING:
+                    log_event(f"Data received from Fake Direwolf at {time.time()}", ui=False, packet_timing=True)
+                while b'\xC0' in buffer[1:]:
+                    start = buffer.find(b'\xC0')
+                    end = buffer.find(b'\xC0', start + 1)
+                    if end == -1:
+                        break
+                    frame = buffer[start:end + 1]
+                    buffer = buffer[end + 1:]
+                    if LOG_KISS_FRAMING:
+                        log_event(f"KISS frame received: {frame.hex()}", ui=False, kiss_framing=True)
+                    packet = frame[1:-1].decode().strip()  # Strip KISS delimiters
+                    log_comms(packet)
+                    if LOG_CLIENT_PACKET:
+                        log_event(f"Raw packet: {packet[:50]}", ui=False, client_packet=True)
+                    if not '>' in packet.split('|', 1)[0]:
+                        log_event(f"Malformed AX.25 header in packet: {packet[:50]}", ui=False, segment_failure=True)
+                        continue
+                    header, payload = packet.split(':', 1)
+                    src_callsign = header.split('>')[0][1:]  # Strip leading '0'
+                    parts = payload.split('|', 3)
+                    if len(parts) != 4:
+                        log_event(f"Malformed packet payload: {payload[:50]}", ui=False, segment_failure=True)
+                        continue
+                    function, callsign, form_id, payload_content = parts
+                    last_data_time = time.time()
+                    with clients_lock:
+                        if callsign not in [c[0] for c in clients]:
+                            clients.append((callsign, last_data_time))
+                        else:
+                            for i, (cs, _) in enumerate(clients):
+                                if cs == callsign:
+                                    clients[i] = (cs, last_data_time)
+                                    break
+                    packet_queue.put_nowait((callsign, packet, last_data_time))
+                    if LOG_PACKET_QUEUE:
+                        log_event(f"Enqueued packet from {callsign}: {packet[:50]}", ui=False, packet_queue=True)
+            except Exception as e:
+                log_event(f"AX.25 error: {e}", ui=False, segment_failure=True)
+                break
+        time.sleep(0.1)
+    kiss_socket.close()
+    log_event("Fake Direwolf connection closed", ui=False, ax25_state=True)
+
+# Commented out TCP handle_client - CHANGE v2.9
+"""
+# Chunk 4 v2.8 - Submission Handling
+def handle_client(client_socket, address):
+    log_event("Client connected: " + str(address), ui=False)
+    # ... [rest of handle_client code from v2.8] ...
+    log_event("Client disconnected: " + str(address), ui=False)
+"""
+
+# Chunk 5 v2.9 - Forms Management Utils
+def load_form_data(form_id):  # Unchanged
+    file_path = os.path.join(FORMS_DIR, form_id + ".txt")
+    if not os.path.exists(file_path):
+        log_event("Form file not found: " + file_path, ui=False)
+        return None
+    form_data = {'desc': '', 'fields': {}}
+    with open(file_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith('desc:'):
+                form_data['desc'] = line.split(':', 1)[1]
+            else:
+                fid, label, row, col, length = line.split(',')
+                form_data['fields'][fid] = {
+                    'label': label,
+                    'row': int(row),
+                    'col': int(col),
+                    'len': int(length)
+                }
+    return form_data
+
+def create_form(form_id, desc, fields):  # Unchanged
+    file_path = os.path.join(FORMS_DIR, form_id + ".txt")
+    with open(file_path, 'w') as f:
+        f.write("desc:" + desc + "\n")
+        for fid, field in fields.items():
+            f.write(fid + "," + field['label'] + "," + str(field['row']) + "," + str(field['col']) + "," + str(field['len']) + "\n")
+    log_event("Created/Updated form: " + form_id, ui=False)
+
+# Chunk 6 v2.9 - People.csv Initialization
+def init_people_csv():  # Unchanged
+    people_file = os.path.join(DATA_DIR, 'people.csv')
+    if not os.path.exists(people_file) or os.path.getsize(people_file) == 0:
+        log_event("Seeding " + people_file + " with initial data", ui=False)
+        with open(people_file, 'w') as f:
+            f.write("id,name\n")
+            f.write("P001,John Doe\n")
+            f.write("P002,Jane Smith\n")
+            f.write("P003,Alice Johnson\n")
+            f.write("P004,Bob Brown\n")
+            f.write("P005,Carol White\n")
+            f.write("P006,David Green\n")
+        log_event("Seeded " + people_file + " with 6 entries", ui=False)
+
+# Chunk 7 v2.9 - UI Colors
+def init_colors():  # Unchanged
+    log_event("Initializing colors", ui=False)
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    return 1, 2, 3, 4
+
+# Chunk 8 v2.9 - Forms Management Screen
+def forms_management_screen(stdscr):  # Unchanged from v2.8
+    curses.curs_set(0)
+    stdscr.nodelay(True)
+    selection = 0
+    screen_dirty = True
+    if LOG_UI_TRANSITIONS:
+        log_event("Entering Forms Management", ui=False, ui_transitions=True)
+    while True:
+        all_files = glob.glob(os.path.join(FORMS_DIR, '*.txt'))
+        forms = sorted([os.path.basename(f) for f in all_files if not f.endswith('forms_index.json.txt')])
+        if LOG_FORMS_MANAGEMENT:
+            log_event(f"Forms detected: {forms}", ui=False, forms_management=True)
+        if screen_dirty:
+            stdscr.clear()
+            RED, GREEN, _, LIGHT_BLUE = init_colors()
+            max_y, max_x = stdscr.getmaxyx()
+            border = "=" * (max_x - 2)
+            stdscr.addstr(0, 0, border, curses.color_pair(RED))
+            stdscr.addstr(1, 2, "Forms Management", curses.color_pair(LIGHT_BLUE))
+            stdscr.addstr(2, 2, "Current Forms:", curses.color_pair(LIGHT_BLUE))
+            for i, form in enumerate(forms[:15], start=3):
+                form_name = form[:-4]
+                if i - 3 == selection:
+                    stdscr.addstr(i, 4, form_name, curses.color_pair(GREEN) | curses.A_REVERSE)
+                else:
+                    stdscr.addstr(i, 4, form_name, curses.color_pair(GREEN))
+            if forms and selection < len(forms):
+                form_id = forms[selection][:-4]
+                form_data = load_form_data(form_id)
+                if form_data:
+                    stdscr.addstr(2, 40, "Form: " + form_id, curses.color_pair(LIGHT_BLUE))
+                    stdscr.addstr(3, 40, "Desc: " + form_data['desc'][:36], curses.color_pair(GREEN))
+                    stdscr.addstr(4, 40, "ID:Label (Row,Col,Len)", curses.color_pair(LIGHT_BLUE))
+                    line = 5
+                    for fid, field in sorted(form_data['fields'].items()):
+                        if line < 18:
+                            text = fid + ":" + field['label'] + " (" + str(field['row']) + "," + str(field['col']) + "," + str(field['len']) + ")"
+                            stdscr.addstr(line, 42, text[:36], curses.color_pair(GREEN))
+                            line += 1
+            options_text = "(C)reate (E)dit (D)elete E(s)c"
+            start_x = (max_x - len(options_text)) // 2
+            stdscr.addstr(max_y - 2, start_x, options_text, curses.color_pair(GREEN))
+            stdscr.addstr(max_y - 1, 0, border, curses.color_pair(RED))
+            stdscr.refresh()
+            screen_dirty = False
+            if LOG_UI_RENDER:
+                log_event("Rendered forms management screen", ui=False, ui_render=True)
+        char = stdscr.getch()
+        if char == -1:
+            continue
+        if char == curses.KEY_UP and selection > 0:
+            selection -= 1
+            screen_dirty = True
+        elif char == curses.KEY_DOWN and selection < len(forms) - 1 and selection < 14:
+            selection += 1
+            screen_dirty = True
+        elif char == ord('c') or char == ord('C'):
+            form_edit_screen(stdscr, None)
+            screen_dirty = True
+        elif char == 10 and forms:
+            form_id = forms[selection][:-4]
+            form_edit_screen(stdscr, form_id)
+            screen_dirty = True
+        elif char == ord('d') or char == ord('D') and forms:
+            form_id = forms[selection][:-4]
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Delete Form: " + form_id, curses.color_pair(LIGHT_BLUE))
+            stdscr.addstr(2, 2, "Confirm Delete (Y/N)? ", curses.color_pair(GREEN))
+            stdscr.refresh()
+            stdscr.nodelay(False)
+            char = stdscr.getch()
+            stdscr.nodelay(True)
+            if char == ord('y') or char == ord('Y'):
+                delete_form(form_id)
+            screen_dirty = True
+        elif char == 27:
+            if LOG_UI_TRANSITIONS:
+                log_event("Exiting Forms Management", ui=False, ui_transitions=True)
+            return
+
+# Chunk 9 v2.9 - Form Edit Screen
+def form_edit_screen(stdscr, form_id):  # Unchanged from v2.8
+    curses.curs_set(0)
+    stdscr.nodelay(True)
+    screen_dirty = True
+    RED, GREEN, _, LIGHT_BLUE = init_colors()
+    max_y, max_x = stdscr.getmaxyx()
+    cursor_row, cursor_col = 3, 13
+    table = defaultdict(lambda: {'label': ''})
+    if form_id:
+        form_data = load_form_data(form_id)
+        if form_data:
+            table[(3, 13)] = {'label': form_id}
+            table[(3, 49)] = {'label': form_data['desc']}
+            for fid, field in sorted(form_data['fields'].items(), key=lambda x: (x[1]['row'], x[1]['col'])):
+                row = field['row'] + 1 if field['row'] > 3 else field['row']
+                col = 13 if field['col'] == 12 else 49
+                table[(row, col)] = {'label': field['label']}
+    else:
+        table[(3, 13)] = {'label': '(Form ID)'}
+        table[(3, 49)] = {'label': '(Form Description)'}
+    if LOG_UI_TRANSITIONS:
+        log_event("Entering Form Edit for " + (form_id or 'new form'), ui=False, ui_transitions=True)
+    while True:
+        if screen_dirty:
+            stdscr.clear()
+            border = "=" * (max_x - 2)
+            stdscr.addstr(0, 0, border, curses.color_pair(RED))
+            for row in range(3, 18):
+                left = table[(row, 13)]['label']
+                right = table[(row, 49)]['label']
+                stdscr.addstr(row, 13, "[", curses.color_pair(GREEN))
+                stdscr.addstr(row, 14, left[:34].ljust(34), curses.color_pair(GREEN if row > 3 else LIGHT_BLUE))
+                stdscr.addstr(row, 48, "]", curses.color_pair(GREEN))
+                stdscr.addstr(row, 49, "[", curses.color_pair(GREEN))
+                stdscr.addstr(row, 50, right[:29].ljust(29), curses.color_pair(GREEN if row > 3 else LIGHT_BLUE))
+                stdscr.addstr(row, 79, "]", curses.color_pair(GREEN))
+                if row == cursor_row:
+                    stdscr.addstr(row, cursor_col, '■', curses.color_pair(GREEN))
+            stdscr.addstr(max_y - 2, 2, "= Arrows/Tab/Shift-Tab=Move D=Delete S=Submit C=Cancel =", curses.color_pair(GREEN))
+            stdscr.addstr(max_y - 1, 0, border, curses.color_pair(RED))
+            stdscr.refresh()
+            screen_dirty = False
+            if LOG_FORM_PREVIEW:
+                log_event(f"Table preview: {dict(table)}", ui=False, form_preview=True)
+            if LOG_UI_RENDER:
+                log_event(f"Rendered form edit screen for {form_id or 'new form'}", ui=False, ui_render=True)
+        char = stdscr.getch()
+        if char == -1:
+            time.sleep(0.05)
+            continue
+        if char == curses.KEY_UP and cursor_row > 3:
+            cursor_row -= 1
+            screen_dirty = True
+        elif char == curses.KEY_DOWN and cursor_row < 17:
+            cursor_row += 1
+            screen_dirty = True
+        elif char == curses.KEY_RIGHT and cursor_col == 13:
+            cursor_col = 49
+            screen_dirty = True
+        elif char == curses.KEY_LEFT and cursor_col == 49:
+            cursor_col = 13
+            screen_dirty = True
+        elif char == 9:
+            if cursor_col == 13 and cursor_row < 17:
+                cursor_col = 49
+            elif cursor_col == 49 and cursor_row < 17:
+                cursor_col = 13
+                cursor_row += 1
+            elif cursor_row == 17:
+                cursor_col = 13
+                cursor_row = 3
+            screen_dirty = True
+        elif char == curses.KEY_BTAB:
+            if cursor_col == 49 and cursor_row > 3:
+                cursor_col = 13
+            elif cursor_col == 13 and cursor_row > 3:
+                cursor_col = 49
+                cursor_row -= 1
+            elif cursor_row == 3:
+                cursor_col = 49
+                cursor_row = 17
+            screen_dirty = True
+        elif char == 10:
+            stdscr.nodelay(False)
+            curses.curs_set(1)
+            col_name = 'L' if cursor_col == 13 else 'R'
+            current_label = table[(cursor_row, cursor_col)]['label']
+            max_len = 34 if col_name == 'L' else 29
+            stdscr.addstr(cursor_row, cursor_col + 1, " " * max_len, curses.color_pair(GREEN))
+            curses.echo()
+            new_label = stdscr.getstr(cursor_row, cursor_col + 1, max_len).decode().strip()
+            curses.noecho()
+            if new_label and new_label not in ['(Form ID)', '(Form Description)']:
+                table[(cursor_row, cursor_col)] = {'label': new_label}
+                if LOG_TABLE_EDIT:
+                    log_event(f"Edited {col_name} at row {cursor_row}, col {cursor_col} to '{new_label}'", ui=False, table_edit=True)
+            elif not new_label and current_label in ['(Form ID)', '(Form Description)']:
+                table[(cursor_row, cursor_col)] = {'label': current_label}
+            stdscr.nodelay(True)
+            curses.curs_set(0)
+            screen_dirty = True
+        elif char == ord('d') or char == ord('D'):
+            if table[(cursor_row, cursor_col)]['label'] not in ['(Form ID)', '(Form Description)']:
+                col_name = 'L' if cursor_col == 13 else 'R'
+                old_label = table[(cursor_row, cursor_col)]['label']
+                del table[(cursor_row, cursor_col)]
+                if LOG_TABLE_EDIT:
+                    log_event(f"Deleted {col_name} at row {cursor_row}, col {cursor_col} (was '{old_label}')", ui=False, table_edit=True)
+                screen_dirty = True
+        elif char == ord('s') or char == ord('S'):
+            form_id_val = table[(3, 13)]['label']
+            form_desc = table[(3, 49)]['label']
+            if (form_id_val not in ['', '(Form ID)'] and
+                form_desc not in ['', '(Form Description)'] and
+                any(table[(r, c)]['label'] not in ['', '(Form ID)', '(Form Description)'] for r, c in table if r > 3)):
+                fields_dict = {}
+                for (row, col) in sorted(table.keys()):
+                    label = table[(row, col)]['label']
+                    if label and label not in ['(Form ID)', '(Form Description)']:
+                        fid = f"{'L' if col == 13 else 'R'}{row - 2:02d}"
+                        fields_dict[fid] = {
+                            'label': label.upper() if row == 3 else label,
+                            'row': row,
+                            'col': 12 if col == 13 else 32,
+                            'len': 256
+                        }
+                create_form(form_id_val.upper(), form_desc.upper(), fields_dict)
+                if LOG_FORM_SAVE:
+                    log_event(f"Saved form {form_id_val.upper()} with fields: {fields_dict}", ui=False, form_save=True)
+                if LOG_UI_TRANSITIONS:
+                    log_event("Form " + form_id_val.upper() + " submitted, exiting edit", ui=False, ui_transitions=True)
+                return
+            screen_dirty = True
+        elif char == 27 or char == ord('c') or char == ord('C'):
+            if LOG_UI_TRANSITIONS:
+                log_event("Form edit cancelled", ui=False, ui_transitions=True)
+            return
+
+# Chunk 10 v2.9 - Update UI
+def update_ui(stdscr):
+    global screen_dirty, show_menu, menu_selection
+    if not screen_dirty:
+        return
+    max_y, max_x = stdscr.getmaxyx()
+    stdscr.clear()
+    border = "=" * (max_x - 2)
+    stdscr.addstr(0, 0, border, curses.color_pair(1))
+    stdscr.addstr(1, 2, "Packet Radio Server Status", curses.color_pair(4))
+    stdscr.addstr(2, 2, "Recent Clients:", curses.color_pair(4))
+    with clients_lock:
+        now = time.time()
+        clients[:] = [(cs, ls) for cs, ls in clients if now - ls < CLIENT_TIMEOUT]  # CHANGE v2.9: Simplified client list
+        for i, (callsign, last_data_time) in enumerate(clients[:max_y-4], start=3):
+            timestamp = datetime.fromtimestamp(last_data_time).strftime('%H:%M:%S')
+            display = f"{callsign} - {timestamp}"
+            stdscr.addstr(i, 4, display[:max_x//2-6], curses.color_pair(2))
+    log_x = max_x // 2 + 1
+    stdscr.addstr(1, log_x, "Comms Log", curses.color_pair(4))
+    stdscr.addstr(2, log_x, "=" * ((max_x - log_x - 1) // 2), curses.color_pair(1))
+    for i, (msg, ts) in enumerate(comms_log[-(max_y-5):], start=3):
+        if i < max_y-2:
+            stdscr.addstr(i, log_x, (msg[:max_x-log_x-1] + " - " + ts)[:max_x-log_x-1], curses.color_pair(2))
+    stdscr.addstr(max_y-1, 0, border, curses.color_pair(1))
+    stdscr.addstr(max_y-2, 2, "= Press Q to Quit D=Menu =", curses.color_pair(2))
+    if show_menu:
+        menu_width = 22
+        menu_height = 8
+        menu_y = (max_y - menu_height) // 2
+        menu_x = (max_x - menu_width) // 2
+        options = [("Main Screen", True), ("Forms Management", True), ("Quit", True)]
+        stdscr.addstr(menu_y, menu_x, "+====================+", curses.color_pair(1))
+        for i, (opt, active) in enumerate(options):
+            color = 2 if active else 1
+            if i == menu_selection:
+                stdscr.addstr(menu_y + 1 + i, menu_x, "| " + opt.ljust(18) + " |", curses.color_pair(color) | curses.A_REVERSE)
+            else:
+                stdscr.addstr(menu_y + 1 + i, menu_x, "| " + opt.ljust(18) + " |", curses.color_pair(color))
+        stdscr.addstr(menu_y + 4, menu_x, "| Up/Down=Move       |", curses.color_pair(2))
+        stdscr.addstr(menu_y + 5, menu_x, "| Enter=Sel Esc=Back |", curses.color_pair(2))
+        stdscr.addstr(menu_y + 6, menu_x, "+====================+", curses.color_pair(1))
+    stdscr.refresh()
+    screen_dirty = False
+    if LOG_UI_RENDER:
+        global last_ui_render_log
+        if 'last_ui_render_log' not in globals():
+            last_ui_render_log = 0
+        now = time.time()
+        if now - last_ui_render_log >= 1.0:
+            log_event("Rendered main UI screen", ui=False, ui_render=True)
+            last_ui_render_log = now
+
+# Commented out TCP accept_clients - CHANGE v2.9
+"""
+# Chunk 11 v2.8 - Server Comms
+def accept_clients(server, stop_event):
+    log_event("Starting accept_clients thread", ui=False, thread_state=True)
+    # ... [rest of accept_clients code from v2.8] ...
+"""
+
+# Chunk 12 v2.9 - Main Loop
+def main(stdscr):
+    global CALLSIGN, screen_dirty, show_menu, menu_selection, kiss_socket
+    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(FORMS_DIR, exist_ok=True)
+    CALLSIGN = get_callsign(stdscr)
+    RED, GREEN, YELLOW, LIGHT_BLUE = init_colors()
+    stdscr.clear()
+    stdscr.nodelay(True)
+    stdscr.refresh()
+    log_event(f"Server starting with AX.25 on {FAKE_DIREWOLF_HOST}:{FAKE_DIREWOLF_PORT} (v{VERSION})", ui=False, ax25_state=True)
+    init_people_csv()
+    stop_event = threading.Event()
+    broadcast_thread = threading.Thread(target=broadcast_forms_md5, args=(stop_event,))
+    broadcast_thread.daemon = True
+    broadcast_thread.start()
+    if LOG_THREAD_STATE:
+        log_event("Broadcast thread started", ui=False, thread_state=True)
+    ax25_thread = threading.Thread(target=handle_ax25, args=(stop_event,))
+    ax25_thread.daemon = True
+    ax25_thread.start()
+    if LOG_THREAD_STATE:
+        log_event("AX.25 thread started", ui=False, thread_state=True)
+    if LOG_UI_TRANSITIONS:
+        log_event("Entering main UI loop", ui=False, ui_transitions=True)
+    while True:
+        update_ui(stdscr)
+        char = stdscr.getch()
+        if char == ord('q') or char == ord('Q') and not show_menu:
+            log_event("Quitting via Q", ui=False)
+            stop_event.set()
+            kiss_socket.close()
+            log_event("Server shutdown complete", ui=False, ax25_state=True)
+            if LOG_UI_TRANSITIONS:
+                log_event("Exiting main UI loop", ui=False, ui_transitions=True)
+            break
+        elif char == ord('d') or char == ord('D'):
+            show_menu = not show_menu
+            menu_selection = 0
+            screen_dirty = True
+            if LOG_UI_TRANSITIONS:
+                log_event("Menu toggled: " + str(show_menu), ui=False, ui_transitions=True)
+        elif show_menu:
+            if char == curses.KEY_UP and menu_selection > 0:
+                menu_selection -= 1
+                screen_dirty = True
+            elif char == curses.KEY_DOWN and menu_selection < 2:
+                menu_selection += 1
+                screen_dirty = True
+            elif char == 10:
+                if menu_selection == 0:
+                    show_menu = False
+                    if LOG_UI_TRANSITIONS:
+                        log_event("Returning to Main Screen", ui=False, ui_transitions=True)
+                elif menu_selection == 1:
+                    forms_management_screen(stdscr)
+                elif menu_selection == 2:
+                    log_event("Quitting via menu", ui=False)
+                    stop_event.set()
+                    kiss_socket.close()
+                    log_event("Server shutdown complete", ui=False, ax25_state=True)
+                    if LOG_UI_TRANSITIONS:
+                        log_event("Exiting via menu quit", ui=False, ui_transitions=True)
+                    break
+                screen_dirty = True
+            elif char == 27:
+                show_menu = False
+                screen_dirty = True
+                if LOG_UI_TRANSITIONS:
+                    log_event("Escaping menu to Main Screen", ui=False, ui_transitions=True)
+        if not show_menu or menu_selection != 1:
+            while not packet_queue.empty():
+                try:
+                    callsign, packet, last_data_time = packet_queue.get_nowait()  # CHANGE v2.9: Simplified tuple
+                    if LOG_PACKET_QUEUE:
+                        log_event(f"Dequeued packet from {callsign}: {packet[:50]}", ui=False, packet_queue=True)
+                    if LOG_UI_PACKET_HANDLING:
+                        log_event(f"UI handling packet from {callsign}: {packet[:50]}", ui=False, ui_packet_handling=True)
+                    if LOG_QUEUE_STATE:
+                        log_event(f"Queue state after dequeue: size={packet_queue.qsize()}, empty={packet_queue.empty()}", ui=False, queue_state=True)
+                    header, payload = packet.split(':', 1)
+                    parts = payload.split('|', 3)
+                    if len(parts) != 4:
+                        log_event(f"Malformed packet: {payload[:50]}", ui=False, segment_failure=True)
+                        continue
+                    function, _, form_id, payload_content = parts  # Ignore callsign in payload, use header
+                    if function == 'INSERT':
+                        log_event(f"Received INSERT from {callsign} for {form_id}: {payload_content[:50]}", ui=False, submissions=True)
+                        if ':' in payload_content[:5]:
+                            seq, total = map(int, payload_content.split('|', 1)[0].split(':'))
+                            payload_content = payload_content.split('|', 1)[1]
+                            key = callsign + ":" + form_id
+                            segments.setdefault(key, {})[seq] = payload_content
+                            log_event(f"Stored segment {seq}/{total} for {key}", ui=False, submissions=True)
+                            if LOG_PACKET_FRAGMENTS:
+                                log_event(f"Fragment {seq}/{total} stored for {key}: {payload_content[:50]}", ui=False, packet_fragments=True)
+                            if len(segments[key]) == total:
+                                full_payload = ''.join(segments[key][i] for i in sorted(segments[key]))
+                                csv_path = os.path.join(DATA_DIR, form_id + "_submissions.csv")
+                                os.makedirs(DATA_DIR, exist_ok=True)
+                                with open(csv_path, 'a') as f:
+                                    f.write(f"{int(time.time())},{callsign},{full_payload}\n")
+                                log_event(f"Submission saved to {csv_path}", ui=False, submissions=True)
+                                response = f"0{CALLSIGN}>{callsign}:ACK|{CALLSIGN}|{form_id}|SUCCESS\n"
+                                kiss_frame = b'\xC0' + response.encode() + b'\xC0'
+                                kiss_socket.send(kiss_frame)
+                                log_comms(response.strip())
+                                if LOG_PACKET_BUILD:
+                                    log_event(f"Built ACK packet: {response.strip()}", ui=False, packet_build=True)
+                                if LOG_KISS_FRAMING:
+                                    log_event(f"KISS frame sent: {kiss_frame.hex()}", ui=False, kiss_framing=True)
+                                if LOG_PACKET_TIMING:
+                                    log_event(f"ACK sent to {callsign} at {time.time()}", ui=False, packet_timing=True)
+                                del segments[key]
+                        else:
+                            csv_path = os.path.join(DATA_DIR, form_id + "_submissions.csv")
+                            os.makedirs(DATA_DIR, exist_ok=True)
+                            with open(csv_path, 'a') as f:
+                                f.write(f"{int(time.time())},{callsign},{payload_content}\n")
+                            log_event(f"Submission saved to {csv_path}", ui=False, submissions=True)
+                            response = f"0{CALLSIGN}>{callsign}:ACK|{CALLSIGN}|{form_id}|SUCCESS\n"
+                            kiss_frame = b'\xC0' + response.encode() + b'\xC0'
+                            kiss_socket.send(kiss_frame)
+                            log_comms(response.strip())
+                            if LOG_PACKET_BUILD:
+                                log_event(f"Built ACK packet: {response.strip()}", ui=False, packet_build=True)
+                            if LOG_KISS_FRAMING:
+                                log_event(f"KISS frame sent: {kiss_frame.hex()}", ui=False, kiss_framing=True)
+                            if LOG_PACKET_TIMING:
+                                log_event(f"ACK sent to {callsign} at {time.time()}", ui=False, packet_timing=True)
+                    elif function == 'SEARCH':
+                        if LOG_SEARCH_QUERY:
+                            log_event(f"Received search from {callsign}: {payload[:50]}", ui=False, search_query=True)
+                        search_fields = {}
+                        for pair in payload_content.split('|'):
+                            if not pair:
+                                if LOG_SEARCH_PARSING:
+                                    log_event("Skipping empty pair in payload", ui=False, search_parsing=True)
+                                continue
+                            key = pair[:2]
+                            value = pair[2:] if len(pair) > 2 else ""
+                            search_fields[key] = value
+                            if LOG_SEARCH_PARSING:
+                                log_event(f"Parsed field: {key}='{value}'", ui=False, search_parsing=True)
+                        csv_path = os.path.join(DATA_DIR, form_id + "_submissions.csv")
+                        matches = []
+                        if os.path.exists(csv_path):
+                            with open(csv_path, 'r') as f:
+                                for line in f:
+                                    _, _, row_payload = line.strip().split(',', 2)
+                                    if LOG_CSV_PROCESSING:
+                                        log_event(f"Processing CSV row: {row_payload[:50]}", ui=False, csv_processing=True)
+                                    fields = {}
+                                    for field in row_payload.split('|'):
+                                        if field:
+                                            fields[field[:2]] = field[2:] if len(field) > 2 else ""
+                                            if LOG_CSV_PROCESSING:
+                                                log_event(f"Parsed CSV field: {field[:2]}='{fields[field[:2]]}'", ui=False, csv_processing=True)
+                                    match = all(fields.get(k, '') == v for k, v in search_fields.items() if v)
+                                    if match:
+                                        matches.append(row_payload)
+                                    if LOG_CSV_PROCESSING:
+                                        log_event(f"Match check for {str(search_fields)}: {'Yes' if match else 'No'}", ui=False, csv_processing=True)
+                        response = f"0{CALLSIGN}>{callsign}:SEARCH_RESULT|{CALLSIGN}|{form_id}|{'~'.join(matches)}\n"
+                        kiss_frame = b'\xC0' + response.encode() + b'\xC0'
+                        kiss_socket.send(kiss_frame)
+                        log_comms(response.strip())
+                        if LOG_SEARCH_RESULTS:
+                            log_event(f"Sent search results to {callsign}: {response[:50]}", ui=False, search_results=True)
+                        if LOG_PACKET_BUILD:
+                            log_event(f"Built SEARCH_RESULT packet: {response.strip()}", ui=False, packet_build=True)
+                        if LOG_KISS_FRAMING:
+                            log_event(f"KISS frame sent: {kiss_frame.hex()}", ui=False, kiss_framing=True)
+                        if LOG_PACKET_TIMING:
+                            log_event(f"SEARCH_RESULT sent to {callsign} at {time.time()}", ui=False, packet_timing=True)
+                    elif function == 'UPDATE':
+                        if LOG_SYNC_STATE:
+                            log_event(f"Received UPDATE from {callsign}: {payload_content[:50]}", ui=False, sync_state=True)
+                        syncing_clients.add(callsign)  # CHANGE v2.9: Use callsign instead of address
+                        if LOG_SYNC_START:
+                            log_event(f"Sync started for {callsign}", ui=False, sync_start=True)
+                        client_forms = {}
+                        for pair in payload_content.split('|'):
+                            if ':' in pair:
+                                fname, fhash = pair.split(':', 1)
+                                client_forms[fname] = fhash
+                                if LOG_SYNC_FORMS:
+                                    log_event(f"Client form {fname} hash: {fhash}", ui=False, sync_forms=True)
+                        server_forms = {}
+                        for fname in glob.glob(os.path.join(FORMS_DIR, '*.txt')):
+                            fname = os.path.basename(fname)[:-4]
+                            with open(os.path.join(FORMS_DIR, fname + ".txt"), 'rb') as f:
+                                server_hash = hashlib.md5(f.read()).hexdigest()
+                                server_forms[fname] = server_hash
+                            if LOG_SYNC_FORMS:
+                                log_event(f"Server form {fname} hash: {server_hash}", ui=False, sync_forms=True)
+                        for fname, server_hash in server_forms.items():
+                            if fname not in client_forms or client_forms[fname] != server_hash:
+                                with open(os.path.join(FORMS_DIR, fname + ".txt"), 'r') as f:
+                                    content = f.read().strip()
+                                content_replaced = content.replace('\n', '~')
+                                response = f"0{CALLSIGN}>{callsign}:FORM_UPDATE|{CALLSIGN}|{fname}|{content_replaced}\n"
+                                kiss_frame = b'\xC0' + response.encode() + b'\xC0'
+                                kiss_socket.send(kiss_frame)
+                                log_comms(response.strip())
+                                if LOG_PACKET_BUILD:
+                                    log_event(f"Built FORM_UPDATE packet: {response.strip()}", ui=False, packet_build=True)
+                                if LOG_FORM_SYNC:
+                                    log_event(f"Sent form update for {fname} to {callsign}", ui=False, sync_state=True)
+                                if LOG_KISS_FRAMING:
+                                    log_event(f"KISS frame sent: {kiss_frame.hex()}", ui=False, kiss_framing=True)
+                                if LOG_PACKET_TIMING:
+                                    log_event(f"FORM_UPDATE sent to {callsign} at {time.time()}", ui=False, packet_timing=True)
+                            if LOG_SYNC_MISMATCHES and client_forms.get(fname) != server_hash:
+                                log_event(f"MD5 mismatch: {fname} - client: {client_forms.get(fname, 'N/A')}, server: {server_hash}", ui=False, sync_mismatches=True)
+                        for fname in client_forms:
+                            if fname not in server_forms:
+                                response = f"0{CALLSIGN}>{callsign}:FORM_DELETE|{CALLSIGN}|{fname}|\n"
+                                kiss_frame = b'\xC0' + response.encode() + b'\xC0'
+                                kiss_socket.send(kiss_frame)
+                                log_comms(response.strip())
+                                if LOG_PACKET_BUILD:
+                                    log_event(f"Built FORM_DELETE packet: {response.strip()}", ui=False, packet_build=True)
+                                if LOG_FORM_DELETION:
+                                    log_event(f"Sent FORM_DELETE for {fname} to {callsign}", ui=False, form_deletion=True)
+                                if LOG_KISS_FRAMING:
+                                    log_event(f"KISS frame sent: {kiss_frame.hex()}", ui=False, kiss_framing=True)
+                                if LOG_PACKET_TIMING:
+                                    log_event(f"FORM_DELETE sent to {callsign} at {time.time()}", ui=False, packet_timing=True)
+                        syncing_clients.remove(callsign)
+                        if LOG_SYNC_COMPLETION:
+                            log_event(f"Sync completed for {callsign}", ui=False, sync_completion=True)
+                    packet_queue.task_done()
+                except queue.Empty:
+                    break
+        time.sleep(0.05)
+
+# Chunk 13 v2.9 - Design Goals and Statuses
+# DESIGN GOALS:
+# - v2.03.2: Fix comms_log NameError by moving globals above log_event - Done
+# - v2.03.3: Fix QUEUE_MAXSIZE NameError by moving packet_queue after config - Done
+# - v2.03.5: Add default callsign SVR001, show packets in UI, enhance logging for troubleshooting - Done
+# - v2.1: Add two-column form support with Lxx/Rxx field IDs in form_edit_screen - Done
+# - v2.2: Fix Lxx/Rxx pairing (e.g., L01/R01 per row), update preview to match client layout, add form troubleshooting logs - Done
+# - v2.3: Support uneven Lxx/Rxx columns, replace form_edit_screen with table-based UI, apply consistent theme - Done
+# - v2.4: Replace table UI with [ ] cells, integrate Form ID/Desc as L01/R01 (uppercased), use (L/R)(row#) IDs on save, maintain 15-row cap - Done
+# - v2.5: Update form_edit_screen UI (cols 13-48, 49-80), enforce Lxx/Rxx only, fix TYPE sync bug, restrict Comms Log to packets only, add troubleshooting logs (ui_render, form_sync_error, packet_fragments, sync_mismatches), throttle UI logging - Done
+# - v2.6: Fix col 80 overflow crash in form_edit_screen (80→79) - Done
+# - v2.8: Simplify forms_management_screen to list *.txt (exclude forms_index.json), apply shared theme (red borders, green text, cyan headers, centered options), add log_forms_management - Done
+# - v2.9: Replace TCP with AX.25 via Fake Direwolf (127.0.0.1:8051, configurable), add AX.25 headers (e.g., 0SVR001>ALL), use KISS framing, add logging (kiss_framing, packet_timing, ax25_state), comment out TCP code (handle_client, accept_clients) - Done  # CHANGE v2.9: New goals
+# - Future: Separate people.csv sync (MD5_people:)
+# - Future: Add options screen for config and logging control
+# CHANGES:
+# - v2.3: Updated VERSION to 2.3 (Chunk 1), added collections.defaultdict import (Chunk 1), rewrote form_edit_screen for table UI with uneven column support (Chunk 8), applied update_ui theme (red borders, green text, cyan headers) to form_edit_screen (Chunk 8), capped table at 15 rows (rows 3-17) with Form ID/Desc at top (Chunk 8), fixed typo in log_event ("dishonorificabilitudinitatibusfile" → "file") (Chunk 1), line count increased from 1215 to ~1250 (Chunk 13)
+# - v2.4: Rewrote form_edit_screen for [ ] cells (cols 12-48, 42-78), integrated Form ID/Desc as L01/R01 (uppercased), assigned (L/R)(row#) IDs (Chunk 8), added log_table_edit and log_form_save (Chunk 8), turned off log_ui_transitions by default (Chunk 1), line count increased from ~1250 to ~1275 (Chunk 13)
+# - v2.5: Updated VERSION to 2.5 (Chunk 1), added log_comms for packet-only Comms Log (Chunk 1), set log_event ui default to False (Chunk 1), updated all chunks to use log_comms for packets and ui=False elsewhere (Chunks 1-12), added log_ui_render, log_form_sync_error, log_packet_fragments, log_sync_mismatches with config toggles (Chunk 1), throttled update_ui logging to 1/sec (Chunk 10), fixed TYPE bug in FORM_UPDATE (Chunk 12), updated form_edit_screen UI to cols 13-48/49-80 (Chunk 9), turned off log_field_positioning (Chunk 1), split UI into 4 chunks (7-10), line count increased from ~1275 to ~1350 (Chunk 13)
+# - v2.6: Updated VERSION to 2.6 (Chunk 1), fixed col 80 overflow in form_edit_screen to 79 (Chunk 9), line count unchanged (Chunk 13)
+# - v2.8: Updated VERSION to 2.8 (Chunk 1), simplified forms_management_screen to use *.txt with exclusion of forms_index.json (Chunk 8), updated forms_management_screen UI with red borders, green text, cyan headers, centered options (Chunk 8), added log_forms_management to config and log_event (Chunk 1), line count increased from ~1350 to ~1370 (Chunk 13)
+# - v2.9: Updated VERSION to 2.9 (Chunk 1), replaced TCP with AX.25 via Fake Direwolf (Chunks 3, 4, 12), added Fake Direwolf config (127.0.0.1:8051) (Chunk 1), modified packets with AX.25 headers (e.g., 0SVR001>ALL) and KISS framing (Chunks 3, 12), added logging types (kiss_framing, packet_timing, ax25_state) with config toggles (Chunk 1), commented out TCP code (handle_client, accept_clients) (Chunks 4, 11), simplified clients list to callsign-based (Chunks 1, 10), line count increased from ~1370 to ~1420 due to AX.25 integration, logging, and comments (Chunk 13)  # CHANGE v2.9: Detailed updates
+
+backup_script()
+
+# Chunk 14 v2.9 - Entry Point
+if __name__ == "__main__":
+    try:
+        curses.wrapper(main)
+    except Exception as e:
+        with open(LOG_FILE, 'a') as f:
+            f.write(str(datetime.now()) + " - Fatal error: " + str(e) + " - traceback: " + traceback.format_exc() + "\n")
+        log_event("Startup failed: " + str(e), ui=False, startup_errors=True)
+        sys.exit(1)

@@ -1,0 +1,24 @@
+==============================================================================
+  Fake Direwolf Status - KISS Port: 8051
+  Local IP: 192.168.86.69 Peer Port: 8052
+  Peer Status: Connected to 192.168.86.49:56916
+  KISS Clients: 1
+  Status Updates:
+    17:51:33: Broadcast received: FAKE_DIREWOLF|192.168.86.49|8052 from 192.16
+    17:52:07: Broadcast sent: FAKE_DIREWOLF|192.168.86.69|8052
+    17:52:07: Broadcast received: FAKE_DIREWOLF|192.168.86.69|8052 from 192.16
+    17:52:17: Peer ('192.168.86.49', 52258) not responding
+    17:52:17: Connected to peer: ('192.168.86.49', 56916)
+  Recv Time  Deliv Time  Timestamp  Direction  Packet
+    17:34:13  17:34:13  17:34:13  From 0KC8QK to ?SVR00: <decode-error: 'ascii'
+    17:34:13  17:34:13  17:34:13  From 0SVR00 to ?KC8QK: <decode-error: 'ascii'
+    17:34:33  17:34:33  17:34:33  From 0SVR00 to ?ALL: <decode-error: 'ascii' c
+    17:35:33  17:35:33  17:35:33  From 0SVR00 to ?ALL: <decode-error: 'ascii' c 
+    17:36:33  17:36:33  17:36:33  From 0SVR00 to ?ALL: <decode-error: 'ascii' c
+    17:37:33  17:37:33  17:37:33  From 0SVR00 to ?ALL: <decode-error: 'ascii' c
+    17:38:33  17:38:33  17:38:33  From 0SVR00 to ?ALL: <decode-error: 'ascii' c
+    17:39:33  17:39:33  17:39:33  From 0SVR00 to ?ALL: <decode-error: 'ascii' c
+    17:40:33  17:40:33  17:40:33  From 0SVR00 to ?ALL: <decode-error: 'ascii' c
+    17:41:33  17:41:33  17:41:33  From 0SVR00 to ?ALL: <decode-error: 'ascii' c
+
+==============================================================================

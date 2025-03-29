@@ -1,0 +1,487 @@
+Server Revision History for server.py
+Generated: March 23, 2025
+Based on: server.py v4.0.0, prior revision logs (v1.7–v3.0.14), server_mini_revisions_20250322_v4.0.0.txt, update notes from 2025-03-17, 2025-03-18, 2025-03-20, 2025-03-22, and operational context from user interactions.
+
+Overview:
+This revision history tracks the development of server.py for the Packet Radio Terminal Project. It includes version updates, key changes, bug fixes, and notable issues, derived from code comments, manual notes, changelog entries, provided documents, and user interactions. Dates reflect file versions or explicit log references. User workflow: edits on Windows (G:\My Drive\Game Dev\terminal\Server scripts\), .txt suffix for safety, synced via Google Drive, deployed via SSH/nano to pi4.lan (/home/aprs/terminal/).
+
+---
+
+Version 1.7 (Pre-2025-03-07)
+Changes:
+- Initial TCP server setup with form sync (MD5_forms broadcast) and submission handling (I: packets to CSV).
+- Added global state management, utility functions, forms management utils, and early UI functions.
+Notes:
+- Foundation for AX.25 replacement of TCP; limited to basic functionality.
+
+Version 1.73 (Pre-2025-03-07)
+Changes:
+- Added people.csv initialization with seed data (6 entries).
+- Implemented saving of "I:" submissions to <form_id>_submissions.csv.
+Notes:
+- Enhanced data persistence; UI and sync mechanics unchanged.
+
+Version 1.85 (Pre-2025-03-07)
+Changes:
+- Improved form sync functions: hash_forms_dir() and broadcast_forms_md5() refined for stability.
+Notes:
+- Focused on reliable form synchronization over TCP.
+
+Version 1.88 (2025-03-08)
+Changes:
+- Simplified handle_client() packet parsing (replaced regex with I| split).
+- Added submission_payload and segment_failure logging options.
+Issues Fixed:
+- Regex parsing issues dropped for simpler split logic.
+Notes:
+- Log enhancements for better debugging; tested 2025-03-08. User archived as server_v1.88.txt.
+
+Version 1.89 (2025-03-08)
+Changes:
+- Updated VERSION to 1.89.
+- Added PACLEN (default 128) to config for AX.25 prep.
+- Added log_socket_state, log_retries, log_ui_transitions to config and log_event.
+- Moved init_colors to main() with return values.
+- Enhanced logging in broadcast_forms_md5, handle_client, accept_clients, main.
+- Backup logging kept always on.
+Notes:
+- Final 2025-03-08 release; stable TCP operation, AX.25 transition pending.
+
+Version 1.90 (2025-03-08)
+Changes:
+- Updated VERSION to 1.90.
+- Added search mode handling in handle_client with ~ delimiter.
+- Added log_search_query, log_search_results to config and log_event.
+Issues:
+- Search mode buggy—parsing incomplete.
+Notes:
+- Extended functionality for client search requests.
+
+Version 1.91 (2025-03-08)
+Changes:
+- Updated VERSION to 1.91.
+- Fixed search parsing crash in handle_client with explicit key-value extraction.
+- Added log_search_parsing, log_csv_processing, log_client_state to config and log_event.
+Issues Fixed:
+- Search mode parsing crash resolved.
+Notes:
+- Improved search reliability.
+
+Version 1.92 (2025-03-08)
+Changes:
+- Updated VERSION to 1.92.
+- Unified packet format to (function)|(callsign)|(formID)|(payload)\n across handle_client and broadcast_forms_md5.
+- Added log_packet_build, log_packet_parse, log_sync_state to config and log_event.
+- Simplified packet handling logic in handle_client.
+- Kept spammy logs off (packet_parsing, buffer_events, packet_content, payload_processing), backups always on.
+Notes:
+- Standardized communication protocol.
+
+Version 1.93 (2025-03-08)
+Changes:
+- Updated VERSION to 1.93.
+- Added log_sync_md5, log_sync_forms, log_client_packet to config and log_event for sync troubleshooting.
+- Enhanced hash_forms_dir with form content logging.
+- Added client packet logging in handle_client.
+Notes:
+- No functional changes for client crash (handled in client v2.94); logging improved for sync tracking.
+
+Version 1.94 (2025-03-09)
+Changes:
+- Updated VERSION to 1.94.
+- Modified handle_client to send FORM_UPDATE as single-line with ~ instead of \n.
+- Added log_packet_integrity to config and log_event for packet structure debugging.
+- Added packet integrity logging in handle_client for FORM_UPDATE sends.
+- Kept existing logging (sync_md5, sync_forms, client_packet) on, spammy logs off, backups always on.
+Issues Fixed:
+- FORM_UPDATE multi-line issue resolved with ~ delimiter.
+Notes:
+- Sync reliability enhanced; line count ~930.
+
+Version 1.95 (2025-03-09)
+Changes:
+- Updated VERSION to 1.95.
+- Fixed f-string backslash syntax error in handle_client by extracting ends_with_newline for Python 3.5 compatibility.
+- Fixed truncated elif in form_edit_screen from v1.94.
+- Line count increased from ~930 to ~940 with fix and comments.
+Issues Fixed:
+- SyntaxError: f-string expression part cannot include a backslash (line 286).
+- Form edit screen escape logic restored.
+Notes:
+- Tested on pi4.lan (Python 3.5); ensures compatibility with older systems.
+
+Version 1.97 (2025-03-09)
+Changes:
+- Updated VERSION to 1.97.
+- Fixed all remaining f-string backslash issues in handle_client for FORM_UPDATE and logging.
+- Line count increased from ~940 to ~950 with fixes and comments.
+Notes:
+- Full Python 3.5 compatibility achieved.
+
+Version 2.00 (2025-03-09)
+Changes:
+- Updated VERSION to 2.00.
+- Added FORM_DELETE sending in handle_client under UPDATE to remove deleted forms from client.
+- Added log_form_deletion to config and log_event for troubleshooting.
+- Line count increased from 950 to 970 with new logging and FORM_DELETE handling.
+Notes:
+- Deletion sync implemented; tested with client v3.00.
+
+Version 2.01 (2025-03-09, Manual Update 2025-03-14)
+Changes:
+- Forced MD5 recalculation in broadcast_forms_md5 to ensure deletions sync reliably—removed check_forms_changed() dependency.
+- VERSION remains 2.00 in code (forgot to bump).
+- Noted FORM_DELETE sends bogus |1| and |2| from misparsing UPDATE segment markers, deemed reliable despite messiness.
+- Line count steady at ~970.
+Issues Fixed:
+- MD5 not updating post-deletion (e.g., LG01 at 18:30:53)—forced recalculation ensures sync (tested 18:41:43).
+Notes:
+- Live fix from 2025-03-09 logs; user opts for messy but working state.
+
+Version 2.03.2 (2025-03-09)
+Changes:
+- Updated VERSION to 2.03.2.
+- Fixed comms_log NameError by moving globals (comms_log, screen_dirty, etc.) above log_event.
+- Line count increased from ~970 to ~1000 with comments and reorganization.
+Issues Fixed:
+- NameError: name 'comms_log' is not defined in log_event calls prior to global declaration.
+Notes:
+- Structural fix for UI logging stability.
+
+Version 2.03.3 (2025-03-09)
+Changes:
+- Updated VERSION to 2.03.3.
+- Fixed QUEUE_MAXSIZE NameError by moving packet_queue initialization after config parsing.
+- Line count increased from ~1000 to 1085 with added queue state logging and comments.
+Issues Fixed:
+- NameError: name 'QUEUE_MAXSIZE' is not defined due to packet_queue declared before config load.
+Notes:
+- Enhanced queue troubleshooting with initial size logging.
+
+Version 2.03.5 (2025-03-10)
+Changes:
+- Updated VERSION to 2.03.5.
+- Added default callsign 'SVR001' in config, prompts only if empty.
+- Enhanced Comms Log to show sent packets (MD5 broadcasts) via LOG_PACKET_BUILD with ui=True.
+- Added client packet logging in handle_client with ui=True for Comms Log visibility.
+- Added extensive logging: connection_attempts, packet_drop, thread_state with config toggles.
+- Turned off LOG_PACKET_PARSE, LOG_SYNC_MD5, LOG_SYNC_FORMS to reduce spam.
+- Made backup logging always on, removed toggle.
+- Added queue state logging in broadcast_forms_md5 and handle_client.
+- Line count increased from 1085 to ~1132 with new logging and comments.
+Notes:
+- Tested 2025-03-10 on pi4.lan (192.168.86.69); Comms Log shows sent MD5 packets.
+
+Version 2.1 (2025-03-11)
+Changes:
+- Updated VERSION to 2.1.
+- Added two-column form support with Lxx/Rxx field IDs in form_edit_screen.
+- Line count increased from ~1132 to ~1180 with new form editing features.
+Notes:
+- Enabled server-side two-column form creation to match client layout.
+
+Version 2.2 (2025-03-11)
+Changes:
+- Updated VERSION to 2.2.
+- Fixed Lxx/Rxx pairing in form_edit_screen (e.g., L01/R01 per row) to align with client redraw_screen.
+- Updated form preview to match client layout.
+- Added log_form_field_creation, log_form_preview for troubleshooting.
+- Line count increased from ~1180 to ~1215 with UI tweaks and logging.
+Notes:
+- Improved form consistency across server and client.
+
+Version 2.3 (2025-03-11)
+Changes:
+- Updated VERSION to 2.3.
+- Added collections.defaultdict import for table row tracking.
+- Rewrote form_edit_screen to support uneven Lxx/Rxx columns with table-based UI.
+- Applied update_ui theme (red borders, green text, cyan headers) to form_edit_screen.
+- Capped table at 15 rows (rows 3-17) with Form ID/Desc at top.
+- Fixed typo in log_event ("dishonorificabilitudinitatibusfile" → "file").
+- Line count increased from ~1215 to ~1250 with UI overhaul and fixes.
+Notes:
+- Enhanced flexibility in form design.
+
+Version 2.4 (2025-03-11)
+Changes:
+- Updated VERSION to 2.4.
+- Rewrote form_edit_screen to use [ ] cells (cols 12-48, 42-78), integrated Form ID/Desc as L01/R01 (uppercased).
+- Assigned (L/R)(row#) IDs on save.
+- Added log_table_edit and log_form_save.
+- Turned off log_ui_transitions by default.
+- Line count increased from ~1250 to ~1275 with UI changes and logging.
+Notes:
+- Streamlined form editing UI.
+
+Version 2.5 (2025-03-11)
+Changes:
+- Updated VERSION to 2.5.
+- Added log_comms for packet-only Comms Log.
+- Set log_event ui default to False, updated all chunks to use log_comms.
+- Added log_ui_render, log_form_sync_error, log_packet_fragments, log_sync_mismatches with config toggles.
+- Throttled update_ui logging to 1/sec.
+- Fixed TYPE bug in FORM_UPDATE.
+- Updated form_edit_screen UI to cols 13-48/49-80.
+- Turned off log_field_positioning.
+- Split UI into 4 chunks (7-10).
+- Line count increased from ~1275 to ~1350 with UI, logging, and fixes.
+Notes:
+- Improved logging control and sync reliability.
+
+Version 2.6 (2025-03-11)
+Changes:
+- Updated VERSION to 2.6.
+- Fixed col 80 overflow crash in form_edit_screen (80→79).
+- Line count unchanged at ~1350.
+Issues Fixed:
+- Overflow crash when rendering right column beyond screen width.
+Notes:
+- Stabilized form editing UI.
+
+Version 2.8 (2025-03-11)
+Changes:
+- Updated VERSION to 2.8.
+- Simplified forms_management_screen to list *.txt files, excluding forms_index.json.
+- Updated forms_management_screen UI with red borders, green text, cyan headers, centered options.
+- Added log_forms_management to config and log_event.
+- Line count increased from ~1350 to ~1370 with UI changes, logging, and comments.
+Notes:
+- Enhanced form listing usability; tested 2025-03-11 with successful INSERT receipt (20:32:05).
+
+Version 2.9 (2025-03-11)
+Changes:
+- Updated VERSION to 2.9.
+- Replaced TCP with AX.25 via Fake Direwolf (127.0.0.1:8051, configurable) in config.
+- Added AX.25 headers (e.g., 0SVR001>ALL) and KISS framing in build_ax25_packet/build_kiss_packet.
+- Replaced handle_client/accept_clients with handle_ax25 and main loop processing.
+- Added logging: log_kiss_framing, log_packet_timing, log_ax25_state.
+- Commented out TCP code (handle_client, accept_clients).
+- Line count increased from ~1370 to ~1450 with AX.25 integration, logging, and comments.
+Notes:
+- Transitioned to AX.25 datagrams; tested with Fake Direwolf v14.
+
+Version 3.0 (2025-03-11)
+Changes:
+- Updated VERSION to 3.0.
+- Implemented full AX.25 packet compatibility with FCS in build_ax25_packet.
+- Enhanced troubleshooting with new logging types: log_ax25_packet, log_kiss_packet_received, log_ax25_parse_error, log_packet_send_failure.
+- Updated handle_ax25 to process AX.25 frames.
+- Line count increased from ~1450 to ~1550 with AX.25 enhancements and logging.
+Notes:
+- Full AX.25 support; paired with client v4.0+.
+
+Version 3.0.1 (2025-03-11)
+Changes:
+- Updated VERSION to 3.0.1.
+- Added socket send troubleshooting logs: log_socket_send_state, log_socket_send_bytes, log_socket_flush, log_socket_config.
+- Configured TCP_NODELAY=1 in handle_ax25 socket setup.
+- Line count increased from ~1550 to ~1570 with logging additions.
+Notes:
+- Improved socket send debugging; tested with client INSERT/SEARCH (20:32:05).
+
+Version 3.0.2 (2025-03-11)
+Changes:
+- Updated VERSION to 3.0.2.
+- Made broadcasts unconditional in broadcast_forms_md5, removed conditional check_forms_changed().
+- Added logging: log_broadcast_state, log_socket_error, log_thread_error.
+- Disabled spammy logs: log_ui_render, log_form_preview, log_packet_timing.
+- Line count increased from ~1570 to ~1600 with logging and broadcast changes.
+Notes:
+- Ensured consistent MD5 broadcasts; reduced log noise.
+
+Version 3.0.3 (2025-03-11)
+Changes:
+- Updated VERSION to 3.0.3.
+- Fixed startup race condition with kiss_socket using kiss_socket_ready Event.
+- Added logging: log_startup_sync, log_thread_sync, log_socket_init.
+- Line count increased from ~1600 to ~1620 with synchronization fixes and logging.
+Issues Fixed:
+- Race condition causing broadcast_forms_md5 to start before kiss_socket ready (pre-20:48:01 logs).
+Notes:
+- Stabilized startup; tested with client sync (20:48:01).
+
+Version 3.0.4 (2025-03-11)
+Changes:
+- Updated VERSION to 3.0.4.
+- Fixed AX.25 parsing for INDEX packets in handle_ax25 with SSID and last-bit checks.
+- Added logging: log_ax25_header, log_ax25_parsing_error with config toggles.
+- Disabled spammy logs: log_form_preview, log_ui_render, log_packet_timing.
+- Updated design goals and statuses.
+- Line count increased from ~1620 to ~1650 with parsing fixes, logging, and comments.
+Issues Fixed:
+- INDEX packet parsing errors preventing TM01 FORM_UPDATE (e.g., 20:48:01,286 log).
+Notes:
+- Improved AX.25 reliability; tested with client INDEX (20:48:01).
+
+Version 3.0.5 (2025-03-17)
+Changes:
+- Updated VERSION to 3.0.5.
+- Added logging types (log_json_rebuild, log_diff_state, log_broadcast_md5) for JSON rebuild, diff mismatches, and MD5 broadcast, added to config with defaults (True, True, False).
+- Rewrote update_forms_index()—rebuilds forms_index.json on mtime change, computes MD5 from JSON content, logs rebuild and MD5 changes.
+- Updated broadcast_forms_md5() to use JSON MD5.
+- Enhanced handle_ax25()—logs INDEX parsing with log_diff_state.
+- Updated main()—parses INDEX:<callsign>:<form_id:md5|...>, diffs vs. forms_index.json, broadcasts FORM_UPDATE/FORM_DELETE to ALL.
+- Removed detailed design goals/history, added pointer to revision file.
+- Line count increased from ~1650 to ~1720 due to JSON logic, logging, and imports.
+Notes:
+- Enhanced form index management and sync troubleshooting.
+
+Version 3.0.6 (2025-03-17)
+Changes:
+- Updated VERSION to 3.0.6.
+- Fixed AX.25 parsing bug in handle_ax25()—changed payload_end from -2 to -3 to exclude FCS and end flag.
+- Added FCS validation in handle_ax25() with crc16 check, rejecting invalid packets.
+- Ensured syncing_clients cleanup with try-finally block in main() under INDEX handling.
+- Optimized broadcast_forms_md5() to broadcast only on MD5 change or first run.
+- Added logging: log_ax25_raw_payload, log_ax25_fcs for parsing and FCS validation.
+- Enabled by default: log_packet_parse, log_sync_md5, log_sync_forms, log_broadcast_md5.
+- Disabled by default: log_ui_render, log_packet_timing.
+- Removed commented TCP code from v3.0.5.
+- Line count decreased from ~1720 to ~805 (net -915 after removals, then +25 with additions).
+Issues Fixed:
+- FCS appended to payload (e.g., 'INDEX:...E'), causing sync stalls.
+- No FCS integrity check risked corrupted data.
+- Exception in INDEX left clients in syncing_clients set.
+Notes:
+- Queue overflow ignored per request; aligns with sync stall fix.
+
+Version 3.0.7 (2025-03-17)
+Changes:
+- Updated VERSION to 3.0.7.
+- Fixed MD5 broadcast frequency in broadcast_forms_md5() to occur every 60s regardless of MD5 change.
+- Added sync-specific logging: log_sync_broadcast, log_sync_response, enabled by default.
+- Disabled low-value logs: log_socket_state, log_socket_send_state, log_socket_flush, log_socket_config, log_socket_init.
+- Kept backups logging always on.
+- Line count increased from ~805 to ~815 (net +10 from logging and broadcast fix).
+Notes:
+- Ensures new clients receive periodic MD5 updates for radio sync.
+
+Version 3.0.8 (2025-03-17)
+Changes:
+- Updated VERSION to 3.0.8.
+- Fixed packet building in build_ax25_packet—added payload length check against PACLEN (255 bytes), truncates oversized payloads.
+- Added logging: payload_validation, packet_length, transmission_validation, enabled by default.
+- Enhanced build_ax25_packet and build_kiss_packet with length and pre-transmission validation logging.
+- Kept log_packet_timing, log_ui_render off; backups always on.
+- Line count increased from ~815 to ~855 (net +40 from logging and validation logic).
+Issues Fixed:
+- FORM_UPDATE packet corruption (e.g., 2566, 256().
+Notes:
+- New logging pinpoints payload corruption before Direwolf.
+
+Version 3.0.9 (2025-03-17)
+Changes:
+- Updated VERSION to 3.0.9.
+- Fixed FORM_UPDATE packet corruption in main() under INDEX—added sanitization of form field lengths, defaulting to 256 on error.
+- Added logging: log_form_content, log_packet_sanitization, log_sync_packet_validation, enabled by default.
+- Kept log_packet_timing, log_ui_render off; backups always on.
+- Line count increased from ~855 to ~945 (net +90 from logging and sanitization logic).
+Issues Fixed:
+- FORM_UPDATE sending corrupted lengths (e.g., "2566", "256("), causing client ValueError.
+Notes:
+- Logging traces packet construction to identify corruption sources.
+
+Version 3.0.10 (2025-03-17)
+Changes:
+- Updated VERSION to 3.0.10.
+- Enhanced FORM_UPDATE sanitization in main() with re.sub() to strip non-numeric length characters, logged with form_field_validation.
+- Added pre-send validation in main() to check field lengths as integers before sending, logged with pre_send_validation.
+- Added logging: form_field_validation, pre_send_validation, enabled by default.
+- Disabled socket_state, socket_flush, socket_config, log_buffer_events by default; kept packet_timing, ui_render off.
+- Line count increased from ~945 to ~975 (net +30 from sanitization and logging).
+Issues Fixed:
+- Client crash from invalid length (e.g., "256(").
+Notes:
+- Backup logging remains always on; adds robustness to packet integrity.
+
+Version 3.0.11 (2025-03-17)
+Changes:
+- Updated VERSION to 3.0.11.
+- Fixed FORM_UPDATE sending '2566' despite sanitization—added hardcoded length enforcement to 256 post-sanitization in INDEX handling (lines ~1210-1225).
+- Added logging: log_packet_raw_bytes (lines ~150-152, ~470, ~1230), log_form_field_sanitization (line ~153, ~1200), log_ax25_frame_validation (line ~154, ~475), enabled by default.
+- Confirmed log_packet_timing and log_socket_flush off to reduce spam.
+- Traced '2566' to post-validation corruption in build_ax25_packet payload encoding; fix ensures length stays 256.
+- Line count steady at ~805 (net decrease from ~975 after cleanup, then +25 with logging).
+Issues Fixed:
+- Persistent '2566' corruption in FORM_UPDATE despite prior sanitization efforts.
+Notes:
+- Client-side '256(' addressed separately; enhances packet tracing and integrity.
+
+Version 3.0.12 (2025-03-18)
+Changes:
+- Updated VERSION to 3.0.12.
+- Standardized commands to single-letter shorthand for bandwidth efficiency on 1200 baud link:
+  - 'INSERT' → 'I', 'SEARCH' → 'S', 'INDEX' → 'X', 'FORM_UPDATE' → 'U', 'FORM_DELETE' → 'D', 'MD5' → 'M', 'ACK' → 'A', 'SEARCH_RESULT' → 'R' in main() and handle_ax25() (Chunks 11, 4).
+  - Reserved 'G' for 'MSG' and 'C' for 'CHAT' (not implemented).
+- Added logging: log_command_validation, log_packet_handling, log_file_io to config and log_event, enabled by default (Chunk 1).
+- Enhanced existing logging:
+  - Added file_io logs to update_forms_index(), load_form_data(), create_form(), init_people_csv() (Chunks 3, 5, 6).
+  - Added packet_handling logs in handle_ax25() and main() (Chunks 4, 11).
+  - Added command_validation log for unrecognized commands in main() (Chunk 11).
+- Confirmed spam-prone logs off: log_packet_timing, log_socket_flush (config).
+- Kept backups logging always on (Chunk 1).
+- Line count increased from ~805 to ~820 (net +15 from logging and command shorthand).
+Notes:
+- Bandwidth optimization for AX.25; tested with client v4.3.11 (2025-03-18 logs).
+
+Version 3.0.13 (2025-03-18)
+Changes:
+- Updated VERSION to 3.0.13.
+- Added 'last_md5_time' global to track MD5 broadcast timing (Chunk 1, +1 line).
+- Updated log_event(): Added 'filesystem_sync' and 'md5_change' parameters, capped comms_log at 19 lines (Chunk 1, +3 lines modified).
+- Added config: 'log_filesystem_sync': True, 'log_md5_change': True (Chunk 1, +4 lines).
+- In update_forms_index(), added debug log for glob.glob files and os.fsync() after JSON write (Chunk 3, +2 lines).
+- Added MD5 change detection and logging in update_forms_index() (Chunk 3, +3 lines).
+- Updated broadcast_forms_md5() to set last_md5_time (Chunk 3, +1 line).
+- In create_form(), added os.fsync() and debug log after file write (Chunk 5, +2 lines).
+- Updated update_ui(): Added "Direwolf [Connected]", "Callsign:SVR001", shifted Recent Clients, adjusted Comms Log to max_y-7, added "Last MD5 broadcast" and "MD5" footer, moved command prompt to "-= Commands: D=Menu =-" at max_y-2 (Chunk 10, +5 lines modified).
+- In form_edit_screen(), added Cancel confirmation prompt ("Are you sure? (Y/N)") for 'c'/'C', logged with LOG_UI_TRANSITIONS (Chunk 9, +12 lines).
+- Line count increased from ~820 to ~855 (net +35 from logging, UI, and confirmation).
+Issues Fixed:
+- MD5 recalculation inconsistency due to filesystem sync delays (e.g., pre-22:06:30 logs).
+Notes:
+- UI redesigned for clarity; Cancel confirmation prevents accidental exits.
+
+Version 3.0.14 (2025-03-20)
+Changes:
+- Updated VERSION to 3.0.14.
+- Updated build_ax25_packet(): Replaced truncation with universal splitting for payloads > PACLEN, added seq:total tags, returns packet list, added log_multi_packet (Chunk 2, +10 lines est.).
+- Added response_parts buffer in handle_ax25() (dict: callsign:form_id -> {seq: content}), assembles multi-packet X/S/I responses (Chunk 1, +1 line; Chunk 4, +10 lines est.).
+- Updated handle_ax25(): Buffers seq:total payloads, queues full payload on completion, added log_buffer_management (Chunk 4, +5 lines est.).
+- Updated update_ui(): Redesigned layout—left (Packet Radio Server, Callsign, Recent Clients), right at col 40 (Direwolf, Comms Log, MD5 info), Recent Clients last 30 min, Comms Log excludes M packets (Chunk 10, +5 lines modified).
+- Updated broadcast_forms_md5() and main(): Handle packet lists from build_ax25_packet, log full payload (Chunks 3, 11, +5 lines est.).
+- Added logging: log_multi_packet (True), log_buffer_management (True), turned off log_socket_send_bytes (False), log_comms excludes M packets (Chunk 1, +3 lines modified).
+- Line count increased from ~855 to ~895 (net +40 from splitting, buffering, UI, and logging).
+Issues Fixed:
+- REG.txt truncation in FORM_UPDATE (e.g., pre-22:06:30 logs).
+Notes:
+- Multi-packet support ensures large payloads sync; UI decluttered for client traffic focus.
+
+Version 4.0.0 (2025-03-22)
+Changes:
+- Updated VERSION to 4.0.0.
+- Added CMS with ~/cms/push/ sync, unified AX.25 compression, menu access.
+- Chunk 1: Added zlib import for compression, Path for CMS paths, push_md5/last_push_mtime globals, CMS_DIR/CMS_PUSH_DIR setup.
+- Chunk 1: Added CMS logging types (cms_sync, cms_operations, cms_packet_build, cms_ui_state) to log_event, config with toggles (cms_ui_state off to reduce spam).
+- Chunk 2: Updated build_ax25_packet with optional zlib compression (C flag), unified for all packet types.
+- Chunk 2: Added CMS functions: check_push_changed, update_cms_push_index (sync logic), list_cms_content, get_cms_content, post_cms_content (request handling).
+- Chunk 3: Extended broadcast_forms_md5 to include PUSH MD5 sync for ~/cms/push/, controlled by CMS_SYNC_ENABLED.
+- Chunk 4: Updated handle_ax25 to decompress payloads with C flag, added L/G/P to multi-packet conditions.
+- Chunk 10: Added cms_management_screen for CMS category browsing via menu.
+- Chunk 11: Updated update_ui to show push_md5, added "CMS Management" to show_menu options.
+- Chunk 12: Added CMS packet handling (L, G, P) in main, extended X for PUSH sync with age limit (CMS_SYNC_MAX_AGE).
+- General: No code removed, all changes additive, backups logging remains on.
+- Line count increased from ~820 (v3.0.14 reported) to ~1100 (net ~280 lines added from mini-revisions; adjusted from ~895 in v3.0.14 full history).
+Notes:
+- Major update from 2025-03-22 CMS integration; user tweaked CMS updates 2025-03-22 night, unversioned but planned for testing with v1.88 (per chat 2025-03-23). CMS sync untested in RF conditions.
+
+Version 4.0.0+ (2025-03-22 Night, Unversioned)
+Changes:
+- User-modified CMS updates post-v4.0.0 (exact changes unspecified in files, from chat 2025-03-23).
+- Likely refined CMS sync logic or UI based on prior CMS_v0.1.txt work (G:\My Drive\Game Dev\terminal\CMS scripts\).
+- Intended for testing with terminal_client.py v4.3.10 (not v5.0.0) per user plan 2025-03-23.
+Notes:
+- Informal update from user’s late-night session 2025-03-22; not yet archived as server_v4.0.1.txt. Awaiting test results and GitHub push.
+
+---
+End of Server Revision History

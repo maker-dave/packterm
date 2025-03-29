@@ -1,0 +1,64 @@
+Revision History for ax25_sender.py
+
+Generated on March 14, 2025
+
+Group 1
+
+Version 1 (Group 1, Document 5)
+
+Initial version.
+KISS_PORT: 8001.
+Fixed "N0CALL" source callsign, no DEST_CALLSIGN variable.
+No reconnection logic; socket in status_display.
+Basic UI with send/receive logging (hex only).
+No file logging, uses console logging.
+Version 2 (Group 1, Document 2)
+
+KISS_PORT changed to 8051.
+Added MY_CALLSIGN with generate_callsign().
+Added reconnection with connect_to_direwolf() thread.
+Introduced connection_status and UI display.
+Still no DEST_CALLSIGN or payload decoding.
+Version 3 (Group 1, Document 3)
+
+Added DEST_CALLSIGN ("APDWLF") and 'D' command to change it.
+Added input queue flush after Enter key.
+No other significant changes.
+Version 4 (Group 1, Document 1)
+
+Added file logging to ~/terminal/server_data/ax25_sender.log.
+Old log deleted on start with os.remove().
+No other significant changes.
+Version 5 (Group 1, Document 4)
+
+Added socket timeout (5s) in connect_to_direwolf().
+Improved connection polling with select.select().
+No other significant changes.
+Group 2
+
+Version 6 (Group 2, Document 5)
+
+Same as v5 from Group 1 (no changes).
+Version 7 (Group 2, Document 2)
+
+Added payload decoding in receive_packets() (attempts ASCII, falls back to "<non-ascii>").
+Packet log now shows payload + truncated hex.
+Version 8 (Group 2, Document 4)
+
+Added SESSION_ID for unique payloads (T{SESSION_ID}{sequence:03d}{time}).
+Send logic updated to use SESSION_ID payload.
+Version 9 (Group 2, Document 3)
+
+Payload decoding improved: uses rfind(b'\x7E') - 2 to exclude CRC.
+Decode errors now logged as "<decode-error: {e}>".
+Version 10 (Group 2, Document 1)
+
+Added check for disconnected state in 'S' command with log message.
+Version 11 (Group 2, Document 6)
+
+Simplified receive_packets(): removed lock, relies on socket state.
+Removed timeout reset in connect_to_direwolf() (bug fix).
+Version 12 (Group 2, Document 7)
+
+Reverted to v9 structure with lock in receive_packets().
+Fixed payload decoding to match v9 (no changes from v9).

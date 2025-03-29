@@ -1,0 +1,388 @@
+Mon Mar 24 21:35:41 2025: Deleted old log file
+Mon Mar 24 21:35:41 2025: Backed up to /opt/terminal_client/backups/terminal_client_20250324_213541.py
+Mon Mar 24 21:35:41 2025: Client startup initiated
+Mon Mar 24 21:35:41 2025: Script v4.4.1 started
+Mon Mar 24 21:35:41 2025: Initializing colors
+Mon Mar 24 21:35:41 2025: KISS listener thread started
+Mon Mar 24 21:35:41 2025: Entering main
+Mon Mar 24 21:35:41 2025: Transition to form list
+Mon Mar 24 21:35:41 2025: Screen state: Displaying form list
+Mon Mar 24 21:35:41 2025: Loaded form GB: {'L01': {'label': 'GB', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'GENERAL BROADCAST', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Attention', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Copy', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Priority', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Date', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'Message', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:35:41 2025: Loaded form data from /opt/terminal_client/forms/GB.txt
+Mon Mar 24 21:35:41 2025: Invalid line in REG.txt: R
+Mon Mar 24 21:35:41 2025: Loaded form REG: {'L01': {'label': 'REG', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'PARTICIPANT REGISTRATION', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Name', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Cell#', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Address', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Home#', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'City', 'row': 6, 'col': 12, 'len': 256}, 'L05': {'label': 'State', 'row': 7, 'col': 12, 'len': 256}, 'R05': {'label': 'Zip', 'row': 7, 'col': 32, 'len': 256}, 'L06': {'label': 'ICE Contact', 'row': 8, 'col': 12, 'len': 256}}
+Mon Mar 24 21:35:41 2025: Loaded form data from /opt/terminal_client/forms/REG.txt
+Mon Mar 24 21:35:41 2025: Loaded form TM01: {'L01': {'label': 'TM01', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'TOAST MANAGER', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Toaster', 'row': 4, 'col': 12, 'len': 256}, 'L03': {'label': 'Toasted', 'row': 5, 'col': 12, 'len': 256}, 'L04': {'label': 'Toast', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:35:41 2025: Loaded form data from /opt/terminal_client/forms/TM01.txt
+Mon Mar 24 21:35:41 2025: Starting KISS listener, connecting to 127.0.0.1:8051
+Mon Mar 24 21:35:41 2025: KISS socket invalid, creating new one
+Mon Mar 24 21:35:41 2025: KISS connecting to 127.0.0.1:8051
+Mon Mar 24 21:35:41 2025: Socket state: Creating new socket for 127.0.0.1:8051
+Mon Mar 24 21:35:41 2025: KISS listener socket created
+Mon Mar 24 21:35:41 2025: Attempting connection to 127.0.0.1:8051 (attempt 1/5)
+Mon Mar 24 21:35:41 2025: Full UI redraw: form_id=None, mode=None, fields=[]
+Mon Mar 24 21:35:41 2025: Redraw took 0.008s
+Mon Mar 24 21:35:41 2025: Connected to 127.0.0.1:8051
+Mon Mar 24 21:35:41 2025: Retry 1/5 succeeded
+Mon Mar 24 21:35:41 2025: Listener connected on attempt 1
+Mon Mar 24 21:35:41 2025: Socket state: Connected on attempt 1
+Mon Mar 24 21:35:41 2025: Successfully connected to 127.0.0.1:8051
+Mon Mar 24 21:35:41 2025: AX.25 state: Connected to Fake Direwolf
+Mon Mar 24 21:35:41 2025: Socket status: Connected
+Mon Mar 24 21:35:46 2025: No data received, connection still alive
+Mon Mar 24 21:35:46 2025: Socket timeout detected, connection still active
+Mon Mar 24 21:36:43 2025: KISS data received: c0007e82989840404060a6aca46060626103f04d7c53565230...
+Mon Mar 24 21:36:43 2025: Receive buffer updated: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (len=69)
+Mon Mar 24 21:36:43 2025: Listener buffer state: 69 bytes
+Mon Mar 24 21:36:43 2025: KISS frame extracted: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+Mon Mar 24 21:36:43 2025: Frame extracted in 0.000s
+Mon Mar 24 21:36:43 2025: Buffer after frame split:  (len=0)
+Mon Mar 24 21:36:43 2025: AX.25 packet: 7e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907e
+Mon Mar 24 21:36:43 2025: Decoded packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:36:43 2025: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:36:43 2025: Comms Log updated: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:36:43 2025: Packet content logged: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:36:43 2025: Packet validated: src=```b, dest=~@@@, payload_len=46
+Mon Mar 24 21:36:43 2025: Received packet uses 3 pipe delimiters
+Mon Mar 24 21:36:43 2025: Packet format check: 4 parts (expected 4)
+Mon Mar 24 21:36:43 2025: Received packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:36:43 2025: Enqueued packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468
+Mon Mar 24 21:36:43 2025: Listener enqueued: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:36:43 2025: Packet relayed to queue: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:36:43 2025: Packet enqueued at 1742866603.965523
+Mon Mar 24 21:36:43 2025: Queue size after enqueue: 1
+Mon Mar 24 21:36:44 2025: Dequeued packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:36:44 2025: UI handling packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:36:44 2025: Processing packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:36:44 2025: Packet dequeued at 1742866604.053496
+Mon Mar 24 21:36:44 2025: Queue size after dequeue: 0
+Mon Mar 24 21:36:44 2025: Validated command 'M' as MD5
+Mon Mar 24 21:36:44 2025: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:36:44 2025: Comms Log updated: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:36:44 2025: Rebuilt forms_index.json at /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:36:44 2025: Wrote forms_index.json to /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:36:44 2025: Read forms_index.json from /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:36:44 2025: MD5 comparison: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:36:44 2025: MD5 mismatch detected: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:36:44 2025: MD5 mismatch details - Server MD5: 81193b39aea0b7052292743468c93de2, Client MD5: 4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:36:44 2025: MD5 mismatch detected, sending X packet to request updates
+Mon Mar 24 21:36:44 2025: Client forms from JSON: {'GB': {'md5': '5ef45b4deb62472cad455f6177b36c2a'}, 'REG': {'md5': '089e86c083f5823e93015ac17a38a300'}, 'TM01': {'md5': '1ee6567882b3fa2a7ded9645748de19d'}}
+Mon Mar 24 21:36:44 2025: X (INDEX) packet built: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:36:44 2025: Sending X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:36:44 2025: Send initiated
+Mon Mar 24 21:36:44 2025: Starting submission process
+Mon Mar 24 21:36:44 2025: Preparing sync X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:36:44 2025: Packet payload: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:36:44 2025: Packet uses 5 pipe delimiters
+Mon Mar 24 21:36:44 2025: Sending command: X
+Mon Mar 24 21:36:44 2025: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:36:44 2025: Comms Log updated: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:36:44 2025: Packet content logged: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:36:44 2025: Send packet structure: len=124, newlines=0
+Mon Mar 24 21:36:44 2025: Payload exceeds max (108): 124 bytes, splitting
+Mon Mar 24 21:36:44 2025: Packet split into 2 parts: [108, 16] bytes
+Mon Mar 24 21:36:44 2025: Failed to build AX.25 packets: log_event() got an unexpected keyword argument 'payload_validation'
+Mon Mar 24 21:36:44 2025: Loaded form GB: {'L01': {'label': 'GB', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'GENERAL BROADCAST', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Attention', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Copy', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Priority', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Date', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'Message', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:36:44 2025: Loaded form data from /opt/terminal_client/forms/GB.txt
+Mon Mar 24 21:36:44 2025: Invalid line in REG.txt: R
+Mon Mar 24 21:36:44 2025: Loaded form REG: {'L01': {'label': 'REG', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'PARTICIPANT REGISTRATION', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Name', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Cell#', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Address', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Home#', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'City', 'row': 6, 'col': 12, 'len': 256}, 'L05': {'label': 'State', 'row': 7, 'col': 12, 'len': 256}, 'R05': {'label': 'Zip', 'row': 7, 'col': 32, 'len': 256}, 'L06': {'label': 'ICE Contact', 'row': 8, 'col': 12, 'len': 256}}
+Mon Mar 24 21:36:44 2025: Loaded form data from /opt/terminal_client/forms/REG.txt
+Mon Mar 24 21:36:44 2025: Loaded form TM01: {'L01': {'label': 'TM01', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'TOAST MANAGER', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Toaster', 'row': 4, 'col': 12, 'len': 256}, 'L03': {'label': 'Toasted', 'row': 5, 'col': 12, 'len': 256}, 'L04': {'label': 'Toast', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:36:44 2025: Loaded form data from /opt/terminal_client/forms/TM01.txt
+Mon Mar 24 21:36:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:36:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:36:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:36:44 2025: Full UI redraw: form_id=NONE, mode=None, fields=[]
+Mon Mar 24 21:36:44 2025: Redraw took 0.013s
+Mon Mar 24 21:36:49 2025: No data received, connection still alive
+Mon Mar 24 21:36:49 2025: Socket timeout detected, connection still active
+Mon Mar 24 21:37:43 2025: KISS data received: c0007e82989840404060a6aca46060626103f04d7c53565230...
+Mon Mar 24 21:37:43 2025: Receive buffer updated: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (len=69)
+Mon Mar 24 21:37:43 2025: Listener buffer state: 69 bytes
+Mon Mar 24 21:37:43 2025: KISS frame extracted: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+Mon Mar 24 21:37:43 2025: Frame extracted in 0.000s
+Mon Mar 24 21:37:43 2025: Buffer after frame split:  (len=0)
+Mon Mar 24 21:37:43 2025: AX.25 packet: 7e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907e
+Mon Mar 24 21:37:43 2025: Decoded packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:43 2025: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:43 2025: Comms Log updated: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:43 2025: Packet content logged: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:43 2025: Packet validated: src=```b, dest=~@@@, payload_len=46
+Mon Mar 24 21:37:43 2025: Received packet uses 3 pipe delimiters
+Mon Mar 24 21:37:43 2025: Packet format check: 4 parts (expected 4)
+Mon Mar 24 21:37:43 2025: Received packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:37:43 2025: Enqueued packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468
+Mon Mar 24 21:37:43 2025: Listener enqueued: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:37:43 2025: Packet relayed to queue: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:37:43 2025: Packet enqueued at 1742866663.9592626
+Mon Mar 24 21:37:43 2025: Queue size after enqueue: 1
+Mon Mar 24 21:37:44 2025: Dequeued packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:37:44 2025: UI handling packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:37:44 2025: Processing packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:37:44 2025: Packet dequeued at 1742866664.0276132
+Mon Mar 24 21:37:44 2025: Queue size after dequeue: 0
+Mon Mar 24 21:37:44 2025: Validated command 'M' as MD5
+Mon Mar 24 21:37:44 2025: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:44 2025: Comms Log updated: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:44 2025: Rebuilt forms_index.json at /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:37:44 2025: Wrote forms_index.json to /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:37:44 2025: Read forms_index.json from /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:37:44 2025: MD5 comparison: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:37:44 2025: MD5 mismatch detected: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:37:44 2025: MD5 mismatch details - Server MD5: 81193b39aea0b7052292743468c93de2, Client MD5: 4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:37:44 2025: MD5 mismatch detected, sending X packet to request updates
+Mon Mar 24 21:37:44 2025: Client forms from JSON: {'GB': {'md5': '5ef45b4deb62472cad455f6177b36c2a'}, 'REG': {'md5': '089e86c083f5823e93015ac17a38a300'}, 'TM01': {'md5': '1ee6567882b3fa2a7ded9645748de19d'}}
+Mon Mar 24 21:37:44 2025: X (INDEX) packet built: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Sending X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Send initiated
+Mon Mar 24 21:37:44 2025: Starting submission process
+Mon Mar 24 21:37:44 2025: Preparing sync X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Packet payload: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Packet uses 5 pipe delimiters
+Mon Mar 24 21:37:44 2025: Sending command: X
+Mon Mar 24 21:37:44 2025: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Comms Log updated: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Packet content logged: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Send packet structure: len=124, newlines=0
+Mon Mar 24 21:37:44 2025: Payload exceeds max (108): 124 bytes, splitting
+Mon Mar 24 21:37:44 2025: Packet split into 2 parts: [108, 16] bytes
+Mon Mar 24 21:37:44 2025: Failed to build AX.25 packets: log_event() got an unexpected keyword argument 'payload_validation'
+Mon Mar 24 21:37:44 2025: Loaded form GB: {'L01': {'label': 'GB', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'GENERAL BROADCAST', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Attention', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Copy', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Priority', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Date', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'Message', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:37:44 2025: Loaded form data from /opt/terminal_client/forms/GB.txt
+Mon Mar 24 21:37:44 2025: Invalid line in REG.txt: R
+Mon Mar 24 21:37:44 2025: Loaded form REG: {'L01': {'label': 'REG', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'PARTICIPANT REGISTRATION', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Name', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Cell#', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Address', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Home#', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'City', 'row': 6, 'col': 12, 'len': 256}, 'L05': {'label': 'State', 'row': 7, 'col': 12, 'len': 256}, 'R05': {'label': 'Zip', 'row': 7, 'col': 32, 'len': 256}, 'L06': {'label': 'ICE Contact', 'row': 8, 'col': 12, 'len': 256}}
+Mon Mar 24 21:37:44 2025: Loaded form data from /opt/terminal_client/forms/REG.txt
+Mon Mar 24 21:37:44 2025: Loaded form TM01: {'L01': {'label': 'TM01', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'TOAST MANAGER', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Toaster', 'row': 4, 'col': 12, 'len': 256}, 'L03': {'label': 'Toasted', 'row': 5, 'col': 12, 'len': 256}, 'L04': {'label': 'Toast', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:37:44 2025: Loaded form data from /opt/terminal_client/forms/TM01.txt
+Mon Mar 24 21:37:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:37:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:37:44 2025: Full UI redraw: form_id=NONE, mode=None, fields=[]
+Mon Mar 24 21:37:44 2025: Redraw took 0.015s
+Mon Mar 24 21:37:54 2025: No data received, connection still alive
+Mon Mar 24 21:37:54 2025: Socket timeout detected, connection still active
+Mon Mar 24 21:38:43 2025: KISS data received: c0007e82989840404060a6aca46060626103f04d7c53565230...
+Mon Mar 24 21:38:43 2025: Receive buffer updated: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (len=69)
+Mon Mar 24 21:38:43 2025: Listener buffer state: 69 bytes
+Mon Mar 24 21:38:43 2025: KISS frame extracted: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+Mon Mar 24 21:38:43 2025: Frame extracted in 0.000s
+Mon Mar 24 21:38:43 2025: Buffer after frame split:  (len=0)
+Mon Mar 24 21:38:43 2025: AX.25 packet: 7e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907e
+Mon Mar 24 21:38:43 2025: Decoded packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:43 2025: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:43 2025: Comms Log updated: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:43 2025: Packet content logged: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:43 2025: Packet validated: src=```b, dest=~@@@, payload_len=46
+Mon Mar 24 21:38:43 2025: Received packet uses 3 pipe delimiters
+Mon Mar 24 21:38:43 2025: Packet format check: 4 parts (expected 4)
+Mon Mar 24 21:38:43 2025: Received packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:38:43 2025: Enqueued packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468
+Mon Mar 24 21:38:43 2025: Listener enqueued: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:38:43 2025: Packet relayed to queue: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:38:43 2025: Packet enqueued at 1742866723.9616246
+Mon Mar 24 21:38:43 2025: Queue size after enqueue: 1
+Mon Mar 24 21:38:43 2025: Dequeued packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:38:43 2025: UI handling packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:38:43 2025: Processing packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:38:43 2025: Packet dequeued at 1742866723.996157
+Mon Mar 24 21:38:43 2025: Queue size after dequeue: 0
+Mon Mar 24 21:38:43 2025: Validated command 'M' as MD5
+Mon Mar 24 21:38:43 2025: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:43 2025: Comms Log updated: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:43 2025: Rebuilt forms_index.json at /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:38:43 2025: Wrote forms_index.json to /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:38:43 2025: Read forms_index.json from /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:38:43 2025: MD5 comparison: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:38:43 2025: MD5 mismatch detected: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:38:43 2025: MD5 mismatch details - Server MD5: 81193b39aea0b7052292743468c93de2, Client MD5: 4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:38:43 2025: MD5 mismatch detected, sending X packet to request updates
+Mon Mar 24 21:38:44 2025: Client forms from JSON: {'GB': {'md5': '5ef45b4deb62472cad455f6177b36c2a'}, 'REG': {'md5': '089e86c083f5823e93015ac17a38a300'}, 'TM01': {'md5': '1ee6567882b3fa2a7ded9645748de19d'}}
+Mon Mar 24 21:38:44 2025: X (INDEX) packet built: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Sending X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Send initiated
+Mon Mar 24 21:38:44 2025: Starting submission process
+Mon Mar 24 21:38:44 2025: Preparing sync X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Packet payload: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Packet uses 5 pipe delimiters
+Mon Mar 24 21:38:44 2025: Sending command: X
+Mon Mar 24 21:38:44 2025: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Comms Log updated: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Packet content logged: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Send packet structure: len=124, newlines=0
+Mon Mar 24 21:38:44 2025: Payload exceeds max (108): 124 bytes, splitting
+Mon Mar 24 21:38:44 2025: Packet split into 2 parts: [108, 16] bytes
+Mon Mar 24 21:38:44 2025: Failed to build AX.25 packets: log_event() got an unexpected keyword argument 'payload_validation'
+Mon Mar 24 21:38:44 2025: Loaded form GB: {'L01': {'label': 'GB', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'GENERAL BROADCAST', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Attention', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Copy', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Priority', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Date', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'Message', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:38:44 2025: Loaded form data from /opt/terminal_client/forms/GB.txt
+Mon Mar 24 21:38:44 2025: Invalid line in REG.txt: R
+Mon Mar 24 21:38:44 2025: Loaded form REG: {'L01': {'label': 'REG', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'PARTICIPANT REGISTRATION', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Name', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Cell#', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Address', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Home#', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'City', 'row': 6, 'col': 12, 'len': 256}, 'L05': {'label': 'State', 'row': 7, 'col': 12, 'len': 256}, 'R05': {'label': 'Zip', 'row': 7, 'col': 32, 'len': 256}, 'L06': {'label': 'ICE Contact', 'row': 8, 'col': 12, 'len': 256}}
+Mon Mar 24 21:38:44 2025: Loaded form data from /opt/terminal_client/forms/REG.txt
+Mon Mar 24 21:38:44 2025: Loaded form TM01: {'L01': {'label': 'TM01', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'TOAST MANAGER', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Toaster', 'row': 4, 'col': 12, 'len': 256}, 'L03': {'label': 'Toasted', 'row': 5, 'col': 12, 'len': 256}, 'L04': {'label': 'Toast', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:38:44 2025: Loaded form data from /opt/terminal_client/forms/TM01.txt
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:38:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:38:44 2025: Full UI redraw: form_id=NONE, mode=None, fields=[]
+Mon Mar 24 21:38:44 2025: Redraw took 0.016s
+Mon Mar 24 21:38:54 2025: No data received, connection still alive
+Mon Mar 24 21:38:54 2025: Socket timeout detected, connection still active
+Mon Mar 24 21:39:43 2025: KISS data received: c0007e82989840404060a6aca46060626103f04d7c53565230...
+Mon Mar 24 21:39:43 2025: Receive buffer updated: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (len=69)
+Mon Mar 24 21:39:43 2025: Listener buffer state: 69 bytes
+Mon Mar 24 21:39:43 2025: KISS frame extracted: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+Mon Mar 24 21:39:43 2025: Frame extracted in 0.000s
+Mon Mar 24 21:39:43 2025: Buffer after frame split:  (len=0)
+Mon Mar 24 21:39:43 2025: AX.25 packet: 7e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907e
+Mon Mar 24 21:39:43 2025: Decoded packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Comms Log updated: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet content logged: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet validated: src=```b, dest=~@@@, payload_len=46
+Mon Mar 24 21:39:43 2025: Received packet uses 3 pipe delimiters
+Mon Mar 24 21:39:43 2025: Packet format check: 4 parts (expected 4)
+Mon Mar 24 21:39:43 2025: Received packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:39:43 2025: Enqueued packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468
+Mon Mar 24 21:39:43 2025: Listener enqueued: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:39:43 2025: Packet relayed to queue: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:39:43 2025: Packet enqueued at 1742866783.9694698
+Mon Mar 24 21:39:43 2025: Queue size after enqueue: 1
+Mon Mar 24 21:39:43 2025: Dequeued packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:39:43 2025: UI handling packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:39:43 2025: Processing packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:39:43 2025: Packet dequeued at 1742866783.9723687
+Mon Mar 24 21:39:43 2025: Queue size after dequeue: 0
+Mon Mar 24 21:39:43 2025: Validated command 'M' as MD5
+Mon Mar 24 21:39:43 2025: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Comms Log updated: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Rebuilt forms_index.json at /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:39:43 2025: Wrote forms_index.json to /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:39:43 2025: Read forms_index.json from /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:39:43 2025: MD5 comparison: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:39:43 2025: MD5 mismatch detected: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:39:43 2025: MD5 mismatch details - Server MD5: 81193b39aea0b7052292743468c93de2, Client MD5: 4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:39:43 2025: MD5 mismatch detected, sending X packet to request updates
+Mon Mar 24 21:39:43 2025: Client forms from JSON: {'GB': {'md5': '5ef45b4deb62472cad455f6177b36c2a'}, 'REG': {'md5': '089e86c083f5823e93015ac17a38a300'}, 'TM01': {'md5': '1ee6567882b3fa2a7ded9645748de19d'}}
+Mon Mar 24 21:39:43 2025: X (INDEX) packet built: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Sending X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Send initiated
+Mon Mar 24 21:39:43 2025: Starting submission process
+Mon Mar 24 21:39:43 2025: Preparing sync X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Packet payload: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Packet uses 5 pipe delimiters
+Mon Mar 24 21:39:43 2025: Sending command: X
+Mon Mar 24 21:39:43 2025: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Comms Log updated: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Packet content logged: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Send packet structure: len=124, newlines=0
+Mon Mar 24 21:39:43 2025: Payload exceeds max (108): 124 bytes, splitting
+Mon Mar 24 21:39:43 2025: Packet split into 2 parts: [108, 16] bytes
+Mon Mar 24 21:39:43 2025: Failed to build AX.25 packets: log_event() got an unexpected keyword argument 'payload_validation'
+Mon Mar 24 21:39:43 2025: Loaded form GB: {'L01': {'label': 'GB', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'GENERAL BROADCAST', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Attention', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Copy', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Priority', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Date', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'Message', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:39:43 2025: Loaded form data from /opt/terminal_client/forms/GB.txt
+Mon Mar 24 21:39:43 2025: Invalid line in REG.txt: R
+Mon Mar 24 21:39:43 2025: Loaded form REG: {'L01': {'label': 'REG', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'PARTICIPANT REGISTRATION', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Name', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Cell#', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Address', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Home#', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'City', 'row': 6, 'col': 12, 'len': 256}, 'L05': {'label': 'State', 'row': 7, 'col': 12, 'len': 256}, 'R05': {'label': 'Zip', 'row': 7, 'col': 32, 'len': 256}, 'L06': {'label': 'ICE Contact', 'row': 8, 'col': 12, 'len': 256}}
+Mon Mar 24 21:39:43 2025: Loaded form data from /opt/terminal_client/forms/REG.txt
+Mon Mar 24 21:39:43 2025: Loaded form TM01: {'L01': {'label': 'TM01', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'TOAST MANAGER', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Toaster', 'row': 4, 'col': 12, 'len': 256}, 'L03': {'label': 'Toasted', 'row': 5, 'col': 12, 'len': 256}, 'L04': {'label': 'Toast', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:39:43 2025: Loaded form data from /opt/terminal_client/forms/TM01.txt
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:39:43 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:39:44 2025: Full UI redraw: form_id=NONE, mode=None, fields=[]
+Mon Mar 24 21:39:44 2025: Redraw took 0.019s
+Mon Mar 24 21:39:54 2025: No data received, connection still alive
+Mon Mar 24 21:39:54 2025: Socket timeout detected, connection still active
+Mon Mar 24 21:40:43 2025: KISS data received: c0007e82989840404060a6aca46060626103f04d7c53565230...
+Mon Mar 24 21:40:43 2025: Receive buffer updated: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (len=69)
+Mon Mar 24 21:40:43 2025: Listener buffer state: 69 bytes
+Mon Mar 24 21:40:43 2025: KISS frame extracted: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+Mon Mar 24 21:40:43 2025: Frame extracted in 0.000s
+Mon Mar 24 21:40:43 2025: Buffer after frame split:  (len=0)
+Mon Mar 24 21:40:43 2025: AX.25 packet: 7e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907e
+Mon Mar 24 21:40:43 2025: Decoded packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:43 2025: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:43 2025: Comms Log updated: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:43 2025: Packet content logged: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:43 2025: Packet validated: src=```b, dest=~@@@, payload_len=46
+Mon Mar 24 21:40:43 2025: Received packet uses 3 pipe delimiters
+Mon Mar 24 21:40:43 2025: Packet format check: 4 parts (expected 4)
+Mon Mar 24 21:40:43 2025: Received packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:40:43 2025: Enqueued packet: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468
+Mon Mar 24 21:40:43 2025: Listener enqueued: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:40:43 2025: Packet relayed to queue: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:40:43 2025: Packet enqueued at 1742866843.9927394
+Mon Mar 24 21:40:43 2025: Queue size after enqueue: 1
+Mon Mar 24 21:40:44 2025: Dequeued packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:40:44 2025: UI handling packet: M|SVR001|NONE|81193b39aea0b7052292
+Mon Mar 24 21:40:44 2025: Processing packet: function=M, callsign=SVR001, form_id=NONE
+Mon Mar 24 21:40:44 2025: Packet dequeued at 1742866844.050291
+Mon Mar 24 21:40:44 2025: Queue size after dequeue: 0
+Mon Mar 24 21:40:44 2025: Validated command 'M' as MD5
+Mon Mar 24 21:40:44 2025: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Comms Log updated: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Rebuilt forms_index.json at /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:40:44 2025: Wrote forms_index.json to /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:40:44 2025: Read forms_index.json from /opt/terminal_client/forms/forms_index.json
+Mon Mar 24 21:40:44 2025: MD5 comparison: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:40:44 2025: MD5 mismatch detected: server=81193b39aea0b7052292743468c93de2, client=4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:40:44 2025: MD5 mismatch details - Server MD5: 81193b39aea0b7052292743468c93de2, Client MD5: 4ec8db540cb05b91e8d118db54837b69
+Mon Mar 24 21:40:44 2025: MD5 mismatch detected, sending X packet to request updates
+Mon Mar 24 21:40:44 2025: Client forms from JSON: {'GB': {'md5': '5ef45b4deb62472cad455f6177b36c2a'}, 'REG': {'md5': '089e86c083f5823e93015ac17a38a300'}, 'TM01': {'md5': '1ee6567882b3fa2a7ded9645748de19d'}}
+Mon Mar 24 21:40:44 2025: X (INDEX) packet built: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Sending X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Send initiated
+Mon Mar 24 21:40:44 2025: Starting submission process
+Mon Mar 24 21:40:44 2025: Preparing sync X (INDEX) packet: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Packet payload: X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Packet uses 5 pipe delimiters
+Mon Mar 24 21:40:44 2025: Sending command: X
+Mon Mar 24 21:40:44 2025: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Comms Log updated: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Packet content logged: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Send packet structure: len=124, newlines=0
+Mon Mar 24 21:40:44 2025: Payload exceeds max (108): 124 bytes, splitting
+Mon Mar 24 21:40:44 2025: Packet split into 2 parts: [108, 16] bytes
+Mon Mar 24 21:40:44 2025: Failed to build AX.25 packets: log_event() got an unexpected keyword argument 'payload_validation'
+Mon Mar 24 21:40:44 2025: Loaded form GB: {'L01': {'label': 'GB', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'GENERAL BROADCAST', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Attention', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Copy', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Priority', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Date', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'Message', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:40:44 2025: Loaded form data from /opt/terminal_client/forms/GB.txt
+Mon Mar 24 21:40:44 2025: Invalid line in REG.txt: R
+Mon Mar 24 21:40:44 2025: Loaded form REG: {'L01': {'label': 'REG', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'PARTICIPANT REGISTRATION', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Name', 'row': 4, 'col': 12, 'len': 256}, 'R02': {'label': 'Cell#', 'row': 4, 'col': 32, 'len': 256}, 'L03': {'label': 'Address', 'row': 5, 'col': 12, 'len': 256}, 'R03': {'label': 'Home#', 'row': 5, 'col': 32, 'len': 256}, 'L04': {'label': 'City', 'row': 6, 'col': 12, 'len': 256}, 'L05': {'label': 'State', 'row': 7, 'col': 12, 'len': 256}, 'R05': {'label': 'Zip', 'row': 7, 'col': 32, 'len': 256}, 'L06': {'label': 'ICE Contact', 'row': 8, 'col': 12, 'len': 256}}
+Mon Mar 24 21:40:44 2025: Loaded form data from /opt/terminal_client/forms/REG.txt
+Mon Mar 24 21:40:44 2025: Loaded form TM01: {'L01': {'label': 'TM01', 'row': 3, 'col': 12, 'len': 256}, 'R01': {'label': 'TOAST MANAGER', 'row': 3, 'col': 32, 'len': 256}, 'L02': {'label': 'Toaster', 'row': 4, 'col': 12, 'len': 256}, 'L03': {'label': 'Toasted', 'row': 5, 'col': 12, 'len': 256}, 'L04': {'label': 'Toast', 'row': 6, 'col': 12, 'len': 256}}
+Mon Mar 24 21:40:44 2025: Loaded form data from /opt/terminal_client/forms/TM01.txt
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: ```b>~@@@:M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: Received M (MD5) from SVR001: 81193b39aea0b7052292743468c93de2
+Mon Mar 24 21:40:44 2025: Packet displayed in Comms Log: KC8QKU>SVR001:X|SVR001|NONE|GB:5ef45b4deb62472cad455f6177b36c2a|REG:089e86c083f5823e93015ac17a38a300|TM01:1ee6567882b3fa2a7ded9645748de19d
+Mon Mar 24 21:40:44 2025: Full UI redraw: form_id=NONE, mode=None, fields=[]
+Mon Mar 24 21:40:44 2025: Redraw took 0.019s
+Mon Mar 24 21:40:54 2025: No data received, connection still alive
+Mon Mar 24 21:40:54 2025: Socket timeout detected, connection still active

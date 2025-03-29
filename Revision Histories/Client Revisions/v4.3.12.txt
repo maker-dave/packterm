@@ -1,0 +1,39 @@
+Client Mini Revisions History - terminal_client.py
+Version: v4.3.11_fixes
+Date: 2025-03-24
+
+Changes:
+1. Chunk 1: Changed PACLEN from 255 to 128.
+   - User requested default PACLEN=128 to better handle packet sizes.
+   - Line ~40: Updated PACLEN = 255 to PACLEN = 128.
+
+2. Chunk 1: Added LOG_PAYLOAD_VALIDATION to config to fix NameError.
+   - Resolves ID# 001 issue: LOG_PAYLOAD_VALIDATION error in build_ax25_packet.
+   - Line ~150: Added 'log_payload_validation': 'True' to config settings.
+   - Line ~250: Added LOG_PAYLOAD_VALIDATION = config.getboolean('Settings', 'log_payload_validation', fallback=True).
+
+3. Chunk 1: Added new logging types for troubleshooting.
+   - Added log_packet_split to track packet splitting details in build_ax25_packet.
+   - Added log_validation_error to track validation failures (e.g., packet length issues).
+   - Line ~150: Added 'log_packet_split': 'True' and 'log_validation_error': 'True' to config.
+   - Line ~250: Added LOG_PACKET_SPLIT and LOG_VALIDATION_ERROR config variables.
+
+4. Chunk 1: Disabled spammy logs to reduce log spam.
+   - Disabled log_ui_render and log_packet_raw_decode (log_socket_send_bytes already off).
+   - Line ~150: Ensured 'log_ui_render': 'False' and 'log_packet_raw_decode': 'False'.
+
+5. Chunk 3: Updated log_event to include new logging types.
+   - Added packet_split and validation_error parameters to log_event.
+   - Line ~300: Updated log_event function signature to include packet_split=False, validation_error=False.
+   - Line ~400: Added corresponding debug_log.append calls for new logging types.
+
+6. Chunk 6: Updated max_payload calculation in build_ax25_packet.
+   - Changed max_payload = PACLEN - 32 to max_payload = PACLEN - 20 for exact overhead (14 addr + 2 control/PID + 2 FCS + 2 KISS).
+   - With PACLEN=128, max_payload=108, ensuring total packet fits within 128 bytes.
+   - Line ~400: Updated max_payload calculation with comment explaining overhead.
+
+7. Chunk 6: Added logging for packet splitting and validation errors.
+   - Added LOG_PACKET_SPLIT logging for split packet details.
+   - Added LOG_VALIDATION_ERROR logging for packet length validation issues.
+   - Line ~410: Added log_event for packet splitting with packet_split=True.
+   - Line ~430: Added validation_error=True to existing packet length error log.

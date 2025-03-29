@@ -1,0 +1,11 @@
+Version 3.0.15 - 2025-03-24
+- Fix: Added `screen_dirty = True` in `broadcast_forms_md5()` after setting `last_md5_time` to ensure UI updates with the latest MD5 broadcast time. Addresses issue where "Last MD5 broadcast" showed "N/A" despite broadcasts occurring.
+- Logging Update: Added `broadcast_timing` logging type to log `last_md5_time` value after setting, aiding in debugging UI update issues. Config: `log_broadcast_timing`, default `True`.
+- Logging Update: Added `ui_update` logging type to log when `update_ui()` is called or skipped, helping debug UI refresh issues. Config: `log_ui_update`, default `True`.
+- Logging Update: Added `thread_status` logging type to periodically log the status of critical threads (`broadcast_forms_md5`, `handle_ax25`), ensuring they’re alive. Config: `log_thread_status`, default `True`. Added new `monitor_threads()` function to check thread status every 5 minutes.
+- Logging Update: Disabled spammy logging types by default to reduce log clutter:
+  - `LOG_PACKET_RAW_BYTES` (was `True`, now `False`): Logs raw packet bytes, too verbose.
+  - `LOG_KISS_FRAMING` (was `True`, now `False`): Logs KISS framing for every packet, too frequent.
+  - `LOG_PACKET_LENGTH` (was `True`, now `False`): Logs packet length for every packet, redundant.
+  - `LOG_TRANSMISSION_VALIDATION` (was `True`, now `False`): Logs pre-transmission validation, spammy.
+- Note: `backups` logging remains always on per requirement.

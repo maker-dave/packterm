@@ -1,0 +1,22 @@
+To-Do List (Last Updated: March 24, 2025)
+
+High Priority
+-------------
+Client Application
+- ID# 001: Fix packet streaming issue. The client fails to send the X (INDEX) packet because it exceeds the max length (96 bytes, actual 124 bytes) and encounters a LOG_PAYLOAD_VALIDATION error.
+  [x] Needs Done | [ ] Is Done | [ ] Ignore
+
+Medium Priority
+---------------
+Fake Direwolf Application
+- ID# 002: Address rapid log growth in fake_direwolf_pi4.log (grew from 151567 to 1376256 bytes across runs).
+  [ ] Needs Done | [ ] Is Done | [x] Ignore
+
+Low Priority
+------------
+GrabLogs Application
+- ID# 003: Investigate pscp issues in GrabLogs.bat (assertion error: actuallen <= len).
+  [ ] Needs Done | [ ] Is Done | [x] Ignore
+
+Skippy may not be as much of a poopy head but
+Skippy is STILL a poopy head!

@@ -1,0 +1,246 @@
+#!/usr/bin/env python3
+# ax25_sender.py - Sends AX.25 packets to local Fake Direwolf and displays received packets
+
+import socket
+import threading
+import sys
+import time
+import curses
+import logging
+import crcmod
+import random
+import string
+import select
+import os
+from collections import deque
+
+# Configuration
+KISS_PORT = 8051          # Local Fake Direwolf KISS port
+BUFFER_SIZE = 1024
+MAX_LOG_LINES = 20
+RETRY_INTERVAL = 5        # Seconds between reconnect attempts
+LOG_DIR = os.path.expanduser('~/terminal/server_data')
+LOG_FILE = os.path.join(LOG_DIR, 'ax25_sender.log')
+
+# Global state
+packet_log = deque(maxlen=MAX_LOG_LINES)  # (timestamp, direction, payload_and_hex)
+screen_lock = threading.Lock()
+connection_lock = threading.Lock()
+screen_dirty = True
+stop_event = threading.Event()
+MY_CALLSIGN = ""
+DEST_CALLSIGN = "APDWLF"  # Default destination, changeable
+connection_status = "Disconnected"
+direwolf_socket = None
+SESSION_ID = random.randint(1000, 9999)  # Unique per run
+
+# Logging setup
+os.makedirs(LOG_DIR, exist_ok=True)
+if os.path.exists(LOG_FILE):
+    os.remove(LOG_FILE)
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format='%(asctime)s - %(message)s')
+log = logging.info
+log("Started new session")
+
+def generate_callsign():
+    prefix = random.choice(['K', 'W', 'N'])
+    number = random.randint(0, 9)
+    suffix = ''.join(random.choices(string.ascii_uppercase, k=random.randint(2, 3)))
+    return f"{prefix}{number}{suffix}"
+
+def build_ax25_packet(source, dest, payload):
+    crc16 = crcmod.predefined.mkCrcFun('crc-ccitt-false')
+    
+    def encode_callsign(callsign, ssid=0, last=False):
+        callsign = callsign.ljust(6)[:6].upper()
+        ssid_byte = (0x60 | (ssid << 1) | (1 if last else 0))
+        return bytes([ord(c) << 1 for c in callsign]) + bytes([ssid_byte])
+    
+    address = encode_callsign(dest) + encode_callsign(source, last=True)
+    control = b'\x03'  # UI frame
+    pid = b'\xF0'      # No layer 3
+    info = payload.encode()
+    
+    frame = address + control + pid + info
+    fcs = crc16(frame).to_bytes(2, 'little')
+    return b'\x7E' + frame + fcs + b'\x7E'
+
+def build_kiss_packet(ax25_packet):
+    kiss_data = ax25_packet.replace(b'\xC0', b'\xDB\xDC').replace(b'\xDB', b'\xDB\xDD')
+    return b'\xC0\x00' + kiss_data + b'\xC0'
+
+def receive_packets():
+    global screen_dirty, direwolf_socket, connection_status
+    buffer = b""
+    while not stop_event.is_set():
+        with connection_lock:
+            if not direwolf_socket:
+                log("Receive thread: No socket, exiting")
+                break
+            sock = direwolf_socket
+        try:
+            readable, _, errored = select.select([sock], [], [sock], 0.01)
+            if errored:
+                log("Receive thread: Socket errored")
+                break
+            if readable:
+                data = sock.recv(BUFFER_SIZE)
+                if not data:
+                    log("Receive thread: Direwolf disconnected (no data)")
+                    break
+                buffer += data
+                while b'\xC0' in buffer[1:]:
+                    end = buffer.find(b'\xC0', 1)
+                    if end == -1:
+                        break
+                    frame = buffer[:end + 1]
+                    buffer = buffer[end + 1:]
+                    if len(frame) > 2 and frame[0] == 0xC0 and frame[-1] == 0xC0:
+                        # Decode payload: after PID (\xF0) up to CRC (last 2 bytes before \x7E)
+                        try:
+                            payload_start = frame.find(b'\xF0') + 1
+                            payload_end = frame.rfind(b'\x7E') - 2  # Exclude CRC and end flag
+                            payload = frame[payload_start:payload_end].decode('ascii')
+                        except Exception as e:
+                            payload = f"<decode-error: {e}>"
+                        with screen_lock:
+                            packet_log.append((time.strftime('%H:%M:%S'), "Received", f"{payload} ({frame.hex()[:20]}...)"))
+                            screen_dirty = True
+                        log(f"Received KISS frame: payload={payload}, hex={frame.hex()}")
+        except Exception as e:
+            log(f"Receive thread error: {e}")
+            break
+    with connection_lock:
+        if direwolf_socket:
+            direwolf_socket.close()
+            direwolf_socket = None
+        connection_status = "Disconnected - Retrying..."
+        screen_dirty = True
+    log(f"Received at {time.time()}: payload={payload}")
+    log("Receive thread: Exited")
+
+def connect_to_direwolf():
+    global direwolf_socket, connection_status, screen_dirty
+    while not stop_event.is_set():
+        with connection_lock:
+            if direwolf_socket:
+                time.sleep(1)
+                continue
+        try:
+            new_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            new_socket.settimeout(5)
+            new_socket.connect(('localhost', KISS_PORT))
+            new_socket.settimeout(None)
+            with connection_lock:
+                direwolf_socket = new_socket
+                connection_status = f"Connected to localhost:{KISS_PORT}"
+                screen_dirty = True
+            log(f"Connected to Fake Direwolf on localhost:{KISS_PORT}")
+            threading.Thread(target=receive_packets, daemon=True).start()
+        except Exception as e:
+            log(f"Failed to connect to Fake Direwolf: {e}")
+            with connection_lock:
+                if direwolf_socket:
+                    direwolf_socket.close()
+                direwolf_socket = None
+                connection_status = "Disconnected - Retrying..."
+                screen_dirty = True
+            time.sleep(RETRY_INTERVAL)
+
+def status_display(stdscr):
+    global screen_dirty, MY_CALLSIGN, connection_status, DEST_CALLSIGN, direwolf_socket
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    stdscr.nodelay(True)
+
+    MY_CALLSIGN = generate_callsign()
+    log(f"Generated callsign: {MY_CALLSIGN}")
+
+    connect_thread = threading.Thread(target=connect_to_direwolf, daemon=True)
+    connect_thread.start()
+
+    sequence = 0
+    input_buffer = ""
+    entering_dest = False
+    while True:
+        if screen_dirty:
+            with screen_lock:
+                stdscr.clear()
+                max_y, max_x = stdscr.getmaxyx()
+                border = "=" * (max_x - 2)
+                stdscr.addstr(0, 0, border, curses.color_pair(1))
+                stdscr.addstr(1, 2, f"AX.25 Sender - KISS Port: {KISS_PORT} - Callsign: {MY_CALLSIGN}", curses.color_pair(3))
+                stdscr.addstr(2, 2, f"Connection: {connection_status}", curses.color_pair(2 if 'Connected' in connection_status else 1))
+                stdscr.addstr(3, 2, f"Destination: {DEST_CALLSIGN}", curses.color_pair(3))
+                stdscr.addstr(4, 2, "Commands: S=Send  D=Set Dest  Q=Quit", curses.color_pair(3))
+                stdscr.addstr(5, 2, "Packet Log:", curses.color_pair(3))
+                if entering_dest:
+                    stdscr.addstr(6, 2, f"Enter destination: {input_buffer}", curses.color_pair(3))
+                for i, (ts, direction, frame) in enumerate(packet_log, start=6 + (1 if entering_dest else 0)):
+                    if i < max_y - 2:
+                        line = f"{ts} {direction}: {frame[:max_x-20]}"
+                        stdscr.addstr(i, 4, line, curses.color_pair(2))
+                stdscr.addstr(max_y - 1, 0, border, curses.color_pair(1))
+                stdscr.refresh()
+                screen_dirty = False
+
+        char = stdscr.getch()
+        if char == -1:  # No input
+            time.sleep(0.1)
+            continue
+
+        if entering_dest:
+            if char == 10:  # Enter key
+                if input_buffer:
+                    DEST_CALLSIGN = input_buffer.upper()
+                    log(f"Destination set to: {DEST_CALLSIGN}")
+                entering_dest = False
+                input_buffer = ""
+                screen_dirty = True
+                while stdscr.getch() != -1:  # Flush input queue
+                    pass
+            elif char == 127:  # Backspace
+                input_buffer = input_buffer[:-1]
+                screen_dirty = True
+            elif 32 <= char <= 126:  # Printable ASCII
+                input_buffer += chr(char)
+                screen_dirty = True
+        else:
+            if char == ord('q') or char == ord('Q'):
+                log("Shutting down via UI")
+                stop_event.set()
+                with connection_lock:
+                    if direwolf_socket:
+                        direwolf_socket.close()
+                sys.exit(0)
+            elif char == ord('s') or char == ord('S'):
+                with connection_lock:
+                    if direwolf_socket:
+                        payload = f"T{SESSION_ID}{sequence:03d}{int(time.time())}"
+                        ax25_packet = build_ax25_packet(MY_CALLSIGN, DEST_CALLSIGN, payload)
+                        kiss_packet = build_kiss_packet(ax25_packet)
+                        try:
+                            direwolf_socket.send(kiss_packet)
+                            with screen_lock:
+                                packet_log.append((time.strftime('%H:%M:%S'), "Sent", f"{payload} ({kiss_packet.hex()[:20]}...)"))
+                                screen_dirty = True
+                            log(f"Sent KISS frame to {DEST_CALLSIGN}: payload={payload}, hex={kiss_packet.hex()}")
+                            sequence += 1
+                        except Exception as e:
+                            log(f"Send error: {e}")
+                            direwolf_socket.close()
+                            direwolf_socket = None
+                            connection_status = "Disconnected - Retrying..."
+                            screen_dirty = True
+            elif char == ord('d') or char == ord('D'):
+                entering_dest = True
+                input_buffer = ""
+                screen_dirty = True
+
+def main():
+    curses.wrapper(status_display)
+
+if __name__ == "__main__":
+    main()

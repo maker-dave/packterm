@@ -1,0 +1,158 @@
+Revision History for fake_direwolf.py
+Generated: March 18, 2025
+Based on: fake_direwolf.py v16, prior revision logs, and update notes from 2025-03-16, 2025-03-18
+
+Overview:
+This revision history tracks the development of fake_direwolf.py for the Packet Radio Terminal Project. It includes version updates, key changes, bug fixes, and notable issues, derived from code comments, manual notes, changelog entries, and provided documents. Dates reflect file versions or explicit log references. Versions are numbered sequentially, with v15 and v16 explicitly dated.
+
+---
+
+Version 1 (Group 1, Document 5)
+Date: Pre-2025-03-14
+Changes:
+- Initial version.
+- KISS_PORT: 8001, PEER_HOST: 'debian.lan', PEER_PORT: 8002.
+- No UI, console logging only.
+- Fixed peer connection with retry logic, no broadcast discovery.
+- Basic KISS forwarding between client and peer.
+Notes:
+- Foundation for KISS relay over TCP.
+
+Version 2 (Group 1, Document 1)
+Date: Pre-2025-03-14
+Changes:
+- Added curses UI with packet log (hex only).
+- KISS_PORT: 8001, added PEER_PORT: 8052, BROADCAST_PORT: 5000.
+- Introduced LAN discovery with UDP broadcasts.
+- Added peer_manager for outbound connections (no IP comparison).
+- No file logging, uses console logging.
+Notes:
+- Enhanced visibility and peer discovery.
+
+Version 3 (Group 1, Document 2)
+Date: Pre-2025-03-14
+Changes:
+- KISS_PORT changed to 8051.
+- Added file logging to ~/terminal/server_data/fake_direwolf.log.
+- Added active_kiss_clients list and UI display.
+- Added parse_ax25_callsigns for src/dest in logs/UI.
+- Improved peer_manager with IP comparison (lower IP connects).
+Notes:
+- Standardized port, improved logging and peer handling.
+
+Version 4 (Group 1, Document 3)
+Date: Pre-2025-03-14
+Changes:
+- Added status_messages deque and UI section.
+- Enhanced logging with thread IDs and status updates in UI.
+Notes:
+- No significant functional changes; UI and logging improvements.
+
+Version 5 (Group 1, Document 4)
+Date: Pre-2025-03-14
+Changes:
+- Added select.select() for socket health checks in peer_manager.
+- Improved peer_manager connection logic with writable/errored checks.
+Notes:
+- Enhanced peer connection reliability.
+
+Version 6 (Group 2, Document 1)
+Date: 2025-03-14
+Changes:
+- Same as v5 from Group 1 (no changes).
+Notes:
+- Baseline for Group 2 revisions.
+
+Version 7 (Group 2, Document 2)
+Date: 2025-03-14
+Changes:
+- Added decode_payload function (ASCII, falls back to <non-ascii>).
+- Packet log/UI now shows payload + truncated hex.
+Notes:
+- Improved packet readability in UI and logs.
+
+Version 8 (Group 2, Document 3)
+Date: 2025-03-14
+Changes:
+- Fixed decode_payload end offset (len(ax25) - 3) to exclude CRC/flag.
+Issues Fixed:
+- Incorrect payload truncation including CRC/flag bytes.
+Notes:
+- Corrected payload decoding logic.
+
+Version 9 (Group 2, Document 4)
+Date: 2025-03-14
+Changes:
+- Removed decode_payload, reverted to hex-only logging/UI.
+Notes:
+- Simplified back to hex for stability or preference.
+
+Version 10 (Group 2, Document 5)
+Date: 2025-03-14
+Changes:
+- Reintroduced decode_payload with improved offset (len(ax25) - 2).
+- Added detailed logging for send/forward steps in handle_kiss_client.
+- Prevents loopback by skipping sender in KISS client forwarding.
+Notes:
+- Restored payload decoding with better offset, enhanced debugging and loopback prevention.
+
+Version 11 (Group 2, Document 6)
+Date: 2025-03-14
+Changes:
+- Simplified status_display thread startup (no named threads).
+Notes:
+- Streamlined thread management.
+
+Version 12 (Group 2, Document 7)
+Date: 2025-03-14
+Changes:
+- Reverted to v10 thread startup with named threads and IDs in log.
+Notes:
+- Restored detailed thread logging for troubleshooting.
+
+Version 13 (Group 2, Document 8)
+Date: 2025-03-14
+Changes:
+- Same as v12 (no functional changes).
+Notes:
+- No updates; possible documentation or testing version.
+
+Version 14 (Group 2, Document 9)
+Date: 2025-03-14
+Changes:
+- Added direction check in peer_manager (closes inbound if IP > peer).
+- Enhanced peer_server to reject inbound if local IP < peer IP.
+Notes:
+- Ensured single-direction peer connections based on IP ordering.
+
+Version 15
+Date: 2025-03-16
+Changes:
+- Added configparser import and config file setup at ~/terminal/server_data/fake_direwolf.conf.
+- New logging types: log_kiss_receive_loop, log_kiss_raw_data, log_kiss_frame_parse, log_kiss_send, log_kiss_buffer_state, log_kiss_errors, log_peer_receive_loop, log_peer_raw_data, log_peer_frame_parse, log_peer_send (Lines 48-79).
+- Added detailed logging in handle_kiss_client for receive loop, raw data, frame parsing, sends, buffer state, and errors (Lines 144-216).
+- Added logging in handle_peer for receive loop, raw data, frame parsing, and sends (Lines 217-268).
+- Updated existing logs with config toggles (e.g., LOG_BROADCAST, LOG_PEER_STATE) (Lines 80-86).
+- Backup logging remains always on (Line 130).
+- Line count increased from ~370 to ~430 due to config setup and additional logging.
+Notes:
+- Enhanced troubleshooting with configurable logging; tested with server.py v3.0.4 and terminal_client.py v4.3.5 for INDEX/FORM_UPDATE relay (20:48:01).
+
+Version 16
+Date: 2025-03-18
+Changes:
+- Fixed decode_payload (Lines 135-153): Adjusted payload_end to len(ax25) - 2 to exclude FCS, added log_kiss_payload_decode for extraction/decode, falls back to hex on decode failure (+5 lines est.).
+- Updated parse_ax25_callsigns (Lines 117-133): Added SSID extraction with bit shifting, enhanced log_kiss_frame_parse with parsed callsign details (+3 lines est.).
+- Fixed status_display (Lines 400-408): Added dynamic frame_max_len calculation (max_x - 4), capped line length at 80/max_x to prevent wrapping (+2 lines modified).
+- Enhanced logging config (Lines 54-74): Added log_kiss_frame_validation, log_kiss_payload_decode, log_peer_frame_validation, log_peer_payload_decode, log_thread_management (True); turned off log_kiss_receive_loop, log_kiss_buffer_state, log_peer_receive_loop, log_ui_updates (False); kept log_kiss_raw_data, log_kiss_frame_parse, log_kiss_send, log_kiss_errors on (+5 lines est.).
+- Updated logging: Added frame validation logs in handle_kiss_client and handle_peer (Lines 198, 264, +1 line each), reduced spam with conditional logging (+2 lines est.).
+- Line count increased from 430 to 446 (net +16 from logging and fixes).
+Issues Fixed:
+- ASCII decode errors in payload due to FCS inclusion (pre-22:06:30 logs).
+- Inaccurate callsign parsing without SSID (e.g., SVR001 vs. SVR001-0).
+- UI line wrapping exceeding 80 columns or max_x.
+Notes:
+- Tested with server.py v3.0.14 and terminal_client.py v4.3.11 (22:06:30 logs); resolves decode and display issues.
+
+---
+End of Revision History

@@ -1,0 +1,429 @@
+Client Revision History for terminal_client.py
+Generated: March 23, 2025
+Based on: terminal_client.py v5.0.0, prior revision logs (v2.13–v4.3.11), client_mini_revisions_20250322_v5.0.0.txt, full script v5.0.0, update notes from 2025-03-17, 2025-03-18, 2025-03-20, 2025-03-22, and operational context from user interactions.
+
+Overview:
+This revision history tracks the development of terminal_client.py for the Packet Radio Terminal Project. It includes version updates, key changes, bug fixes, and notable issues, derived from code comments, manual notes, changelog entries, provided documents, and user interactions. Dates reflect file versions or explicit log references. User workflow: edits on Windows (G:\My Drive\Game Dev\terminal\Client Scripts\), .txt suffix for safety, synced via Google Drive, deployed via SSH/nano to debian.lan (/opt/terminal_client/), backups versioned (e.g., terminal_client_v2.85.txt to v5.0.1.txt).
+
+---
+
+Version 2.13 (Pre-2025-03-07)
+Changes:
+- Initial setup with global state for curses UI and form handling.
+- Basic TCP communication with server (I| packets) and form list display.
+Notes:
+- Early client with minimal sync and submission capabilities.
+
+Version 2.3 (Pre-2025-03-12)
+Changes:
+- Improved display functions: added mode prompt and form loading.
+Notes:
+- UI enhancements; sync still rudimentary.
+
+Version 2.84 (Pre-2025-03-07)
+Changes:
+- Fixed packet buffering to use \n\n delimiter.
+- UI tweaks for better form rendering.
+Issues Fixed:
+- Blank lines in forms truncated—normalized in processing.
+Notes:
+- Improved reliability of server-client communication.
+
+Version 2.89 (2025-03-07)
+Changes:
+- Updated VERSION to 2.89.
+- Simplified send_to_server(): single packet if <128 bytes, split to ~100-byte chunks if >128, removed 256-char padding.
+- Added log_submission_payload and log_segment_failure to config and log_event.
+- Disabled log_packet_details, log_comm_details, log_form_updates, log_ui_state to reduce spam.
+- Kept log_submission, log_segment_status, log_submission_details for troubleshooting.
+- Backup logging remains always on.
+Notes:
+- Prepped for v2.90 fixes; tested 2025-03-07.
+
+Version 2.90 (2025-03-08)
+Changes:
+- No explicit code changes listed (assumed from manual notes).
+Issues Fixed:
+- Double Send Bug: Eliminated duplicate "Sending data:" logs with sending flag in main().
+- Post-ACK Timeout: Fixed "Send error: timed out" with state reset in send_to_server().
+- UI Stays on Form: UI resets to form list post-submit/Esc via send_to_server() and main().
+- Esc Doesn’t Exit: Esc now returns to form list unless sending.
+Notes:
+- Final 2025-03-08 release; resolved all critical bugs from prior logs. User archived as terminal_client_v2.90.txt.
+
+Version 2.94 (2025-03-09)
+Changes:
+- Updated VERSION to 2.94.
+- Set client callsign to KB8XYZ (server uses KC8QKU) in config and get_callsign.
+- Unified packet format to (function)|(callsign)|(formID)|(payload)\n in send_to_server and server_listener.
+- Added log_packet_build, log_packet_parse, log_sync_state to config and log_event.
+- Simplified submit logic in main and display_search_screen to use unified send_to_server.
+- Kept spammy logs off, backups always on.
+- Line count increased from 1123 to ~1180 with new logging and unified logic.
+Notes:
+- Aligned with server v1.92+ packet format; improved sync and submission.
+
+Version 2.95 (2025-03-09)
+Changes:
+- Updated VERSION to 2.95.
+- Added log_sync_md5, log_sync_forms, log_sync_packets to config and log_event for sync troubleshooting.
+- Fixed StopIteration in send_to_server by safely handling empty form_fields during sync.
+- Enhanced hash_forms_dir and build_forms_index with sync logging.
+- Added sync packet logging in server_listener and send_to_server.
+- Line count increased from ~1180 to ~1220 with new logging and fix.
+Issues Fixed:
+- StopIteration crash in send_to_server during sync when form_fields empty.
+Notes:
+- Enhanced sync robustness; tested with server v1.94+.
+
+Version 2.96 (2025-03-09)
+Changes:
+- Updated VERSION to 2.96.
+- Added log_packet_integrity to config and log_event for FORM_UPDATE troubleshooting.
+- Modified server_listener to parse ~ in FORM_UPDATE packets from server v1.94.
+- Added packet integrity logging in send_to_server and server_listener.
+- Added display_form_list calls after MD5 match and FORM_UPDATE to refresh UI.
+- Kept existing sync logs on, spammy logs off, backups always on.
+- Line count increased from ~1220 to ~1250 with new logging and UI tweaks.
+Notes:
+- UI refresh improved; paired with server v1.94+ for ~ delimiter sync.
+
+Version 2.98 (2025-03-11)
+Changes:
+- Updated VERSION to 2.98.
+- Updated redraw_screen() with minor UI tweaks for form display consistency.
+- Reduced server_listener log noise from prior versions.
+Notes:
+- Incremental UI and logging refinement; prep for v3.00.
+
+Version 3.00 (2025-03-14)
+Changes:
+- Updated VERSION to 3.00.
+- Added FORM_DELETE handling in server_listener to remove forms from /opt/terminal_client/forms/<form_id>.txt.
+- Added log_form_deletion to config and log_event for troubleshooting.
+- Line count increased from ~1250 to ~1270 with FORM_DELETE logic and logging.
+Notes:
+- Paired with server v2.00+ for deletion sync; tested 2025-03-09 (LG01 deletion at 18:41:43).
+
+Version 3.03 (2025-03-09)
+Changes:
+- Updated VERSION to 3.03.
+- Added packet_queue for thread-safe packet handling in server_listener and main.
+- Added logging types for queue troubleshooting: log_packet_queue, log_listener_queue, log_ui_packet_handling, log_queue_state.
+- Disabled LOG_CURSOR_MOVEMENT and LOG_REDRAW_TRIGGERS to reduce spam.
+- Increased PACLEN from 128 to 255 to accommodate larger UPDATE packets.
+- Line count increased from ~1270 to 1066 with queue implementation and logging.
+Notes:
+- Improved packet processing stability; tested with server v2.01.
+
+Version 3.04 (2025-03-10)
+Changes:
+- Updated VERSION to 3.04.
+- Added default callsign 'CLT001' in config, prompts only if empty.
+- Enhanced Comms Log to show sent packets via LOG_PACKET_BUILD with ui=True.
+- Expanded Comms Log triggers to include submission events in log_event.
+- Added extensive logging: connection_attempts, packet_drop, thread_state with config toggles.
+- Turned off LOG_PACKET_PARSE, LOG_SYNC_MD5, LOG_SYNC_FORMS to reduce spam.
+- Made backup logging always on, no toggle.
+- Line count increased from 1066 to ~1110 with new logging and comments.
+Notes:
+- Tested 2025-03-10 on debian.lan (192.168.86.49); Comms Log blank despite MD5 receipt (fixed later).
+
+Version 3.1 (2025-03-11)
+Changes:
+- Updated VERSION to 3.1.
+- Added two-column Lxx/Rxx support in redraw_screen with Left/Right nav in main.
+- Added logging for column_navigation, form_layout, row_movement.
+- Updated command hint in redraw_screen.
+- Line count increased from ~1110 to ~1150 with UI and navigation enhancements.
+Notes:
+- Improved form interaction to match server two-column layout.
+
+Version 3.2 (2025-03-11)
+Changes:
+- Updated VERSION to 3.2.
+- Split Chunk 4 into 4/5, renumbered Chunks 5-10 to 6-11.
+- Updated redraw_screen UI to cols 13-48 (left) and 49-80 (right) with 34/30 chars.
+- Enhanced navigation for two-column consistency.
+- Added log_comms for packet-only Comms Log, set log_event ui default to False.
+- Added log_form_display_error, log_ui_render, log_socket_errors; turned off log_ui_state, log_redraw_triggers, log_field_state, log_ui_transitions.
+- Throttled redraw_screen logging to 1/sec.
+- Fixed NoneType crash in server_listener with null checks.
+- Line count increased from ~1150 to ~1165 with UI updates and logging.
+Notes:
+- Aligned UI with server form_edit_screen; improved stability.
+
+Version 3.4 (2025-03-11)
+Changes:
+- Updated VERSION to 3.4.
+- Fixed col 80 overflow crash in redraw_screen (80→79).
+- Line count unchanged at ~1165.
+Issues Fixed:
+- Overflow crash when rendering right column beyond screen width.
+Notes:
+- Stabilized form display UI.
+
+Version 3.5 (2025-03-11)
+Changes:
+- Updated VERSION to 3.5.
+- Updated redraw_screen UI: labels left of [ ], static top row, centered (S)ubmit/(C)ancel.
+- Added log_form_ui_layout, log_input_field_state to config and log_event.
+- Disabled log_cursor_movement, log_field_state to reduce spam.
+- Adjusted navigation in main for new UI layout.
+- Line count increased from ~1165 to ~1170 with UI changes and logging.
+Notes:
+- Enhanced form UI readability; tested with crash at 20:24:52 (fixed later).
+
+Version 3.6 (2025-03-11)
+Changes:
+- Updated VERSION to 3.6.
+- Fixed redraw_screen top row as static, right labels at col 41, kept 3-space margins and 25-char fields.
+- Line count unchanged at ~1170.
+Notes:
+- Incremental UI tweak; prep for crash fix. User updated Insert Form layout (per chat 2025-03-11).
+
+Version 3.6.1 (2025-03-11)
+Changes:
+- Updated VERSION to 3.6.1.
+- No functional changes; documentation update in Chunk 4 comment.
+- Line count unchanged at ~1170.
+Notes:
+- Clarified UI changes from v3.6 for consistency. User refined layout, fixed duplication (per chat 2025-03-11).
+
+Version 3.6.2 (2025-03-11)
+Changes:
+- Updated VERSION to 3.6.2.
+- Fixed NameError: 'max_x' not defined in main() by adding max_y, max_x = stdscr.getmaxyx() before col calculation.
+- Line count increased from ~1170 to ~1175 with fix and comments.
+Issues Fixed:
+- Crash on Enter from L04 field (e.g., 20:24:52) due to undefined max_x.
+Notes:
+- Tested 2025-03-11 with successful INSERT submission (20:32:05); stabilized navigation (per chat 2025-03-11).
+
+Version 4.0 (2025-03-11)
+Changes:
+- Updated VERSION to 4.0.
+- Replaced TCP with AX.25 via Fake Direwolf (127.0.0.1:8051, configurable) in config.
+- Set COMM_MODE to 'KISS'.
+- Added Fake Direwolf host/port to config.
+- Modified packet format with AX.25 headers and KISS framing in send_to_kiss.
+- Replaced server_listener with kiss_listener.
+- Added log_kiss_framing and log_ax25_state to config and log_event.
+- Commented out TCP (send_to_server, server_listener) and AGWPE (radio_send) code.
+- Updated main to use kiss_socket and send_to_kiss.
+- Line count increased from ~1175 to ~1200 due to AX.25 integration, logging, and comments.
+Notes:
+- Transitioned to AX.25 datagrams; tested with server v2.9 and Fake Direwolf v14.
+
+Version 4.1 (2025-03-11)
+Changes:
+- Updated VERSION to 4.1.
+- Fixed AX.25 decode in kiss_listener to handle binary data, added robust error handling.
+- Added log_ax25_packet, log_ax25_parse_error, log_kiss_packet_received to config and log_event.
+- Disabled spammy logs: log_packet_timing, log_packet_parse, log_ui_render, log_redraw_triggers, log_sync_md5, log_sync_forms.
+- Ensured backup logging always on in backup_script.
+- Restricted Comms Log to packets only via log_comms usage.
+- Line count increased from ~1200 to ~1250 due to logging additions, AX.25 fixes, and comments.
+Notes:
+- Enhanced AX.25 reliability; tested with server v3.0.
+
+Version 4.2 (2025-03-11)
+Changes:
+- Updated VERSION to 4.2.
+- Fixed TCP info in Comms Log by replacing log_comms with log_event in kiss_listener for non-packet logs.
+- Improved AX.25 parsing in kiss_listener for binary headers.
+- Added log_packet_validation, log_md5_comparison, log_packet_relay, log_ui_redraw to config and log_event.
+- Used new logs in kiss_listener, main, and redraw_screen.
+- Disabled spammy logs: log_key_context, log_queue_state.
+- Line count increased from ~1250 to ~1290 due to new logging, fixes, and comments.
+Notes:
+- Improved packet display and parsing; tested with server v3.0.1.
+
+Version 4.3 (2025-03-11)
+Changes:
+- Updated VERSION to 4.3.
+- Fixed MD5 comparison with strip() in main.
+- Added send retry logic and bytes logging in send_to_kiss.
+- Added manual reconnect with (R)econnect button and [C/D] indicator in redraw_screen.
+- Added log_socket_send_bytes, log_socket_send_failure, log_socket_reconnect, log_socket_status to config and log_event.
+- Updated kiss_listener and main for socket_connected tracking.
+- Line count increased from ~1290 to ~1370 due to logging, reconnect feature, fixes, and comments.
+Issues Fixed:
+- MD5 mismatch due to trailing chars (pre-20:48:01 logs).
+- Send failures without retries (pre-20:48:01 logs).
+Notes:
+- Added user control for reconnect; tested with server v3.0.2.
+
+Version 4.3.1 (2025-03-11)
+Changes:
+- Updated VERSION to 4.3.1.
+- Added aggressive logging for UPDATE packet bug: log_socket_send_raw, log_socket_buffer, log_ui_comms_log, log_packet_send_time, log_packet_enqueue_time, log_packet_dequeue_time, log_queue_size, log_redraw_timing, log_kiss_receive_buffer, log_kiss_frame_timing, log_packet_content, log_socket_send_attempt, log_ui_packet_display.
+- Applied in send_to_kiss, kiss_listener, redraw_screen, main, log_comms.
+- Kept all logging enabled.
+- Line count increased from ~1370 to ~1450+ due to logging and comments.
+Notes:
+- Debugging aid for UPDATE packet issue; tested with server v3.0.3 (20:48:01 logs).
+
+Version 4.3.2 (2025-03-11)
+Changes:
+- Updated VERSION to 4.3.2.
+- Fixed f-string SyntaxError in send_to_kiss by moving newline count outside f-string.
+- Restored missing kiss_listener function (lost in prior edit).
+- Line count ~1451 due to fix and restoration.
+Issues Fixed:
+- SyntaxError in send_to_kiss preventing packet send (pre-20:48:01 logs).
+Notes:
+- Restored functionality; tested with server v3.0.3 (per chat 2025-03-16).
+
+Version 4.3.3 (2025-03-11)
+Changes:
+- Updated VERSION to 4.3.3.
+- Enhanced send_to_kiss with broader exception handling.
+- Added connect_kiss_socket helper to fix UPDATE packet bug.
+- Added log_packet_structure to config and log_event.
+- Updated main version log.
+- Line count ~1455 due to new function and comments.
+Issues Fixed:
+- UPDATE packet send failures due to socket issues (20:48:01 logs).
+Notes:
+- Improved send reliability; tested with server v3.0.3.
+
+Version 4.3.4 (2025-03-11)
+Changes:
+- Updated VERSION to 4.3.4.
+- Fixed packet send failure in send_to_kiss with socket validation and forced reconnect on failure.
+- Added log_socket_validation and log_packet_transmission to config and log_event.
+- Updated send_to_kiss and main version log.
+- Line count ~1470 due to logging and fixes.
+Issues Fixed:
+- Persistent send failures due to invalid socket state (20:48:01 logs).
+Notes:
+- Ensured robust packet transmission; tested with server v3.0.3.
+
+Version 4.3.5 (2025-03-18)
+Changes:
+- Updated VERSION to 4.3.5.
+- Added build_ax25_packet for proper AX.25 framing with crcmod, made SSID configurable via CALLSIGN_SSID in config and get_callsign.
+- Replaced raw packet build in send_to_kiss with build_ax25_packet.
+- Added AX.25 logging: log_ax25_build, log_ax25_validation, log_kiss_validation, log_fcs_calculation to config and log_event.
+- Updated send_to_kiss and main.
+- Line count increased from ~1470 to ~1500+ due to new function, logging, and comments.
+Issues Fixed:
+- Improper AX.25 packet framing causing server misparse (e.g., TM01 not syncing, 20:48:01 logs).
+Notes:
+- Fully compliant AX.25 UI frames; tested with server v3.0.4 (20:48:01).
+
+Version 4.3.6 (2025-03-17)
+Changes:
+- Updated VERSION to 4.3.6.
+- Added import json, logging types (log_json_rebuild, log_diff_state) for JSON and diff, config toggles (True, True).
+- Rewrote build_forms_index()—builds/updates forms_index.json, computes MD5 from JSON, removed hash_forms_dir().
+- Updated kiss_listener()—saves FORM_UPDATE/DELETE to forms dir, rebuilds forms_index.json, recalcs MD5.
+- Updated main()—sends INDEX:<server_callsign>:<form_id:md5|...> from forms_index.json on MD5 mismatch, removed 'not form_fields' queue block, set sync_state ui=True.
+- Slimmed design goals/history, points to revision file.
+- Line count increased from ~1500+ to ~1550+ due to JSON logic and logging.
+Notes:
+- Enhanced form index management and sync logic; fixed Comms Log display (per chat 2025-03-10).
+
+Version 4.3.7 (2025-03-17)
+Changes:
+- Updated VERSION to 4.3.7.
+- Fixed INDEX packet delimiter from colon to pipe (e.g., "INDEX|callsign|form_id|index") in main().
+- Added logging: log_delimiter_usage, log_sync_index, log_packet_format, enabled by default.
+- Disabled log_packet_details, log_cursor_movement, log_ui_render to reduce spam.
+- Used new logs in build_ax25_packet(), send_to_kiss(), kiss_listener(), main().
+- Line count increased from ~1550+ to 1535 (+38 lines from 1497 in doc) due to new logs, fix, and adjustments.
+Issues Fixed:
+- Delimiter mismatch with server expectation (colon vs. pipe), ensuring compatibility with time fields.
+Notes:
+- Improved packet structure debugging; backup logs always on (per chat 2025-03-16).
+
+Version 4.3.8 (2025-03-17)
+Changes:
+- Updated VERSION to 4.3.8.
+- Fixed payload decode in kiss_listener to exclude FCS using rfind(b'\x7e') - 2.
+- Added length sanitization in FORM_UPDATE file write to strip non-numeric characters.
+- Enhanced load_form_data with length sanitization to prevent parsing errors.
+- Added logging: log_packet_raw_decode, log_form_file_write, log_form_field_parse, enabled by default.
+- Confirmed log_cursor_movement, log_ui_render, log_packet_details off to reduce spam.
+- Line count increased from ~1535 to ~1570+ (assumed based on prior trends).
+Issues Fixed:
+- '256(' crash due to unclean payload decode and parsing errors.
+Notes:
+- Complements server v3.0.11 '2566' fix; ensures robust FORM_UPDATE handling.
+
+Version 4.3.9 (2025-03-18)
+Changes:
+- Updated VERSION to 4.3.9.
+- Fixed extra newline in FORM_UPDATE handling in kiss_listener by removing redundant "+ '\n'" after '\n'.join(sanitized_lines).
+- Added logging: log_newline_handling, log_file_content, enabled by default.
+- Disabled log_packet_timing to reduce spam; backups always on.
+- Updated kiss_listener with newline and content logging for verification.
+- Updated header comment: "# Version 4.3.9 - 2025-03-18  # CHANGE v4.3.9: Fixed extra newline in FORM_UPDATE, added newline/content logging".
+- Updated design goals to reference this revision file.
+- Line count increase minimal (~1570+ to ~1575+ est.) due to logging and comments.
+Issues Fixed:
+- Extra newline causing file size mismatch (e.g., GB.txt 173 vs. 172 bytes), resolving MD5 mismatch and constant updates.
+Notes:
+- Tested fix aligns client files with server’s 172 bytes, matching MD5 hashes.
+
+Version 4.3.10 (2025-03-18)
+Changes:
+- Updated VERSION to 4.3.10.
+- Standardized commands to single-letter shorthand for bandwidth efficiency on 1200 baud link:
+  - 'INSERT'/'I', 'SEARCH'/'S' already shorthand in send_to_kiss() (Chunk 6).
+  - 'INDEX' → 'X' in send_to_kiss() (Chunk 6).
+  - 'MD5' → 'M' in main() (Chunk 7).
+  - 'ACK' → 'A' in main() (Chunk 7).
+  - 'SEARCH_RESULT' → 'R' in main() (Chunk 7).
+  - 'FORM_UPDATE' → 'U' in kiss_listener() and main() (Chunks 6, 7).
+  - 'FORM_DELETE' → 'D' in kiss_listener() and main() (Chunks 6, 7).
+  - 'MSG' → 'G', 'CHAT' → 'C' in redraw_screen() and main() (Chunks 4, 7).
+- Added logging: log_command_validation, log_packet_handling, log_file_io to config and log_event, enabled by default (Chunk 3).
+- Enhanced existing logging:
+  - Added file_io logs to get_callsign(), load_form_data(), update_form_lengths(), build_forms_index(), kiss_listener() (Chunks 3, 6).
+  - Added packet_handling logs in kiss_listener() and main() (Chunks 6, 7).
+  - Added command_validation logs in main() and kiss_listener() (Chunks 6, 7).
+- Confirmed spam-prone logs off: log_packet_timing, log_ui_render, log_cursor_movement (Chunk 1).
+- Kept backups logging always on (Chunk 3).
+- Line count increased from ~1575+ to ~1590+ (est. +15 from logging and shorthand).
+Notes:
+- Bandwidth optimization for AX.25; tested with server v3.0.12 (2025-03-18 logs). User confirmed fix to get_callsign() (per chat 2025-03-18).
+
+Version 4.3.11 (2025-03-20)
+Changes:
+- Updated VERSION to 4.3.11.
+- Updated build_ax25_packet(): Replaced truncation with splitting for payloads > PACLEN (255), added seq:total tags, returns packet list, added log_multi_packet (Chunk 3, +10 lines est.).
+- Added form_parts buffer in kiss_listener() (dict: form_id -> {seq: content}), assembles multi-packet U/R, added log_buffer_management (Chunk 2, +1 line; Chunk 6, +10 lines est.).
+- Updated redraw_screen(): Left half ("Packet Radio Client", "Callsign", "Select a form", form list, commands), right half at col 40 ("Direwolf [Connected]", "Comms Log", log entries max 38 chars), excludes M packets (Chunk 4, +5 lines modified).
+- Updated send_to_kiss(): Handles packet lists from build_ax25_packet, logs full payload (Chunk 6, +5 lines est.).
+- Added logging: log_multi_packet (True), log_buffer_management (True), turned off log_socket_send_bytes (False), log_comms excludes M packets (Chunk 1, +3 lines modified).
+- Line count increased from ~1590+ to ~1620+ (est. +23 functional from v4.3.11 doc, adjusted to ~30 total with comments).
+Issues Fixed:
+- X packet send failure due to undefined LOG_PAYLOAD_VALIDATION (22:04:31 logs); splitting mitigates oversized payloads.
+Notes:
+- Aligns with server v3.0.14 for multi-packet support; UI decluttered for client traffic focus.
+
+Version 5.0.0 (2025-03-22)
+Changes:
+- Updated VERSION to 5.0.0.
+- Major update: Added CMS with ~/cms/push/ sync, unified AX.25 compression, menu access.
+- Chunk 1: Added zlib import for compression, Path for CMS paths, CMS_DIR/CMS_PUSH_DIR setup, cms_sync_enabled/max_age config, CMS logging toggles (cms_ui_state off). Added log_cms_sync, log_cms_operations, log_cms_packet_build, log_cms_ui_state to config (True except cms_ui_state).
+- Chunk 2: Added cms_parts dict for CMS multi-packet buffering.
+- Chunk 4: Added "CMS Browser" to menu options, basic CMS screen rendering with category listing from ~/cms/.
+- Chunk 6: Updated build_ax25_packet with optional zlib compression (C flag) for G/P packets, send_to_kiss uses compression for G/P, kiss_listener handles CMS U/D sync and decompression. Added build_cms_push_index() to compute push MD5, clean_push_cache() to remove expired CMS files.
+- Chunk 7: Extended main loop to handle CMS M (PUSH sync) with X|PUSH|<index>, processes L/G packets (placeholders for UI).
+- General: No code removed, backups logging always on. Line count increased from ~976 (v4.3.11 reported) to ~1250 (~274 lines added per mini-revisions; script shows ~1600+).
+Notes:
+- Major CMS integration from 2025-03-22; user tweaked CMS updates 2025-03-22 night, unversioned but planned for testing with server v1.88 (per chat 2025-03-23). CMS sync untested in RF conditions. Line count discrepancy (~976 vs. ~1620+) suggests mini-revisions underestimated v4.3.11 baseline; script confirms ~1250 as accurate.
+
+Version 5.0.0+ (2025-03-22 Night, Unversioned)
+Changes:
+- User-modified CMS updates post-v5.0.0 (exact changes unspecified in files, from chat 2025-03-23).
+- Likely refined CMS sync logic or UI based on prior CMS_v0.1.txt work (G:\My Drive\Game Dev\terminal\CMS scripts\).
+- Intended for testing with server v1.88 (not v4.0.0) per user plan 2025-03-23.
+Notes:
+- Informal update from user’s late-night session 2025-03-22; not yet archived as terminal_client_v5.0.1.txt. Awaiting test results and GitHub push.
+
+---
+End of Client Revision History

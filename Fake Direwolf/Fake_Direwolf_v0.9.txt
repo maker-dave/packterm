@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+# fake_direwolf.py - Mimics Direwolf's KISS interface over TCP, with retry logic for flaky LAN
+# Note: DNS and TCP reliability are known issues due to Google mesh routers (no fix available).
+#       This script pings and retries to maintain peer connection.
+
+import socket
+import threading
+import sys
+import time
+import os
+
+# Configuration
+KISS_PORT = 8001          # Port to accept KISS frames from server/client (mimics Direwolf)
+PEER_HOST = 'debian.lan'  # Peer Fake Direwolf host (adjust for server/client pair)
+PEER_PORT = 8002          # Port to send/receive KISS frames to/from peer
+BUFFER_SIZE = 1024
+RETRY_INTERVAL = 5        # Seconds between reconnect attempts
+PING_INTERVAL = 10        # Seconds between pings to check peer
+
+def log(message):
+    print(f"[{time.strftime('%H:%M:%S')}] {message}")
+
+# Ping peer to check if it’s alive (handles DNS flakiness)
+def ping_peer(host):
+    try:
+        # Use system ping (-c 1 = one attempt, -W 2 = 2s timeout)
+        response = os.system(f"ping -c 1 -W 2 {host} > /dev/null 2>&1")
+        return response == 0
+    except Exception:
+        return False
+
+# Handle KISS connection from server/client
+def handle_kiss_client(kiss_socket, peer_socket):
+    log(f"KISS client connected: {kiss_socket.getpeername()}")
+    buffer = b""
+    while True:
+        try:
+            data = kiss_socket.recv(BUFFER_SIZE)
+            if not data:
+                log("KISS client disconnected")
+                break
+            buffer += data
+            while b'\xC0' in buffer:
+                end = buffer.find(b'\xC0', 1)
+                if end == -1:
+                    break
+                frame = buffer[:end + 1]
+                buffer = buffer[end + 1:]
+                if len(frame) > 2 and frame[0] == 0xC0:  # Valid KISS frame
+                    log(f"Received KISS frame from client: {frame.hex()}")
+                    try:
+                        peer_socket.send(frame)  # Forward to peer
+                    except (BrokenPipeError, ConnectionError):
+                        log("Peer socket broken, waiting for reconnect")
+        except Exception as e:
+            log(f"KISS client error: {e}")
+            break
+    kiss_socket.close()
+
+# Handle TCP connection from peer Fake Direwolf
+def handle_peer(peer_socket, kiss_socket):
+    log(f"Connected to peer: {peer_socket.getpeername()}")
+    while True:
+        try:
+            data = peer_socket.recv(BUFFER_SIZE)
+            if not data:
+                log("Peer disconnected")
+                break
+            log(f"Received KISS frame from peer: {data.hex()}")
+            try:
+                kiss_socket.send(data)  # Forward to server/client
+            except (BrokenPipeError, ConnectionError):
+                log("KISS socket broken, client may reconnect")
+        except Exception as e:
+            log(f"Peer error: {e}")
+            break
+    peer_socket.close()
+
+# Accept KISS connections (mimics Direwolf’s KISS server)
+def kiss_server(peer_socket):
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server.bind(('0.0.0.0', KISS_PORT))
+    server.listen(1)
+    log(f"KISS server listening on port {KISS_PORT}")
+    while True:
+        try:
+            kiss_socket, addr = server.accept()
+            threading.Thread(target=handle_kiss_client, args=(kiss_socket, peer_socket), daemon=True).start()
+        except Exception as e:
+            log(f"KISS server error: {e}")
+            time.sleep(1)  # Brief pause before retry
+
+# Maintain peer connection with retry and ping
+def peer_connection():
+    peer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    while True:
+        try:
+            if not ping_peer(PEER_HOST):
+                log(f"Ping to {PEER_HOST} failed, retrying connection")
+            peer_socket.connect((PEER_HOST, PEER_PORT))
+            log(f"Connected to peer {PEER_HOST}:{PEER_PORT}")
+            return peer_socket
+        except ConnectionRefusedError:
+            log(f"Peer {PEER_HOST}:{PEER_PORT} not ready, retrying in {RETRY_INTERVAL}s")
+            time.sleep(RETRY_INTERVAL)
+        except Exception as e:
+            log(f"Peer connection error: {e}, retrying in {RETRY_INTERVAL}s")
+            time.sleep(RETRY_INTERVAL)
+
+# Monitor and reconnect peer
+def peer_monitor(peer_socket, kiss_server_thread):
+    while True:
+        try:
+            if not ping_peer(PEER_HOST):
+                log(f"Peer {PEER_HOST} unresponsive, reconnecting")
+                peer_socket.close()
+                peer_socket = peer_connection()
+            time.sleep(PING_INTERVAL)
+        except Exception as e:
+            log(f"Monitor error: {e}, attempting reconnect")
+            peer_socket.close()
+            peer_socket = peer_connection()
+
+# Main function
+def main():
+    # Initial peer connection
+    peer_socket = peer_connection()
+
+    # Start KISS server
+    kiss_thread = threading.Thread(target=kiss_server, args=(peer_socket,), daemon=True)
+    kiss_thread.start()
+
+    # Start peer monitor
+    threading.Thread(target=peer_monitor, args=(peer_socket, kiss_thread), daemon=True).start()
+
+    # Keep main thread alive
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        log("Shutting down")
+        peer_socket.close()
+        sys.exit(0)
+
+if __name__ == "__main__":
+    main()

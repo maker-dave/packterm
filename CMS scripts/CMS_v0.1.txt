@@ -1,0 +1,131 @@
+import os
+import time
+import logging
+import zlib
+from pathlib import Path
+
+# Configuration
+CMS_DIR = Path.home() / "cms"  # ~/cms
+LOG_DIR = CMS_DIR / "logs"
+MAX_PACKET_SIZE = 200  # Bytes per packet, fits 1200 baud
+COMPRESS = True  # Toggle compression (client must support zlib to use)
+
+# Setup directories
+CMS_DIR.mkdir(exist_ok=True)
+LOG_DIR.mkdir(exist_ok=True)
+
+# Setup logging
+logging.basicConfig(
+    filename=LOG_DIR / f"cms_{time.strftime('%Y%m%d')}.log",
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("CMS")
+
+def get_categories():
+    """Dynamically read folder structure as categories."""
+    categories = []
+    for root, dirs, _ in os.walk(CMS_DIR):
+        rel_path = Path(root).relative_to(CMS_DIR)
+        if rel_path != Path(".") and not str(rel_path).startswith("logs"):
+            categories.append(str(rel_path).replace(os.sep, "/"))
+    logger.debug(f"Found categories: {categories}")
+    return categories
+
+def list_content(category):
+    """List items in a category (folder)."""
+    cat_path = CMS_DIR / category
+    if not cat_path.is_dir():
+        logger.warning(f"Invalid category requested: {category}")
+        return "Error: Invalid category"
+    files = [f for f in cat_path.iterdir() if f.is_file() and f.suffix == ".txt"]
+    if not files:
+        return f"{category}: No items"
+    return f"{category}: {len(files)} items - " + ", ".join(f.name[:-4] for f in files)
+
+def get_content(category, item_id):
+    """Retrieve a specific item, split into packets."""
+    cat_path = CMS_DIR / category
+    file_path = cat_path / f"{item_id}.txt"
+    if not file_path.is_file():
+        logger.warning(f"Item not found: {file_path}")
+        return "Error: Item not found"
+    
+    with open(file_path, "r") as f:
+        content = f.read()
+    
+    # Compress if enabled
+    if COMPRESS:
+        content = zlib.compress(content.encode())
+        logger.info(f"Compressed {file_path}: {len(content)} bytes")
+    
+    # Split into packets
+    packets = [content[i:i+MAX_PACKET_SIZE] for i in range(0, len(content), MAX_PACKET_SIZE)]
+    response = []
+    for i, packet in enumerate(packets):
+        header = f"P{i+1:03d}/{len(packets):03d} {'C' if COMPRESS else 'U'} "
+        response.append(f"{header}{packet.hex()}")
+    logger.debug(f"Sending {len(packets)} packets for {file_path}")
+    return response
+
+def post_content(category, title, body):
+    """Post new content to a category."""
+    cat_path = CMS_DIR / category
+    if not cat_path.is_dir():
+        logger.warning(f"Invalid category for post: {category}")
+        return "Error: Invalid category"
+    
+    item_id = f"{int(time.time())}"
+    file_path = cat_path / f"{item_id}.txt"
+    with open(file_path, "w") as f:
+        f.write(f"{title}\n{body}")
+    logger.info(f"Posted to {file_path}")
+    return f"Posted to {category} as {item_id}"
+
+def process_command(command):
+    """Handle incoming commands."""
+    logger.debug(f"Received command: {command}")
+    parts = command.strip().split()
+    if not parts:
+        return "Error: No command"
+    
+    cmd = parts[0].upper()
+    try:
+        if cmd == "LIST" and len(parts) > 1:
+            return list_content(parts[1])
+        elif cmd == "GET" and len(parts) > 2:
+            return get_content(parts[1], parts[2])
+        elif cmd == "POST" and len(parts) > 3:
+            title = parts[2]
+            body = " ".join(parts[3:])
+            return post_content(parts[1], title, body)
+        elif cmd == "HELP":
+            return "Commands: LIST <cat>, GET <cat> <id>, POST <cat> <title> <body>"
+        else:
+            return "Error: Invalid command - Try HELP"
+    except Exception as e:
+        logger.error(f"Command processing failed: {e}", exc_info=True)
+        return f"Error: {str(e)}"
+
+# BPQ32 integration (simulated loop for now)
+def main():
+    logger.info("CMS started")
+    print("CMS running. Enter commands (or connect via BPQ32). Type 'exit' to quit.")
+    while True:
+        try:
+            cmd = input("> ")
+            if cmd.lower() == "exit":
+                break
+            response = process_command(cmd)
+            if isinstance(response, list):
+                for packet in response:
+                    print(packet)
+            else:
+                print(response)
+        except KeyboardInterrupt:
+            logger.info("CMS stopped by user")
+            break
+    logger.info("CMS shutdown")
+
+if __name__ == "__main__":
+    main()

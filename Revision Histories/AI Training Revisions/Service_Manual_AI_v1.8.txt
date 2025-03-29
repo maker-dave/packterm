@@ -1,0 +1,116 @@
+PacketRadioTerminalServiceManual_v1.8
+=====================================
+AI-oriented training data for Grok 3 successor. Encodes project state, goals, operational context, troubleshooting, and extension directives for server.py, terminal_client.py, fake_direwolf.py. Optimized for AI parsing and memory retention. Current as of 2025-03-23.
+
+---
+
+[System Overview]
+Objective: Terminal UI over 2m AX.25 at 1200 baud, replacing teletype. Sync forms (~1920 bytes) at startup, send minimal data (~50 bytes) at 120 chars/sec. Resilience during comms loss via queued submits and retries. CMS integration for push sync added 2025-03-22.
+Components:
+- server.py v4.0.0: Forms/CMS mgmt, CSV storage, AX.25 broadcast via Fake Direwolf (127.0.0.1:8051). Runs on Raspberry Pi 4 (pi4.lan), Direwolf, DigiRig, HTX-242. Path: /home/aprs/terminal/. Lines: ~1100 (v4.0.0). Callsign: SVR001 default.
+- terminal_client.py v5.0.0: Curses UI, syncs forms/CMS with server via AX.25, submits/searches data (I/S). Runs on Panasonic CF-29 Mk3 (debian.lan), same stack. Path: /opt/terminal_client/. Lines: ~1250 (v5.0.0). Callsign: KC8QKU (user-entered, default CLT001).
+- fake_direwolf.py v16: AX.25 packet relay, KISS framing, LAN discovery, direction check. Runs on pi4.lan/debian.lan. KISS_PORT: 8051. Logs: ~/terminal/server_data/fake_direwolf_<host>.log.
+- client_install.sh: Deploys client to /opt/terminal_client/, sets perms, installs deps (Python, curses, crcmod, pandas, tabulate).
+User Workflow:
+- Edits on Windows (G:\My Drive\Game Dev\terminal\), .txt suffix to prevent execution. Syncs via Google Drive to Linux (pi4.lan, debian.lan).
+- SSH to Linux, nano edits, strips .txt, runs. Fake Direwolf mirrored via wget.
+- Backups versioned (e.g., server_v1.78.txt to v4.0.4.txt) in subdirs (Server scripts, Client Scripts).
+
+[File Formats]
+Forms (TXT):
+- Server: /home/aprs/terminal/forms/<form_id>.txt
+- Client: /opt/terminal_client/forms/<form_id>.txt
+- Format: desc:<description>\n<fid>,<label>,<row>,<col>,<length>\n
+- Example (REG.txt): desc:PARTICIPANT REGISTRATION\nL01,REG,3,12,256\nR01,PARTICIPANT REGISTRATION,3,32,256\nL02,Name,4,12,256\nR02,Cell#,4,32,256\nL03,Address,5,12,256\nR03,Home#,5,32,256\nL04,City,6,12,256\nL05,State,7,12,256\nR05,Zip,7,32,256\nL06,ICE Contact,8,12,256
+Forms Index (JSON):
+- Server: /home/aprs/terminal/forms/forms_index.json
+- Client: /opt/terminal_client/forms/forms_index.json
+- Format: {"forms": {"<form_id>": {"md5": "<hash>"}, ...}}
+CMS Push (TXT):
+- Server: ~/cms/push/<file>.txt
+- Client: ~/cms/push/<file>.txt (planned)
+- Format: Arbitrary text, synced via PUSH MD5
+Submissions (CSV):
+- Server: /home/aprs/terminal/server_data/<form_id>_submissions.csv
+- Format: <timestamp>,<callsign>,<payload>
+- Example: 1741739525,KC8QKU,L01Field1|R01Field2|L02Field3
+
+[Sync Protocol]
+Forms Sync:
+- Server broadcasts M|<callsign>|NONE|<md5> every 60s (v3.0.7+).
+- Client compares MD5, sends X|<server_callsign>|NONE|<form_id:md5|...> on mismatch (v4.3.7+).
+- Server diffs, broadcasts U|<callsign>|<form_id>|<content ~> or D|<callsign>|<form_id>| to ALL (v3.0.5+).
+- Client updates forms, rebuilds JSON (v4.3.6+). Multi-packet U split at PACLEN=255 (v4.3.11+).
+CMS Push Sync (v5.0.0/v4.0.0):
+- Server broadcasts M|PUSH|<push_md5> if CMS_SYNC_ENABLED (v4.0.0).
+- Client diffs, requests updates via X|PUSH|<age_limit> (v5.0.0).
+- Server responds with U|D for CMS files, compressed with zlib (C flag).
+Packet Format:
+- Single: <command>|<callsign>|<form_id>|<payload>\n
+- Multi: <command>|<callsign>|<form_id>|<seq:total>|<payload>\n
+- Commands: M (MD5), X (INDEX), U (FORM_UPDATE), D (FORM_DELETE), I (INSERT), S (SEARCH), A (ACK), R (SEARCH_RESULT), G (MSG), C (CHAT)
+
+[Data Flow]
+Submission:
+- Client sends I|<callsign>|<form_id>|<payload>, splits at PACLEN=255 (v4.3.11+).
+- Server saves to CSV, replies A|<callsign>|<form_id>|SUCCESS.
+Search:
+- Client sends S|<callsign>|<form_id>|<payload>.
+- Server replies R|<callsign>|<form_id>|<matches ~>.
+
+[Radio Comms Setup]
+Hardware:
+- Server: Pi 4, Direwolf, DigiRig, HTX-242 (2m, 5W-45W). Antenna: Whip or folding dipole.
+- Client: CF-29 Mk3, same stack. Antenna: Whip or external.
+Software:
+- AX.25: Direwolf 1200 baud AFSK/FM, routed via Fake Direwolf (127.0.0.1:8051).
+- Config: direwolf.conf—SVR001-0 (server), CLT001-0 (client default), beacon/digipeat off.
+Operation:
+- Freq: 2m (144-148 MHz), simplex, avoid APRS 144.390 MHz.
+- Resilience: Server M every 60s, client retries 5x every 5s (v4.3).
+
+[Current State 2025-03-23]
+Server v4.0.0:
+- Runs on pi4.lan (192.168.86.69). Lines: ~1100.
+- Features: CMS push sync (~cms/push/), zlib compression (C flag), multi-packet support.
+- Logs: server.log.txt—truncation suspected post-22:06:30 (v3.0.14).
+Client v5.0.0:
+- Runs on debian.lan (192.168.86.49). Lines: ~1250.
+- Features: CMS browser, push sync, compression, multi-packet X/U handling.
+- Logs: skippys_messups.log.txt—X send fail fixed (v4.3.11), testing v4.3.10 planned.
+Fake Direwolf v16:
+- Runs on pi4.lan/debian.lan. Logs: fake_direwolf_<host>.log.
+- Features: SSID parsing, payload decode fix, direction check (lower IP initiates).
+Issues:
+- Server: Log truncation (post-22:06:30), M interval (60s vs. 2-5 min TBD).
+- Client: REG.txt mismatch resolved (v4.3.9), CMS sync untested in RF.
+Next:
+- Test v4.3.10/v1.88 updates from 2025-03-22, push to GitHub.
+- Validate CMS sync, RF resilience (5-10% loss).
+
+[Revision Summary]
+Server:
+- v3.0.14: Multi-packet U, response buffering (2025-03-20).
+- v4.0.0: CMS sync, compression, menu (2025-03-22).
+Client:
+- v4.3.11: Multi-packet X/U, UI redesign (2025-03-20).
+- v5.0.0: CMS browser, push sync, compression (2025-03-22).
+Fake Direwolf:
+- v16: Payload decode fix, SSID parsing (2025-03-18).
+
+[Troubleshooting]
+Sync Failure:
+- Check: Server M in fake_direwolf_pi4.log, client X in skippys_messups.log.
+- Fix: Define missing logs (e.g., LOG_PAYLOAD_VALIDATION), clean REG.txt.
+Log Truncation:
+- Check: server.log.txt vs. fake_direwolf_pi4.log post-22:06:30.
+- Fix: Add flush in broadcast_forms_md5().
+Connection Drops:
+- Check: Fake Direwolf peer disconnect (192.168.86.49).
+- Fix: Test RF relay stability.
+
+[AI Directives]
+- Retain: User workflow—Windows edits, Google Drive sync, SSH/nano, backups.
+- Update: Track v5.0.0/v4.0.0 CMS, multi-packet mechanics.
+- Test: CMS sync, RF loss scenarios, log consistency.
+- Log: Results in CURRENT_STATE, propose fixes in ISSUES/NEXT.

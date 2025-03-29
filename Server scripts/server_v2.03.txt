@@ -1,0 +1,951 @@
+#!/usr/bin/env python3
+# server.py
+# Version 2.03 - 2025-03-18  # CHANGE v2.03: Added packet queue, new logging, config globals
+
+# Chunk 1 v2.03 - Imports and Config  # CHANGE v2.03: Added queue, new logging, moved globals to config
+import os
+import sys
+import time
+import socket
+import threading
+import hashlib
+import logging
+import shutil
+import curses
+import glob
+import select
+import traceback
+import configparser
+import re
+import queue  # CHANGE v2.03: Added for packet queue
+from datetime import datetime
+
+# CHANGE v2.03: Moved to config file
+# HOME_DIR = os.path.expanduser('~/terminal')
+# SERVER_HOST = '0.0.0.0'
+# SERVER_PORT = 12345
+
+VERSION = "2.03"  # CHANGE v2.03: Bumped for queue and config updates
+PACLEN = 255  # From v2.02, already in config
+
+config = configparser.ConfigParser()
+CONFIG_FILE = None  # Set after HOME_DIR is read
+if not os.path.exists(CONFIG_FILE or ''):
+    config['Settings'] = {
+        'callsign': '',
+        'paclen': str(PACLEN),
+        'log_client_details': 'True',
+        'log_form_sync': 'True',
+        'log_submissions': 'True',
+        'broadcast_interval': '60',
+        'client_timeout': '1800',  # CHANGE v2.03: Increased to 1800s for radio reliability
+        'log_submission_details': 'True',
+        'log_packet_parsing': 'False',
+        'log_buffer_events': 'False',
+        'log_packet_content': 'False',
+        'log_payload_processing': 'False',
+        'log_submission_payload': 'True',
+        'log_segment_failure': 'True',
+        'log_socket_state': 'True',
+        'log_retries': 'True',
+        'log_ui_transitions': 'False',
+        'log_search_query': 'True',
+        'log_search_results': 'True',
+        'log_search_parsing': 'True',
+        'log_csv_processing': 'True',
+        'log_client_state': 'True',
+        'log_packet_build': 'True',
+        'log_packet_parse': 'True',
+        'log_sync_state': 'True',
+        'log_sync_md5': 'True',
+        'log_sync_forms': 'True',
+        'log_client_packet': 'True',
+        'log_packet_integrity': 'True',
+        'log_form_deletion': 'True',
+        'log_sync_start': 'True',
+        'log_sync_completion': 'True',
+        # CHANGE v2.03: Added for queue troubleshooting
+        'log_packet_queue': 'True',
+        'log_client_queue': 'True',
+        'log_ui_packet_handling': 'True',
+        'log_queue_state': 'True',
+        # CHANGE v2.03: Added configurable globals
+        'home_dir': os.path.expanduser('~/terminal'),
+        'server_host': '0.0.0.0',
+        'server_port': '12345',
+        'queue_maxsize': '100'
+    }
+    HOME_DIR = config['Settings']['home_dir']
+    os.makedirs(HOME_DIR, exist_ok=True)
+    CONFIG_FILE = os.path.join(HOME_DIR, 'server.conf')
+    with open(CONFIG_FILE, 'w') as configfile:
+        config.write(configfile)
+config.read(CONFIG_FILE or os.path.join(os.path.expanduser('~/terminal'), 'server.conf'))
+HOME_DIR = config.get('Settings', 'home_dir', fallback=os.path.expanduser('~/terminal'))
+CONFIG_FILE = os.path.join(HOME_DIR, 'server.conf')
+FORMS_DIR = os.path.join(HOME_DIR, 'forms')
+DATA_DIR = os.path.join(HOME_DIR, 'server_data')
+LOG_FILE = os.path.join(DATA_DIR, 'server.log')
+BACKUP_DIR = os.path.join(HOME_DIR, 'backups')
+SERVER_HOST = config.get('Settings', 'server_host', fallback='0.0.0.0')
+SERVER_PORT = config.getint('Settings', 'server_port', fallback=12345)
+CALLSIGN = config.get('Settings', 'callsign', fallback='')
+PACLEN = config.getint('Settings', 'paclen', fallback=PACLEN)
+LOG_CLIENT_DETAILS = config.getboolean('Settings', 'log_client_details', fallback=True)
+LOG_FORM_SYNC = config.getboolean('Settings', 'log_form_sync', fallback=True)
+LOG_SUBMISSIONS = config.getboolean('Settings', 'log_submissions', fallback=True)
+BROADCAST_INTERVAL = config.getint('Settings', 'broadcast_interval', fallback=60)
+CLIENT_TIMEOUT = config.getint('Settings', 'client_timeout', fallback=1800)  # CHANGE v2.03: Default 1800s
+LOG_SUBMISSION_DETAILS = config.getboolean('Settings', 'log_submission_details', fallback=True)
+LOG_PACKET_PARSING = config.getboolean('Settings', 'log_packet_parsing', fallback=False)
+LOG_BUFFER_EVENTS = config.getboolean('Settings', 'log_buffer_events', fallback=False)
+LOG_PACKET_CONTENT = config.getboolean('Settings', 'log_packet_content', fallback=False)
+LOG_PAYLOAD_PROCESSING = config.getboolean('Settings', 'log_payload_processing', fallback=False)
+LOG_SUBMISSION_PAYLOAD = config.getboolean('Settings', 'log_submission_payload', fallback=True)
+LOG_SEGMENT_FAILURE = config.getboolean('Settings', 'log_segment_failure', fallback=True)
+LOG_SOCKET_STATE = config.getboolean('Settings', 'log_socket_state', fallback=True)
+LOG_RETRIES = config.getboolean('Settings', 'log_retries', fallback=True)
+LOG_UI_TRANSITIONS = config.getboolean('Settings', 'log_ui_transitions', fallback=False)
+LOG_SEARCH_QUERY = config.getboolean('Settings', 'log_search_query', fallback=True)
+LOG_SEARCH_RESULTS = config.getboolean('Settings', 'log_search_results', fallback=True)
+LOG_SEARCH_PARSING = config.getboolean('Settings', 'log_search_parsing', fallback=True)
+LOG_CSV_PROCESSING = config.getboolean('Settings', 'log_csv_processing', fallback=True)
+LOG_CLIENT_STATE = config.getboolean('Settings', 'log_client_state', fallback=True)
+LOG_PACKET_BUILD = config.getboolean('Settings', 'log_packet_build', fallback=True)
+LOG_PACKET_PARSE = config.getboolean('Settings', 'log_packet_parse', fallback=True)
+LOG_SYNC_STATE = config.getboolean('Settings', 'log_sync_state', fallback=True)
+LOG_SYNC_MD5 = config.getboolean('Settings', 'log_sync_md5', fallback=True)
+LOG_SYNC_FORMS = config.getboolean('Settings', 'log_sync_forms', fallback=True)
+LOG_CLIENT_PACKET = config.getboolean('Settings', 'log_client_packet', fallback=True)
+LOG_PACKET_INTEGRITY = config.getboolean('Settings', 'log_packet_integrity', fallback=True)
+LOG_FORM_DELETION = config.getboolean('Settings', 'log_form_deletion', fallback=True)
+LOG_SYNC_START = config.getboolean('Settings', 'log_sync_start', fallback=True)
+LOG_SYNC_COMPLETION = config.getboolean('Settings', 'log_sync_completion', fallback=True)
+# CHANGE v2.03: Added queue logging
+LOG_PACKET_QUEUE = config.getboolean('Settings', 'log_packet_queue', fallback=True)
+LOG_CLIENT_QUEUE = config.getboolean('Settings', 'log_client_queue', fallback=True)
+LOG_UI_PACKET_HANDLING = config.getboolean('Settings', 'log_ui_packet_handling', fallback=True)
+LOG_QUEUE_STATE = config.getboolean('Settings', 'log_queue_state', fallback=True)
+# CHANGE v2.03: Added queue size config
+QUEUE_MAXSIZE = config.getint('Settings', 'queue_maxsize', fallback=100)
+
+if os.path.exists(LOG_FILE):
+    os.remove(LOG_FILE)
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format='%(asctime)s - %(message)s')
+log_event("Deleted old log file")
+
+# Chunk 2 v2.03 - Global State  # CHANGE v2.03: Added packet_queue
+comms_log = []
+screen_dirty = True
+clients = []  # (socket, address, callsign, last_data_time)
+clients_lock = threading.Lock()
+forms_md5 = None
+last_mtime = 0
+show_menu = False
+menu_selection = 0
+syncing_clients = set()
+last_broadcast = {}
+packet_queue = queue.Queue(maxsize=QUEUE_MAXSIZE)  # CHANGE v2.03: Added for packet buffering
+
+# Chunk 3 v2.03 - Utility Functions  # CHANGE v2.03: Added queue logging params
+def log_event(message, ui=True, submission_details=False, submissions=False, submission_payload=False, segment_failure=False, socket_state=False, retries=False, ui_transitions=False, search_query=False, search_results=False, search_parsing=False, csv_processing=False, client_state=False, packet_build=False, packet_parse=False, sync_state=False, sync_md5=False, sync_forms=False, client_packet=False, packet_integrity=False, form_deletion=False, sync_start=False, sync_completion=False, packet_queue=False, client_queue=False, ui_packet_handling=False, queue_state=False):  # CHANGE v2.03: Added queue params
+    logging.info(message)
+    if ui:
+        comms_log.append((message, datetime.now().strftime('%H:%M:%S')))
+        if len(comms_log) > 20:
+            comms_log.pop(0)
+        global screen_dirty
+        screen_dirty = True
+    if submission_details and LOG_SUBMISSION_DETAILS:
+        logging.info("Submission Detail: " + message)
+    if submissions and LOG_SUBMISSIONS:
+        logging.info("Submission: " + message)
+    if submission_payload and LOG_SUBMISSION_PAYLOAD:
+        logging.info("Submission Payload: " + message)
+    if segment_failure and LOG_SEGMENT_FAILURE:
+        logging.info("Segment Failure: " + message)
+    if socket_state and LOG_SOCKET_STATE:
+        logging.info("Socket State: " + message)
+    if retries and LOG_RETRIES:
+        logging.info("Retry: " + message)
+    if ui_transitions and LOG_UI_TRANSITIONS:
+        logging.info("UI Transition: " + message)
+    if search_query and LOG_SEARCH_QUERY:
+        logging.info("Search Query: " + message)
+    if search_results and LOG_SEARCH_RESULTS:
+        logging.info("Search Results: " + message)
+    if search_parsing and LOG_SEARCH_PARSING:
+        logging.info("Search Parsing: " + message)
+    if csv_processing and LOG_CSV_PROCESSING:
+        logging.info("CSV Processing: " + message)
+    if client_state and LOG_CLIENT_STATE:
+        logging.info("Client State: " + message)
+    if packet_build and LOG_PACKET_BUILD:
+        logging.info("Packet Build: " + message)
+    if packet_parse and LOG_PACKET_PARSE:
+        logging.info("Packet Parse: " + message)
+    if sync_state and LOG_SYNC_STATE:
+        logging.info("Sync State: " + message)
+    if sync_md5 and LOG_SYNC_MD5:
+        logging.info("Sync MD5: " + message)
+    if sync_forms and LOG_SYNC_FORMS:
+        logging.info("Sync Forms: " + message)
+    if client_packet and LOG_CLIENT_PACKET:
+        logging.info("Client Packet: " + message)
+    if packet_integrity and LOG_PACKET_INTEGRITY:
+        logging.info("Packet Integrity: " + message)
+    if form_deletion and LOG_FORM_DELETION:
+        logging.info("Form Deletion: " + message)
+    if sync_start and LOG_SYNC_START:
+        logging.info("Sync Start: " + message)
+    if sync_completion and LOG_SYNC_COMPLETION:
+        logging.info("Sync Completion: " + message)
+    # CHANGE v2.03: Added queue logging
+    if packet_queue and LOG_PACKET_QUEUE:
+        logging.info("Packet Queue: " + message)
+    if client_queue and LOG_CLIENT_QUEUE:
+        logging.info("Client Queue: " + message)
+    if ui_packet_handling and LOG_UI_PACKET_HANDLING:
+        logging.info("UI Packet Handling: " + message)
+    if queue_state and LOG_QUEUE_STATE:
+        logging.info("Queue State: " + message)
+
+def backup_script():
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    backup_path = os.path.join(BACKUP_DIR, "server_" + timestamp + ".py")
+    shutil.copy2(__file__, backup_path)
+    log_event("Backed up to " + backup_path, ui=True)  # Always on
+
+def get_callsign(stdscr):
+    global CALLSIGN
+    if not CALLSIGN:
+        stdscr.clear()
+        stdscr.addstr(0, 0, "Enter Server Callsign (e.g., KC8QKU): ", curses.color_pair(2))
+        stdscr.refresh()
+        curses.echo()
+        CALLSIGN = stdscr.getstr(1, 0, 10).decode().strip().upper()
+        curses.noecho()
+        config['Settings']['callsign'] = CALLSIGN
+        with open(CONFIG_FILE, 'w') as configfile:
+            config.write(configfile)
+        log_event("Callsign set to " + CALLSIGN)
+    return CALLSIGN
+
+# Chunk 4 v2.02 - Form Sync Functions (unchanged)
+def hash_forms_dir():
+    hasher = hashlib.md5()
+    for filename in sorted(glob.glob(os.path.join(FORMS_DIR, '*.txt'))):
+        with open(filename, 'rb') as f:
+            content = f.read()
+            hasher.update(content)
+        if LOG_SYNC_FORMS:
+            with open(filename, 'r') as f:
+                log_event("Hashing " + filename + ": " + f.read()[:50], sync_forms=True)
+    md5_hash = hasher.hexdigest()
+    if LOG_SYNC_MD5:
+        log_event("Computed server MD5: " + md5_hash, sync_md5=True)
+    return md5_hash
+
+def check_forms_changed():
+    global last_mtime
+    current_mtime = max([os.path.getmtime(f) for f in glob.glob(os.path.join(FORMS_DIR, '*.txt'))] or [0])
+    if current_mtime > last_mtime:
+        last_mtime = current_mtime
+        log_event("Forms directory changed, new mtime: " + str(current_mtime), ui=LOG_FORM_SYNC, sync_state=True)
+        return True
+    return False
+
+def update_forms_index():
+    md5_hash = hash_forms_dir()
+    if LOG_FORM_SYNC and check_forms_changed():
+        log_event("Forms changed, new MD5: " + md5_hash, sync_state=True)
+    return md5_hash
+
+def broadcast_forms_md5(stop_event):
+    global forms_md5
+    log_event("Starting broadcast_forms_md5 thread", ui=LOG_FORM_SYNC)
+    while not stop_event.is_set():
+        start_time = time.time()
+        forms_md5 = update_forms_index()
+        log_event("Computed forms MD5: " + forms_md5, ui=LOG_FORM_SYNC, sync_state=True)
+        packet = "MD5|" + CALLSIGN + "|NONE|" + forms_md5 + "\n"
+        if LOG_PACKET_BUILD:
+            log_event("Built MD5 packet: " + packet.strip(), packet_build=True)
+        with clients_lock:
+            active_clients = []
+            now = time.time()
+            for client_socket, addr, callsign, last_data_time in clients[:]:
+                if client_socket is None:
+                    continue
+                if addr in syncing_clients:
+                    if LOG_SYNC_STATE:
+                        log_event("Skipping MD5 broadcast to syncing client " + str(addr), sync_state=True)
+                    active_clients.append((client_socket, addr, callsign, last_data_time))
+                    continue
+                last_sent = last_broadcast.get(addr, 0)
+                if now - last_sent < 10:
+                    if LOG_SYNC_STATE:
+                        log_event("Skipping MD5 broadcast to " + str(addr) + " (debounced)", sync_state=True)
+                    active_clients.append((client_socket, addr, callsign, last_data_time))
+                    continue
+                try:
+                    client_socket.send(packet.encode())
+                    last_broadcast[addr] = now
+                    active_clients.append((client_socket, addr, callsign, last_data_time))
+                    if LOG_SOCKET_STATE:
+                        log_event("Broadcast to " + str(addr) + " successful", socket_state=True)
+                except Exception as e:
+                    log_event("Broadcast to " + str(addr) + " failed: " + str(e), segment_failure=True)
+                    if LOG_SOCKET_STATE:
+                        log_event("Socket state: Broadcast failed for " + str(addr), socket_state=True)
+            clients[:] = active_clients
+        elapsed = time.time() - start_time
+        time.sleep(max(0, BROADCAST_INTERVAL - elapsed))
+
+# Chunk 5 v2.03 - Submission Handling  # CHANGE v2.03: Queued packets instead of processing
+def handle_client(client_socket, address):
+    log_event("Client connected: " + str(address))
+    if LOG_SOCKET_STATE:
+        log_event("Socket state: New client connection from " + str(address), socket_state=True)
+    if LOG_CLIENT_STATE:
+        log_event("New client " + str(address) + " added", client_state=True)
+    client_callsign = None
+    last_data_time = time.time()
+    with clients_lock:
+        clients.append((client_socket, address, None, last_data_time))
+    buffer = ""
+    segments = {}
+    while True:
+        readable, _, _ = select.select([client_socket], [], [], 1.0)
+        if readable:
+            try:
+                data = client_socket.recv(512).decode()
+                if not data:
+                    raise ConnectionError("Client closed")
+                last_data_time = time.time()
+                buffer += data
+                while '\n' in buffer:
+                    packet_end = buffer.find('\n')
+                    if packet_end == -1:
+                        break
+                    packet = buffer[:packet_end].strip()
+                    buffer = buffer[packet_end+1:]
+                    if LOG_PACKET_PARSE:
+                        log_event("Received packet: " + packet[:50], packet_parse=True)
+                    if LOG_CLIENT_PACKET:
+                        log_event("Raw packet from " + str(address) + ": " + packet, client_packet=True)
+                    parts_count = len(packet.split('|'))
+                    ends_with_newline = data.endswith('\n')
+                    if LOG_PACKET_INTEGRITY:
+                        log_event("Received packet structure: parts=" + str(parts_count) + ", ends_with_newline=" + str(ends_with_newline), packet_integrity=True)
+                    # CHANGE v2.03: Queue packet instead of processing
+                    try:
+                        packet_queue.put_nowait((client_socket, address, packet, last_data_time))
+                        if LOG_PACKET_QUEUE:
+                            log_event("Enqueued packet from " + str(address) + ": " + packet[:50], packet_queue=True)
+                        if LOG_CLIENT_QUEUE:
+                            log_event("Client " + str(address) + " packet queued: " + packet[:50], client_queue=True)
+                        if LOG_QUEUE_STATE:
+                            log_event("Queue state: size=" + str(packet_queue.qsize()) + ", full=" + str(packet_queue.full()), queue_state=True)
+                    except queue.Full:
+                        log_event("Queue full, dropped packet from " + str(address) + ": " + packet[:50], packet_queue=True)
+            except Exception as e:
+                log_event("Client error " + str(address) + ": " + str(e), segment_failure=True)
+                break
+        time.sleep(0.1)
+    client_socket.close()
+    if LOG_SOCKET_STATE:
+        log_event("Socket state: Client " + str(address) + " disconnected", socket_state=True)
+    if LOG_CLIENT_STATE:
+        log_event("Client " + str(address) + " (callsign: " + str(client_callsign) + ") disconnected", client_state=True)
+    with clients_lock:
+        for i, (cs, addr, cc, ls) in enumerate(clients):
+            if cs == client_socket:
+                clients[i] = (None, addr, cc, ls)
+                break
+    if address in syncing_clients:
+        syncing_clients.remove(address)
+        if LOG_SYNC_COMPLETION:
+            log_event("Sync aborted for " + str(address) + " due to disconnect", sync_completion=True)
+    log_event("Client disconnected: " + str(address))
+
+# Chunk 6 v1.7 - Forms Management Utils (unchanged)
+def load_form_data(form_id):
+    file_path = os.path.join(FORMS_DIR, form_id + ".txt")
+    if not os.path.exists(file_path):
+        log_event("Form file not found: " + file_path)
+        return None
+    form_data = {'desc': '', 'fields': {}}
+    with open(file_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith('desc:'):
+                form_data['desc'] = line.split(':', 1)[1]
+            else:
+                fid, label, row, col, length = line.split(',')
+                form_data['fields'][fid] = {
+                    'label': label,
+                    'row': int(row),
+                    'col': int(col),
+                    'len': int(length)
+                }
+    return form_data
+
+def create_form(form_id, desc, fields):
+    file_path = os.path.join(FORMS_DIR, form_id + ".txt")
+    with open(file_path, 'w') as f:
+        f.write("desc:" + desc + "\n")
+        for fid, field in fields.items():
+            f.write(fid + "," + field['label'] + "," + str(field['row']) + "," + str(field['col']) + "," + str(field['len']) + "\n")
+    log_event("Created/Updated form: " + form_id)
+
+def delete_form(form_id):
+    file_path = os.path.join(FORMS_DIR, form_id + ".txt")
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        log_event("Deleted form: " + form_id)
+    else:
+        log_event("Form " + form_id + " not found")
+
+# Chunk 7 v1.73 - People.csv Initialization (unchanged)
+def init_people_csv():
+    people_file = os.path.join(DATA_DIR, 'people.csv')
+    if not os.path.exists(people_file) or os.path.getsize(people_file) == 0:
+        log_event("Seeding " + people_file + " with initial data")
+        with open(people_file, 'w') as f:
+            f.write("id,name\n")
+            f.write("P001,John Doe\n")
+            f.write("P002,Jane Smith\n")
+            f.write("P003,Alice Johnson\n")
+            f.write("P004,Bob Brown\n")
+            f.write("P005,Carol White\n")
+            f.write("P006,David Green\n")
+        log_event("Seeded " + people_file + " with 6 entries")
+
+# Chunk 8 v1.89 - UI Functions (unchanged)
+def init_colors():
+    log_event("Initializing colors", ui=False)
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    return 1, 2, 3, 4
+
+def forms_management_screen(stdscr):
+    curses.curs_set(0)
+    stdscr.nodelay(True)
+    selection = 0
+    screen_dirty = True
+    if LOG_UI_TRANSITIONS:
+        log_event("Entering Forms Management", ui_transitions=True)
+    while True:
+        forms = sorted([f for f in os.listdir(FORMS_DIR) if re.match(r'[A-Z][A-Z][0-9][0-9]\.txt', f, re.IGNORECASE)])
+        if screen_dirty:
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Forms Management", curses.color_pair(4))
+            stdscr.addstr(2, 2, "Current Forms:", curses.color_pair(4))
+            for i, form in enumerate(forms[:15], start=3):
+                if i - 3 == selection:
+                    stdscr.addstr(i, 4, form[:-4], curses.color_pair(2) | curses.A_REVERSE)
+                else:
+                    stdscr.addstr(i, 4, form[:-4], curses.color_pair(2))
+            if forms and selection < len(forms):
+                form_id = forms[selection][:-4]
+                form_data = load_form_data(form_id)
+                if form_data:
+                    stdscr.addstr(2, 40, "Form: " + form_id, curses.color_pair(4))
+                    stdscr.addstr(3, 40, "Desc: " + form_data['desc'][:36], curses.color_pair(2))
+                    stdscr.addstr(4, 40, "ID:Label (Row,Col,Len)", curses.color_pair(4))
+                    line = 5
+                    for fid, field in sorted(form_data['fields'].items()):
+                        if line < 18:
+                            text = fid + ":" + field['label'] + " (" + str(field['row']) + "," + str(field['col']) + "," + str(field['len']) + ")"
+                            stdscr.addstr(line, 42, text[:36], curses.color_pair(2))
+                            line += 1
+            stdscr.addstr(19, 2, "C=Create Enter=Edit D=Delete Esc=Back", curses.color_pair(2))
+            stdscr.refresh()
+            screen_dirty = False
+        char = stdscr.getch()
+        if char == -1:
+            continue
+        if char == curses.KEY_UP and selection > 0:
+            selection -= 1
+            screen_dirty = True
+        elif char == curses.KEY_DOWN and selection < len(forms) - 1 and selection < 14:
+            selection += 1
+            screen_dirty = True
+        elif char == ord('c') or char == ord('C'):
+            form_edit_screen(stdscr, None)
+            screen_dirty = True
+        elif char == 10 and forms:
+            form_id = forms[selection][:-4]
+            form_edit_screen(stdscr, form_id)
+            screen_dirty = True
+        elif char == ord('d') or char == ord('D') and forms:
+            form_id = forms[selection][:-4]
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Delete Form: " + form_id, curses.color_pair(4))
+            stdscr.addstr(2, 2, "Confirm Delete (Y/N)? ", curses.color_pair(2))
+            stdscr.refresh()
+            stdscr.nodelay(False)
+            char = stdscr.getch()
+            stdscr.nodelay(True)
+            if char == ord('y') or char == ord('Y'):
+                delete_form(form_id)
+            screen_dirty = True
+        elif char == 27:
+            if LOG_UI_TRANSITIONS:
+                log_event("Exiting Forms Management", ui_transitions=True)
+            return
+
+def form_edit_screen(stdscr, form_id):
+    curses.curs_set(0)
+    stdscr.nodelay(True)
+    screen_dirty = True
+    selection = 0 if not form_id else 2
+    if LOG_UI_TRANSITIONS:
+        log_event("Entering Form Edit for " + (form_id or 'new form'), ui_transitions=True)
+    if form_id:
+        form_data = load_form_data(form_id) or {'desc': '', 'fields': {}}
+        form_id_val = form_id
+        form_desc = form_data['desc']
+    else:
+        form_data = {'desc': '', 'fields': {}}
+        form_id_val = ""
+        form_desc = ""
+    fields_list = sorted(form_data['fields'].items(), key=lambda x: x[0]) if form_data['fields'] else []
+    while True:
+        if screen_dirty:
+            stdscr.clear()
+            stdscr.addstr(0, 0, ("Edit" if form_id else "Create") + " Form", curses.color_pair(4))
+            stdscr.addstr(2, 2, "Options:", curses.color_pair(4))
+            stdscr.addstr(2, 26, "Input:", curses.color_pair(4))
+            stdscr.addstr(2, 48, "Preview:", curses.color_pair(4))
+            if not form_id:
+                items = ["Enter Form ID", "Enter Form Desc", "Add Input Field", "Submit", "Cancel"]
+                editable = [True, True, True, True, True]
+                inputs = ["", "", "", "", ""]
+                preview = [form_id_val, form_desc[:28]] + [fid + ": " + field['label'] for fid, field in fields_list] + ["", ""]
+            else:
+                items = ["Form ID: " + form_id_val, "Desc: " + form_data['desc'][:13]] + \
+                        [fid + ": " + field['label'] for fid, field in fields_list] + ["Add Field", "Submit", "Cancel"]
+                editable = [False, False] + [True] * len(fields_list) + [True, True, True]
+                inputs = [""] * len(items)
+                preview = items[:-2] + ["", ""]
+            for i, (item, can_edit) in enumerate(zip(items[:15], editable[:15]), start=3):
+                if i - 3 == selection and can_edit:
+                    stdscr.addstr(i, 4, item[:20], curses.color_pair(2) | curses.A_REVERSE)
+                else:
+                    stdscr.addstr(i, 4, item[:20], curses.color_pair(2))
+            for i, inp in enumerate(inputs[:15], start=3):
+                stdscr.addstr(i, 26, inp[:20], curses.color_pair(2))
+            for i, pre in enumerate(preview[:15], start=3):
+                stdscr.addstr(i, 48, pre[:30], curses.color_pair(2))
+            stdscr.refresh()
+            screen_dirty = False
+        char = stdscr.getch()
+        if char == -1:
+            continue
+        if char == curses.KEY_UP and selection > (0 if not form_id else 2):
+            selection -= 1
+            screen_dirty = True
+        elif char == curses.KEY_DOWN and selection < len(items) - 1 and selection < 14:
+            selection += 1
+            screen_dirty = True
+        elif char == 10 and selection < len(editable) and editable[selection]:
+            stdscr.nodelay(False)
+            curses.curs_set(1)
+            stdscr.addstr(selection + 3, 26, " " * 20, curses.color_pair(2))
+            if not form_id:
+                if selection == 0:
+                    stdscr.addstr(selection + 3, 26, "ID (XX01): ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    new_id = stdscr.getstr(selection + 3, 37, 4).decode().strip()
+                    curses.noecho()
+                    if new_id and re.match(r'[A-Za-z][A-Za-z][0-9][0-9]', new_id):
+                        form_id_val = new_id
+                        preview[0] = form_id_val
+                        inputs[selection] = new_id
+                elif selection == 1:
+                    stdscr.addstr(selection + 3, 26, "Desc: ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    form_desc = stdscr.getstr(selection + 3, 32, 20).decode().strip()
+                    curses.noecho()
+                    if form_desc:
+                        preview[1] = form_desc[:28]
+                        inputs[selection] = form_desc[:20]
+                elif selection == 2:
+                    new_fid = "{:02d}".format(len(fields_list) + 1)
+                    stdscr.addstr(selection + 3, 26, new_fid + " Label: ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    new_label = stdscr.getstr(selection + 3, 35, 20).decode().strip()
+                    curses.noecho()
+                    if new_label:
+                        fields_list.append((new_fid, {'label': new_label, 'row': 3 + len(fields_list), 'col': 12, 'len': 256}))
+                        items.insert(-2, new_fid + ": " + new_label)
+                        inputs.insert(-2, new_label[:20])
+                        editable.insert(-2, True)
+                        preview.insert(-2, new_fid + ": " + new_label[:30])
+            elif form_id:
+                if selection == len(items) - 3:
+                    new_fid = "{:02d}".format(len(fields_list) + 1)
+                    stdscr.addstr(selection + 3, 26, new_fid + " Label: ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    new_label = stdscr.getstr(selection + 3, 35, 20).decode().strip()
+                    curses.noecho()
+                    if new_label:
+                        fields_list.append((new_fid, {'label': new_label, 'row': 3 + len(fields_list), 'col': 12, 'len': 256}))
+                        items.insert(-2, new_fid + ": " + new_label)
+                        inputs.insert(-2, new_label[:20])
+                        editable.insert(-2, True)
+                        preview.insert(-2, new_fid + ": " + new_label[:30])
+                elif 2 <= selection < len(items) - 3:
+                    idx = selection - 2
+                    fid = fields_list[idx][0]
+                    stdscr.addstr(selection + 3, 26, fid + " Label: ", curses.color_pair(2))
+                    stdscr.refresh()
+                    curses.echo()
+                    new_label = stdscr.getstr(selection + 3, 35, 20).decode().strip()
+                    curses.noecho()
+                    if new_label:
+                        fields_list[idx] = (fid, {'label': new_label, 'row': fields_list[idx][1]['row'], 'col': 12, 'len': 256})
+                        items[selection] = fid + ": " + new_label
+                        inputs[selection] = new_label[:20]
+                        preview[selection] = fid + ": " + new_label[:30]
+            if selection == len(items) - 2:
+                if form_id_val and form_desc and fields_list:
+                    fields_dict = {fid: field for fid, field in fields_list}
+                    create_form(form_id_val, form_desc, fields_dict)
+                    stdscr.nodelay(True)
+                    curses.curs_set(0)
+                    if LOG_UI_TRANSITIONS:
+                        log_event("Form " + form_id_val + " submitted, exiting edit", ui_transitions=True)
+                    return
+            elif selection == len(items) - 1:
+                stdscr.nodelay(True)
+                curses.curs_set(0)
+                if LOG_UI_TRANSITIONS:
+                    log_event("Form edit cancelled", ui_transitions=True)
+                return
+            stdscr.nodelay(True)
+            curses.curs_set(0)
+            screen_dirty = True
+        elif char == 27:
+            stdscr.nodelay(True)
+            curses.curs_set(0)
+            if LOG_UI_TRANSITIONS:
+                log_event("Escaping form edit to forms management", ui_transitions=True)
+            return
+
+def update_ui(stdscr):
+    global screen_dirty, show_menu, menu_selection
+    if not screen_dirty:
+        return
+    max_y, max_x = stdscr.getmaxyx()
+    stdscr.clear()
+    border = "=" * (max_x - 1)
+    stdscr.addstr(0, 0, border, curses.color_pair(1))
+    stdscr.addstr(1, 2, "Packet Radio Server Status", curses.color_pair(4))
+    stdscr.addstr(2, 2, "Recent Clients:", curses.color_pair(4))
+    with clients_lock:
+        now = time.time()
+        clients[:] = [(cs, addr, cc, ls) for cs, addr, cc, ls in clients if now - ls < CLIENT_TIMEOUT]
+        for i, (cs, addr, cc, ls) in enumerate(clients[:max_y-4], start=3):
+            timestamp = datetime.fromtimestamp(ls).strftime('%H:%M:%S')
+            display = (cc or 'Unknown') + " (" + str(addr[0]) + ") - " + timestamp
+            stdscr.addstr(i, 4, display[:max_x//2-6], curses.color_pair(2))
+    log_x = max_x // 2 + 1
+    stdscr.addstr(1, log_x, "Comms Log", curses.color_pair(4))
+    stdscr.addstr(2, log_x, "=" * ((max_x - log_x - 1) // 2), curses.color_pair(1))
+    for i, (msg, ts) in enumerate(comms_log[-(max_y-5):], start=3):
+        if i < max_y-2:
+            stdscr.addstr(i, log_x, (msg[:max_x-log_x-1] + " - " + ts)[:max_x-log_x-1], curses.color_pair(2))
+    stdscr.addstr(max_y-1, 0, border, curses.color_pair(1))
+    stdscr.addstr(max_y-2, 2, "= Press Q to Quit D=Menu =", curses.color_pair(2))
+    if show_menu:
+        menu_width = 22
+        menu_height = 8
+        menu_y = (max_y - menu_height) // 2
+        menu_x = (max_x - menu_width) // 2
+        options = [("Main Screen", True), ("Forms Management", True), ("Quit", True)]
+        stdscr.addstr(menu_y, menu_x, "+====================+", curses.color_pair(1))
+        for i, (opt, active) in enumerate(options):
+            color = 2 if active else 1
+            if i == menu_selection:
+                stdscr.addstr(menu_y + 1 + i, menu_x, "| " + opt.ljust(18) + " |", curses.color_pair(color) | curses.A_REVERSE)
+            else:
+                stdscr.addstr(menu_y + 1 + i, menu_x, "| " + opt.ljust(18) + " |", curses.color_pair(color))
+        stdscr.addstr(menu_y + 4, menu_x, "| Up/Down=Move       |", curses.color_pair(2))
+        stdscr.addstr(menu_y + 5, menu_x, "| Enter=Sel Esc=Back |", curses.color_pair(2))
+        stdscr.addstr(menu_y + 6, menu_x, "+====================+", curses.color_pair(1))
+    stdscr.refresh()
+    screen_dirty = False
+
+# Chunk 9 v1.89 - Server Comms (unchanged)
+def accept_clients(server, stop_event):
+    log_event("Starting accept_clients thread")
+    while not stop_event.is_set():
+        try:
+            client_socket, address = server.accept()
+            log_event("Accepted connection from " + str(address))
+            if LOG_SOCKET_STATE:
+                log_event("Socket state: Accepted connection from " + str(address), socket_state=True)
+            client_thread = threading.Thread(target=handle_client, args=(client_socket, address))
+            client_thread.daemon = True
+            client_thread.start()
+        except Exception as e:
+            log_event("Accept error: " + str(e))
+            if LOG_SOCKET_STATE:
+                log_event("Socket state: Accept failed - " + str(e), socket_state=True)
+        time.sleep(0.1)
+
+# Chunk 10 v2.03 - Main Loop  # CHANGE v2.03: Added queue processing
+def main(stdscr):
+    global CALLSIGN, screen_dirty, show_menu, menu_selection
+    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(FORMS_DIR, exist_ok=True)
+    CALLSIGN = get_callsign(stdscr)
+    RED, GREEN, YELLOW, LIGHT_BLUE = init_colors()
+    stdscr.clear()
+    stdscr.nodelay(True)
+    stdscr.refresh()
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server.bind((SERVER_HOST, SERVER_PORT))
+    server.listen(5)
+    log_event("Server running on " + SERVER_HOST + ":" + str(SERVER_PORT) + " (v" + VERSION + ")")
+    if LOG_SOCKET_STATE:
+        log_event("Socket state: Server bound and listening on " + SERVER_HOST + ":" + str(SERVER_PORT), socket_state=True)
+    init_people_csv()
+    stop_event = threading.Event()
+    broadcast_thread = threading.Thread(target=broadcast_forms_md5, args=(stop_event,))
+    broadcast_thread.daemon = True
+    broadcast_thread.start()
+    accept_thread = threading.Thread(target=accept_clients, args=(server, stop_event))
+    accept_thread.daemon = True
+    accept_thread.start()
+    if LOG_UI_TRANSITIONS:
+        log_event("Entering main UI loop", ui_transitions=True)
+    while True:
+        update_ui(stdscr)
+        char = stdscr.getch()
+        if char == ord('q') or char == ord('Q') and not show_menu:
+            log_event("Quitting via Q")
+            stop_event.set()
+            log_event("Server shutdown complete")
+            if LOG_UI_TRANSITIONS:
+                log_event("Exiting main UI loop", ui_transitions=True)
+            break
+        elif char == ord('d') or char == ord('D'):
+            show_menu = not show_menu
+            menu_selection = 0
+            screen_dirty = True
+            if LOG_UI_TRANSITIONS:
+                log_event("Menu toggled: " + str(show_menu), ui_transitions=True)
+        elif show_menu:
+            if char == curses.KEY_UP and menu_selection > 0:
+                menu_selection -= 1
+                screen_dirty = True
+            elif char == curses.KEY_DOWN and menu_selection < 2:
+                menu_selection += 1
+                screen_dirty = True
+            elif char == 10:
+                if menu_selection == 0:
+                    show_menu = False
+                    if LOG_UI_TRANSITIONS:
+                        log_event("Returning to Main Screen", ui_transitions=True)
+                elif menu_selection == 1:
+                    forms_management_screen(stdscr)
+                elif menu_selection == 2:
+                    log_event("Quitting via menu")
+                    stop_event.set()
+                    log_event("Server shutdown complete")
+                    if LOG_UI_TRANSITIONS:
+                        log_event("Exiting via menu quit", ui_transitions=True)
+                    break
+                screen_dirty = True
+            elif char == 27:
+                show_menu = False
+                screen_dirty = True
+                if LOG_UI_TRANSITIONS:
+                    log_event("Escaping menu to Main Screen", ui_transitions=True)
+        # CHANGE v2.03: Process queued packets when not in Forms Management
+        if not show_menu or menu_selection != 1:
+            while not packet_queue.empty():
+                try:
+                    client_socket, address, packet, last_data_time = packet_queue.get_nowait()
+                    if LOG_PACKET_QUEUE:
+                        log_event("Dequeued packet from " + str(address) + ": " + packet[:50], packet_queue=True)
+                    if LOG_UI_PACKET_HANDLING:
+                        log_event("UI handling packet from " + str(address) + ": " + packet[:50], ui_packet_handling=True)
+                    if LOG_QUEUE_STATE:
+                        log_event("Queue state after dequeue: size=" + str(packet_queue.qsize()) + ", empty=" + str(packet_queue.empty()), queue_state=True)
+                    parts = packet.split('|', 3)
+                    if len(parts) != 4:
+                        log_event("Malformed packet: " + packet[:50], segment_failure=True)
+                        continue
+                    function, callsign, form_id, payload = parts
+                    with clients_lock:
+                        for i, (cs, addr, _, ls) in enumerate(clients):
+                            if cs == client_socket:
+                                clients[i] = (cs, addr, callsign, last_data_time)
+                                if LOG_CLIENT_STATE:
+                                    log_event("Updated callsign for " + str(addr) + " to " + callsign, client_state=True)
+                                break
+                    if function == 'INSERT':
+                        if ':' in payload[:5]:
+                            seq, total = map(int, payload.split('|', 1)[0].split(':'))
+                            payload = payload.split('|', 1)[1]
+                            key = callsign + ":" + form_id
+                            segments.setdefault(key, {})[seq] = payload
+                            log_event("Stored segment " + str(seq) + "/" + str(total) + " for " + key, submissions=True)
+                            if len(segments[key]) == total:
+                                full_payload = ''.join(segments[key][i] for i in sorted(segments[key]))
+                                csv_path = os.path.join(DATA_DIR, form_id + "_submissions.csv")
+                                os.makedirs(DATA_DIR, exist_ok=True)
+                                with open(csv_path, 'a') as f:
+                                    f.write(str(int(time.time())) + "," + callsign + "," + full_payload + "\n")
+                                log_event("Submission saved to " + csv_path, submissions=True)
+                                response = "ACK|" + CALLSIGN + "|" + form_id + "|SUCCESS\n"
+                                client_socket.send(response.encode())
+                                if LOG_PACKET_BUILD:
+                                    log_event("Built ACK packet: " + response.strip(), packet_build=True)
+                                del segments[key]
+                        else:
+                            csv_path = os.path.join(DATA_DIR, form_id + "_submissions.csv")
+                            os.makedirs(DATA_DIR, exist_ok=True)
+                            with open(csv_path, 'a') as f:
+                                f.write(str(int(time.time())) + "," + callsign + "," + payload + "\n")
+                            log_event("Submission saved to " + csv_path, submissions=True)
+                            response = "ACK|" + CALLSIGN + "|" + form_id + "|SUCCESS\n"
+                            client_socket.send(response.encode())
+                            if LOG_PACKET_BUILD:
+                                log_event("Built ACK packet: " + response.strip(), packet_build=True)
+                    elif function == 'SEARCH':
+                        if LOG_SEARCH_QUERY:
+                            log_event("Received search from " + callsign + ": " + packet[:50], search_query=True)
+                        search_fields = {}
+                        for pair in payload.split('|'):
+                            if not pair:
+                                if LOG_SEARCH_PARSING:
+                                    log_event("Skipping empty pair in payload", search_parsing=True)
+                                continue
+                            key = pair[:2]
+                            value = pair[2:] if len(pair) > 2 else ""
+                            search_fields[key] = value
+                            if LOG_SEARCH_PARSING:
+                                log_event("Parsed field: " + key + "='" + value + "'", search_parsing=True)
+                        csv_path = os.path.join(DATA_DIR, form_id + "_submissions.csv")
+                        matches = []
+                        if os.path.exists(csv_path):
+                            with open(csv_path, 'r') as f:
+                                for line in f:
+                                    _, _, row_payload = line.strip().split(',', 2)
+                                    if LOG_CSV_PROCESSING:
+                                        log_event("Processing CSV row: " + row_payload[:50], csv_processing=True)
+                                    fields = {}
+                                    for field in row_payload.split('|'):
+                                        if field:
+                                            fields[field[:2]] = field[2:] if len(field) > 2 else ""
+                                            if LOG_CSV_PROCESSING:
+                                                log_event("Parsed CSV field: " + field[:2] + "='" + fields[field[:2]] + "'", csv_processing=True)
+                                    match = all(fields.get(k, '') == v for k, v in search_fields.items() if v)
+                                    if match:
+                                        matches.append(row_payload)
+                                    if LOG_CSV_PROCESSING:
+                                        log_event("Match check for " + str(search_fields) + ": " + ("Yes" if match else "No"), csv_processing=True)
+                        response = "SEARCH_RESULT|" + CALLSIGN + "|" + form_id + "|" + '~'.join(matches) + "\n"
+                        client_socket.send(response.encode())
+                        if LOG_SEARCH_RESULTS:
+                            log_event("Sent search results to " + callsign + ": " + response[:50], search_results=True)
+                        if LOG_PACKET_BUILD:
+                            log_event("Built SEARCH_RESULT packet: " + response.strip(), packet_build=True)
+                    elif function == 'UPDATE':
+                        if LOG_SYNC_STATE:
+                            log_event("Received UPDATE from " + callsign + ": " + payload[:50], sync_state=True)
+                        syncing_clients.add(address)
+                        if LOG_SYNC_START:
+                            log_event("Sync started for " + str(address), sync_start=True)
+                        client_forms = {}
+                        for pair in payload.split('|'):
+                            if ':' in pair:
+                                fname, fhash = pair.split(':', 1)
+                                client_forms[fname] = fhash
+                                if LOG_SYNC_FORMS:
+                                    log_event("Client form " + fname + " hash: " + fhash, sync_forms=True)
+                        server_forms = {}
+                        for fname in glob.glob(os.path.join(FORMS_DIR, '*.txt')):
+                            fname = os.path.basename(fname)[:-4]
+                            with open(os.path.join(FORMS_DIR, fname + ".txt"), 'rb') as f:
+                                server_hash = hashlib.md5(f.read()).hexdigest()
+                                server_forms[fname] = server_hash
+                            if LOG_SYNC_FORMS:
+                                log_event("Server form " + fname + " hash: " + server_hash, sync_forms=True)
+                        for fname, server_hash in server_forms.items():
+                            if fname not in client_forms or client_forms[fname] != server_hash:
+                                with open(os.path.join(FORMS_DIR, fname + ".txt"), 'r') as f:
+                                    content = f.read().strip()
+                                content_replaced = content.replace('\n', '~')
+                                response = "FORM_UPDATE|" + CALLSIGN + "|" + fname + "|" + content_replaced + "\n"
+                                client_socket.send(response.encode())
+                                if LOG_PACKET_BUILD:
+                                    log_event("Built FORM_UPDATE packet: " + response.strip(), packet_build=True)
+                                if LOG_FORM_SYNC:
+                                    log_event("Sent form update for " + fname + " to " + callsign, sync_state=True)
+                                if LOG_PACKET_INTEGRITY:
+                                    newline_count = response.count('\n')
+                                    log_event("FORM_UPDATE sent: len=" + str(len(response)) + ", newlines=" + str(newline_count), packet_integrity=True)
+                        for fname in client_forms:
+                            if fname not in server_forms:
+                                response = "FORM_DELETE|" + CALLSIGN + "|" + fname + "|\n"
+                                client_socket.send(response.encode())
+                                if LOG_PACKET_BUILD:
+                                    log_event("Built FORM_DELETE packet: " + response.strip(), packet_build=True)
+                                if LOG_FORM_DELETION:
+                                    log_event("Sent FORM_DELETE for " + fname + " to " + callsign, form_deletion=True)
+                                if LOG_PACKET_INTEGRITY:
+                                    newline_count = response.count('\n')
+                                    log_event("FORM_DELETE sent: len=" + str(len(response)) + ", newlines=" + str(newline_count), packet_integrity=True)
+                        syncing_clients.remove(address)
+                        if LOG_SYNC_COMPLETION:
+                            log_event("Sync completed for " + str(address), sync_completion=True)
+                    packet_queue.task_done()
+                except queue.Empty:
+                    break
+        time.sleep(0.05)
+    server.close()
+    if LOG_SOCKET_STATE:
+        log_event("Socket state: Server socket closed", socket_state=True)
+
+# Chunk 11 v2.03 - Design Goals and Statuses  # CHANGE v2.03: Updated for queue and config
+# DESIGN GOALS:
+# - v2.02: Fix FORM_UPDATE repetition with client v3.01, add sync_start/completion logging - Done
+# - v2.03: Add packet queue for radio delays, move globals to config, enhance logging - Done
+# - Future: Separate people.csv sync (MD5_people:)
+# - Future: Add options screen for config and logging control
+# CHANGES:
+# - v2.03: Updated VERSION to 2.03 (Chunk 1),
+#          added queue import and packet_queue with queue_maxsize from config (Chunk 1, 2),
+#          moved SERVER_HOST, SERVER_PORT, HOME_DIR, CLIENT_TIMEOUT to config, default timeout 1800s (Chunk 1),
+#          added log_packet_queue, log_client_queue, log_ui_packet_handling, log_queue_state to config and log_event (Chunk 1, 3),
+#          modified handle_client to enqueue packets instead of processing (Chunk 5),
+#          added queue processing in main when not in Forms Management (Chunk 10),
+#          kept spammy logs off (packet_parsing, etc.), backups always on (Chunk 1),
+#          line count increased from 1005 to 1076 with queue, logging, and config changes (Chunk 11)
+
+backup_script()
+
+# Chunk 12 v1.90 - Entry Point (unchanged)
+if __name__ == "__main__":
+    try:
+        curses.wrapper(main)
+    except Exception as e:
+        with open(LOG_FILE, 'a') as f:
+            f.write(str(datetime.now()) + " - Fatal error: " + str(e) + " - traceback: " + traceback.format_exc() + "\n")
+        sys.exit(1)

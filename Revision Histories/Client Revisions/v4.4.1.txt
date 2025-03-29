@@ -1,0 +1,37 @@
+client_mini_revisions_20250324_v4.4.1.txt
+-----------------------------------------
+
+Version: 4.4.1
+Date: 2025-03-24
+
+Changes:
+1. **Fixed Packet Splitting Crash**
+   - Location: build_ax25_packet()
+   - Change: Commented out `log_event("Split packet into {len(parts)} chunks", payload_validation=True)` that caused a crash due to an invalid `payload_validation` argument when splitting packets larger than max_payload (108 bytes).
+   - Reason: The log call was triggering an exception that halted packet splitting, particularly for the 124-byte X packet. Replaced with a new `log_packet_split` log type for safer tracking.
+   - Lines Affected: ~600 (commented out), ~602 (added new log)
+
+2. **Enhanced Connection Troubleshooting**
+   - Location: connect_kiss_socket(), kiss_listener()
+   - Change: Added specific logging for connection refused errors in `connect_kiss_socket()` with a hint to check Fake Direwolf status.
+   - Change: Added `log_connection_refused`, `log_socket_timeout`, and `log_listener_buffer` to config and `log_event()` for detailed tracking of connection issues and buffer states.
+   - Reason: Client was stuck retrying to connect to 127.0.0.1:8051 with "Connection refused" errors after Fake Direwolf disconnected at 20:57:38. These logs help pinpoint why.
+   - Lines Affected: ~150-154 (config), ~400-404 (log_event params), ~1100-1105 (connect_kiss_socket), ~1250-1255 (kiss_listener)
+
+3. **Logging Adjustments**
+   - Location: Config section
+   - Change: Confirmed `log_packet_raw_decode`, `log_redraw_triggers`, and `log_ui_render` are set to False to reduce log spam.
+   - Change: Added new logging types: `log_packet_split`, `log_connection_refused`, `log_socket_timeout`, `log_listener_buffer` (all default True).
+   - Reason: Reduces noise from frequent UI/packet decode logs while adding targeted logs for current issues (splitting, connectivity).
+   - Lines Affected: ~150-154 (new config entries), ~200-204 (confirmed False settings)
+
+4. **Version Update**
+   - Location: Top of file
+   - Change: Updated VERSION from "4.4.0" to "4.4.1" and adjusted log message in main() to reflect this.
+   - Reason: Standard versioning for new fixes and enhancements.
+   - Lines Affected: ~20 (VERSION), ~1700 (main log)
+
+Notes:
+- No code was removed; only one log call was commented out to preserve original logic.
+- Line count increased slightly due to new logging params and entries (~20 lines net increase).
+- `log_file_io` remains always on for backup logging as requested.

@@ -1,0 +1,858 @@
+2025-03-24 21:35:33,050 - Deleted old log file and started new session (PID: 14988)
+2025-03-24 21:35:33,054 - KISS server listening on port 8051 (Thread ID: 3074558784)
+2025-03-24 21:35:33,055 - Peer server listening on port 8052 (Thread ID: 3064986432)
+2025-03-24 21:35:33,056 - BCAST_SENT: FAKE_DIREWOLF|192.168.86.49|8052
+2025-03-24 21:35:33,056 - UI update queued: status_messages at 1742866533.0563574
+2025-03-24 21:35:33,057 - Started threads: KISS (3074558784), Peer (3064986432), Broadcast (3054500672), Listen (3046107968), Manager (3037715264)
+2025-03-24 21:35:33,059 - Peer state check: peer_socket=None, discovered_peers={}
+2025-03-24 21:35:41,741 - KISS client connected: ('127.0.0.1', 35742)
+2025-03-24 21:35:41,742 - UI update queued: status_messages at 1742866541.7423062
+2025-03-24 21:35:41,742 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866541.7424433
+2025-03-24 21:35:42,743 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866542.7438238
+2025-03-24 21:35:42,744 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866542.7443402
+2025-03-24 21:35:43,060 - Peer state check: peer_socket=None, discovered_peers={}
+2025-03-24 21:35:43,745 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866543.745823
+2025-03-24 21:35:43,746 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866543.7462866
+2025-03-24 21:35:44,747 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866544.747766
+2025-03-24 21:35:44,748 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866544.7482936
+2025-03-24 21:35:45,749 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866545.749773
+2025-03-24 21:35:45,750 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866545.750263
+2025-03-24 21:35:46,751 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866546.7516403
+2025-03-24 21:35:46,752 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866546.7520604
+2025-03-24 21:35:47,753 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866547.753456
+2025-03-24 21:35:47,754 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866547.7539907
+2025-03-24 21:35:48,755 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866548.755556
+2025-03-24 21:35:48,756 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866548.7561052
+2025-03-24 21:35:49,757 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866549.7576244
+2025-03-24 21:35:49,758 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866549.7580886
+2025-03-24 21:35:50,759 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866550.7594516
+2025-03-24 21:35:50,759 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866550.7598908
+2025-03-24 21:35:51,761 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866551.7613475
+2025-03-24 21:35:51,761 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866551.7617743
+2025-03-24 21:35:52,762 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866552.762212
+2025-03-24 21:35:52,762 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866552.7626297
+2025-03-24 21:35:53,062 - Peer state check: peer_socket=None, discovered_peers={}
+2025-03-24 21:35:53,764 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866553.7640867
+2025-03-24 21:35:53,765 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866553.7650826
+2025-03-24 21:35:54,766 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866554.7662249
+2025-03-24 21:35:54,766 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866554.7666924
+2025-03-24 21:35:55,768 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866555.7680461
+2025-03-24 21:35:55,768 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866555.7684574
+2025-03-24 21:35:56,770 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866556.7699783
+2025-03-24 21:35:56,770 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866556.7704313
+2025-03-24 21:35:57,772 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866557.7718961
+2025-03-24 21:35:57,772 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866557.772401
+2025-03-24 21:35:58,774 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866558.7738638
+2025-03-24 21:35:58,775 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866558.7750778
+2025-03-24 21:35:59,776 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866559.7765577
+2025-03-24 21:35:59,777 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866559.777012
+2025-03-24 21:36:00,778 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866560.7782645
+2025-03-24 21:36:00,778 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866560.7788825
+2025-03-24 21:36:01,780 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866561.7802396
+2025-03-24 21:36:01,780 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866561.7806854
+2025-03-24 21:36:02,782 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866562.782078
+2025-03-24 21:36:02,782 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866562.782578
+2025-03-24 21:36:03,063 - Peer state check: peer_socket=None, discovered_peers={}
+2025-03-24 21:36:03,784 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866563.7839336
+2025-03-24 21:36:03,784 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866563.7844021
+2025-03-24 21:36:04,785 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866564.7857547
+2025-03-24 21:36:04,786 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866564.786326
+2025-03-24 21:36:05,787 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866565.7871253
+2025-03-24 21:36:05,787 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866565.7876263
+2025-03-24 21:36:06,789 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866566.7890947
+2025-03-24 21:36:06,789 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866566.7895737
+2025-03-24 21:36:07,790 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866567.7902272
+2025-03-24 21:36:07,790 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866567.7907414
+2025-03-24 21:36:08,792 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866568.7921214
+2025-03-24 21:36:08,792 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866568.7926247
+2025-03-24 21:36:09,794 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866569.7939897
+2025-03-24 21:36:09,795 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866569.7951283
+2025-03-24 21:36:10,796 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866570.796511
+2025-03-24 21:36:10,797 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866570.7970297
+2025-03-24 21:36:11,798 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866571.798118
+2025-03-24 21:36:11,798 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866571.7986145
+2025-03-24 21:36:12,800 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866572.8000772
+2025-03-24 21:36:12,800 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866572.800516
+2025-03-24 21:36:13,063 - Peer state check: peer_socket=None, discovered_peers={}
+2025-03-24 21:36:13,802 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866573.8019674
+2025-03-24 21:36:13,802 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866573.802406
+2025-03-24 21:36:14,803 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866574.803762
+2025-03-24 21:36:14,804 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866574.8049045
+2025-03-24 21:36:15,806 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866575.8062165
+2025-03-24 21:36:15,806 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866575.8066475
+2025-03-24 21:36:16,808 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866576.8081138
+2025-03-24 21:36:16,808 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866576.808634
+2025-03-24 21:36:17,810 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866577.8101125
+2025-03-24 21:36:17,810 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866577.8106155
+2025-03-24 21:36:18,812 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866578.812079
+2025-03-24 21:36:18,812 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866578.812529
+2025-03-24 21:36:19,814 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866579.813979
+2025-03-24 21:36:19,815 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866579.8157423
+2025-03-24 21:36:20,817 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866580.8171098
+2025-03-24 21:36:20,817 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866580.817551
+2025-03-24 21:36:21,818 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866581.8182182
+2025-03-24 21:36:21,818 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866581.818649
+2025-03-24 21:36:22,820 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866582.8201041
+2025-03-24 21:36:22,820 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866582.82054
+2025-03-24 21:36:23,064 - Peer state check: peer_socket=None, discovered_peers={}
+2025-03-24 21:36:23,822 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866583.8218873
+2025-03-24 21:36:23,822 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866583.8223362
+2025-03-24 21:36:24,823 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866584.8237977
+2025-03-24 21:36:24,825 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866584.8249607
+2025-03-24 21:36:25,826 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866585.8262172
+2025-03-24 21:36:25,826 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866585.8266363
+2025-03-24 21:36:26,828 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866586.8280902
+2025-03-24 21:36:26,828 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866586.8285117
+2025-03-24 21:36:27,830 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866587.829875
+2025-03-24 21:36:27,830 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866587.8304226
+2025-03-24 21:36:28,832 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866588.8318837
+2025-03-24 21:36:28,832 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866588.8323474
+2025-03-24 21:36:29,833 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866589.8338115
+2025-03-24 21:36:29,835 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866589.834937
+2025-03-24 21:36:30,836 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866590.8364131
+2025-03-24 21:36:30,836 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866590.8368573
+2025-03-24 21:36:31,293 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.69|8052 from ('192.168.86.69', 44795)
+2025-03-24 21:36:31,293 - UI update queued: status_messages at 1742866591.2936926
+2025-03-24 21:36:31,838 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866591.8382173
+2025-03-24 21:36:31,838 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866591.8386457
+2025-03-24 21:36:32,840 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866592.8400848
+2025-03-24 21:36:32,840 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866592.8404684
+2025-03-24 21:36:33,056 - BCAST_SENT: FAKE_DIREWOLF|192.168.86.49|8052
+2025-03-24 21:36:33,057 - UI update queued: status_messages at 1742866593.057328
+2025-03-24 21:36:33,057 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.49|8052 from ('192.168.86.49', 58109)
+2025-03-24 21:36:33,057 - UI update queued: status_messages at 1742866593.0576613
+2025-03-24 21:36:33,064 - Peer state check: peer_socket=None, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:36:33,064 - Attempting outbound connection to 192.168.86.69:8052
+2025-03-24 21:36:33,064 - UI update queued: status_messages at 1742866593.0648317
+2025-03-24 21:36:33,136 - Connected outbound to peer 192.168.86.69:8052
+2025-03-24 21:36:33,137 - UI update queued: peer_status at 1742866593.1371558
+2025-03-24 21:36:33,138 - Connected to peer: ('192.168.86.69', 8052)
+2025-03-24 21:36:33,138 - UI update queued: status_messages at 1742866593.138627
+2025-03-24 21:36:33,841 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866593.8417003
+2025-03-24 21:36:33,842 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866593.842228
+2025-03-24 21:36:34,843 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866594.8436928
+2025-03-24 21:36:34,844 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866594.8441737
+2025-03-24 21:36:35,845 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866595.8456385
+2025-03-24 21:36:35,846 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866595.8461397
+2025-03-24 21:36:36,847 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866596.8475988
+2025-03-24 21:36:36,848 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866596.8480365
+2025-03-24 21:36:37,849 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866597.849395
+2025-03-24 21:36:37,851 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866597.8517485
+2025-03-24 21:36:38,853 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866598.8532393
+2025-03-24 21:36:38,853 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866598.8537405
+2025-03-24 21:36:39,854 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866599.854219
+2025-03-24 21:36:39,854 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866599.8546891
+2025-03-24 21:36:40,856 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866600.8561485
+2025-03-24 21:36:40,856 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866600.856601
+2025-03-24 21:36:41,858 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866601.8579504
+2025-03-24 21:36:41,858 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866601.8584192
+2025-03-24 21:36:42,860 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866602.8598726
+2025-03-24 21:36:42,860 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866602.8609035
+2025-03-24 21:36:43,215 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:36:43,862 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866603.8622296
+2025-03-24 21:36:43,862 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866603.862742
+2025-03-24 21:36:43,956 - Received raw data from peer ('192.168.86.69', 8052) at 1742866603.956845: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:36:43,957 - Peer ('192.168.86.69', 8052): Valid KISS frame structure: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:36:43,957 - Parsed callsigns - src=0SVR00-1, dest=?ALL-0
+2025-03-24 21:36:43,957 - Extracted payload bytes: 4d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e (len=47)
+2025-03-24 21:36:43,958 - Successfully decoded payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+2025-03-24 21:36:43,958 - Packet received from 0SVR00-1 to ?ALL from peer ('192.168.86.69', 8052) at 1742866603.956845: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2)
+2025-03-24 21:36:43,958 - Sending to KISS client ('127.0.0.1', 35742) at 1742866603.9587188
+2025-03-24 21:36:43,966 - Packet delivery to KISS client ('127.0.0.1', 35742) confirmed at 1742866603.9661472
+2025-03-24 21:36:44,864 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866604.8642142
+2025-03-24 21:36:44,864 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866604.8647373
+2025-03-24 21:36:45,866 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866605.8662283
+2025-03-24 21:36:45,866 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866605.866697
+2025-03-24 21:36:46,868 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866606.8680594
+2025-03-24 21:36:46,868 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866606.868546
+2025-03-24 21:36:47,870 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866607.8700116
+2025-03-24 21:36:47,870 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866607.870566
+2025-03-24 21:36:48,872 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866608.872032
+2025-03-24 21:36:48,872 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866608.8725224
+2025-03-24 21:36:49,874 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866609.8739805
+2025-03-24 21:36:49,874 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866609.874442
+2025-03-24 21:36:50,876 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866610.8758972
+2025-03-24 21:36:50,876 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866610.8763351
+2025-03-24 21:36:51,877 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866611.8776867
+2025-03-24 21:36:51,878 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866611.8781712
+2025-03-24 21:36:52,879 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866612.879524
+2025-03-24 21:36:52,880 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866612.8799422
+2025-03-24 21:36:53,247 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:36:53,881 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866613.8814015
+2025-03-24 21:36:53,882 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866613.882647
+2025-03-24 21:36:54,884 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866614.8841321
+2025-03-24 21:36:54,884 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866614.8845959
+2025-03-24 21:36:55,886 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866615.8860772
+2025-03-24 21:36:55,886 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866615.8864756
+2025-03-24 21:36:56,888 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866616.8879254
+2025-03-24 21:36:56,888 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866616.8883388
+2025-03-24 21:36:57,889 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866617.8898034
+2025-03-24 21:36:57,890 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866617.890416
+2025-03-24 21:36:58,891 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866618.8909488
+2025-03-24 21:36:58,892 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866618.8919828
+2025-03-24 21:36:59,893 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866619.893458
+2025-03-24 21:36:59,893 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866619.8939214
+2025-03-24 21:37:00,895 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866620.8954334
+2025-03-24 21:37:00,895 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866620.8959289
+2025-03-24 21:37:01,897 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866621.8973916
+2025-03-24 21:37:01,897 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866621.8978486
+2025-03-24 21:37:02,899 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866622.899407
+2025-03-24 21:37:02,900 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866622.8999486
+2025-03-24 21:37:03,275 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:37:03,901 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866623.9014137
+2025-03-24 21:37:03,903 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866623.9029813
+2025-03-24 21:37:04,904 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866624.9043665
+2025-03-24 21:37:04,904 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866624.9048347
+2025-03-24 21:37:05,906 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866625.906143
+2025-03-24 21:37:05,906 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866625.9066331
+2025-03-24 21:37:06,908 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866626.9080963
+2025-03-24 21:37:06,908 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866626.9085577
+2025-03-24 21:37:07,910 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866627.9100552
+2025-03-24 21:37:07,910 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866627.9105663
+2025-03-24 21:37:08,912 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866628.9120328
+2025-03-24 21:37:08,913 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866628.9131773
+2025-03-24 21:37:09,914 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866629.9142168
+2025-03-24 21:37:09,914 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866629.9146736
+2025-03-24 21:37:10,916 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866630.9161234
+2025-03-24 21:37:10,916 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866630.9165316
+2025-03-24 21:37:11,918 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866631.9179916
+2025-03-24 21:37:11,918 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866631.9185119
+2025-03-24 21:37:12,920 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866632.9199808
+2025-03-24 21:37:12,920 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866632.9204879
+2025-03-24 21:37:13,346 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:37:13,922 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866633.9219472
+2025-03-24 21:37:13,923 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866633.9230084
+2025-03-24 21:37:14,924 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866634.9243846
+2025-03-24 21:37:14,924 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866634.92491
+2025-03-24 21:37:15,926 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866635.926214
+2025-03-24 21:37:15,926 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866635.9266381
+2025-03-24 21:37:16,928 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866636.9281027
+2025-03-24 21:37:16,928 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866636.9285781
+2025-03-24 21:37:17,930 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866637.9300785
+2025-03-24 21:37:17,930 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866637.9305959
+2025-03-24 21:37:18,932 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866638.9320726
+2025-03-24 21:37:18,933 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866638.9334948
+2025-03-24 21:37:19,934 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866639.934118
+2025-03-24 21:37:19,934 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866639.9345884
+2025-03-24 21:37:20,936 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866640.9360495
+2025-03-24 21:37:20,936 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866640.9365084
+2025-03-24 21:37:21,938 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866641.9379692
+2025-03-24 21:37:21,938 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866641.9384406
+2025-03-24 21:37:22,939 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866642.9390955
+2025-03-24 21:37:22,939 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866642.939512
+2025-03-24 21:37:23,369 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:37:23,941 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866643.9408748
+2025-03-24 21:37:23,942 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866643.9423099
+2025-03-24 21:37:24,943 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866644.9437993
+2025-03-24 21:37:24,944 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866644.9442668
+2025-03-24 21:37:25,945 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866645.9457233
+2025-03-24 21:37:25,946 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866645.9461572
+2025-03-24 21:37:26,947 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866646.9476137
+2025-03-24 21:37:26,948 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866646.9480534
+2025-03-24 21:37:27,949 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866647.949518
+2025-03-24 21:37:27,950 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866647.9500651
+2025-03-24 21:37:28,951 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866648.951434
+2025-03-24 21:37:28,951 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866648.951894
+2025-03-24 21:37:29,953 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866649.9533696
+2025-03-24 21:37:29,953 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866649.9538395
+2025-03-24 21:37:30,955 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866650.9553466
+2025-03-24 21:37:30,955 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866650.955783
+2025-03-24 21:37:31,300 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.69|8052 from ('192.168.86.69', 44795)
+2025-03-24 21:37:31,300 - UI update queued: status_messages at 1742866651.300389
+2025-03-24 21:37:31,957 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866651.9572432
+2025-03-24 21:37:31,957 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866651.9577703
+2025-03-24 21:37:32,959 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866652.9591846
+2025-03-24 21:37:32,959 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866652.9595652
+2025-03-24 21:37:33,057 - BCAST_SENT: FAKE_DIREWOLF|192.168.86.49|8052
+2025-03-24 21:37:33,058 - UI update queued: status_messages at 1742866653.0582664
+2025-03-24 21:37:33,058 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.49|8052 from ('192.168.86.49', 58109)
+2025-03-24 21:37:33,058 - UI update queued: status_messages at 1742866653.0585728
+2025-03-24 21:37:33,395 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:37:33,960 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866653.9607902
+2025-03-24 21:37:33,961 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866653.9612896
+2025-03-24 21:37:34,962 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866654.9622269
+2025-03-24 21:37:34,962 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866654.9627213
+2025-03-24 21:37:35,964 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866655.9641826
+2025-03-24 21:37:35,964 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866655.9646442
+2025-03-24 21:37:36,966 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866656.9661112
+2025-03-24 21:37:36,966 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866656.96656
+2025-03-24 21:37:37,968 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866657.9680233
+2025-03-24 21:37:37,968 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866657.9685242
+2025-03-24 21:37:38,970 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866658.9699893
+2025-03-24 21:37:38,971 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866658.971537
+2025-03-24 21:37:39,973 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866659.9729066
+2025-03-24 21:37:39,973 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866659.9733706
+2025-03-24 21:37:40,974 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866660.9742177
+2025-03-24 21:37:40,974 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866660.9746492
+2025-03-24 21:37:41,975 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866661.9752436
+2025-03-24 21:37:41,975 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866661.9757428
+2025-03-24 21:37:42,977 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866662.9771082
+2025-03-24 21:37:42,977 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866662.9775972
+2025-03-24 21:37:43,432 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:37:43,950 - Received raw data from peer ('192.168.86.69', 8052) at 1742866663.9499848: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:37:43,950 - Peer ('192.168.86.69', 8052): Valid KISS frame structure: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:37:43,950 - Parsed callsigns - src=0SVR00-1, dest=?ALL-0
+2025-03-24 21:37:43,951 - Extracted payload bytes: 4d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e (len=47)
+2025-03-24 21:37:43,951 - Successfully decoded payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+2025-03-24 21:37:43,951 - Packet received from 0SVR00-1 to ?ALL from peer ('192.168.86.69', 8052) at 1742866663.9499848: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2)
+2025-03-24 21:37:43,952 - Sending to KISS client ('127.0.0.1', 35742) at 1742866663.951995
+2025-03-24 21:37:43,958 - Packet delivery to KISS client ('127.0.0.1', 35742) confirmed at 1742866663.9581156
+2025-03-24 21:37:43,979 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866663.9790058
+2025-03-24 21:37:43,979 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866663.97978
+2025-03-24 21:37:44,981 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866664.9812582
+2025-03-24 21:37:44,981 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866664.981784
+2025-03-24 21:37:45,982 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866665.982222
+2025-03-24 21:37:45,982 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866665.9826825
+2025-03-24 21:37:46,983 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866666.9838111
+2025-03-24 21:37:46,984 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866666.9842982
+2025-03-24 21:37:47,985 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866667.9857652
+2025-03-24 21:37:47,986 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866667.9863224
+2025-03-24 21:37:48,987 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866668.9877913
+2025-03-24 21:37:48,989 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866668.989305
+2025-03-24 21:37:49,990 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866669.9902215
+2025-03-24 21:37:49,990 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866669.990695
+2025-03-24 21:37:50,992 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866670.992151
+2025-03-24 21:37:50,992 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866670.9925694
+2025-03-24 21:37:51,994 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866671.9939156
+2025-03-24 21:37:51,994 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866671.9943662
+2025-03-24 21:37:52,995 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866672.9957962
+2025-03-24 21:37:52,996 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866672.9962008
+2025-03-24 21:37:53,470 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:37:53,997 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866673.997661
+2025-03-24 21:37:53,998 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866673.9988112
+2025-03-24 21:37:55,000 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866675.0002966
+2025-03-24 21:37:55,000 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866675.0007746
+2025-03-24 21:37:56,002 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866676.002111
+2025-03-24 21:37:56,002 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866676.002553
+2025-03-24 21:37:57,004 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866677.0038998
+2025-03-24 21:37:57,004 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866677.0043125
+2025-03-24 21:37:58,005 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866678.0057788
+2025-03-24 21:37:58,006 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866678.006319
+2025-03-24 21:37:59,007 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866679.0077786
+2025-03-24 21:37:59,009 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866679.0089474
+2025-03-24 21:38:00,010 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866680.0102217
+2025-03-24 21:38:00,010 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866680.0106964
+2025-03-24 21:38:01,012 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866681.012059
+2025-03-24 21:38:01,012 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866681.012559
+2025-03-24 21:38:02,014 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866682.0140564
+2025-03-24 21:38:02,014 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866682.0145447
+2025-03-24 21:38:03,016 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866683.016014
+2025-03-24 21:38:03,016 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866683.0165083
+2025-03-24 21:38:03,539 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:38:04,018 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866684.017972
+2025-03-24 21:38:04,020 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866684.019989
+2025-03-24 21:38:05,021 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866685.0214655
+2025-03-24 21:38:05,022 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866685.0219376
+2025-03-24 21:38:06,023 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866686.0234513
+2025-03-24 21:38:06,023 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866686.0239108
+2025-03-24 21:38:07,025 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866687.0253103
+2025-03-24 21:38:07,025 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866687.0257168
+2025-03-24 21:38:08,026 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866688.0262258
+2025-03-24 21:38:08,026 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866688.02674
+2025-03-24 21:38:09,028 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866689.028209
+2025-03-24 21:38:09,029 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866689.0292988
+2025-03-24 21:38:10,030 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866690.0301132
+2025-03-24 21:38:10,030 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866690.0305765
+2025-03-24 21:38:11,032 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866691.031928
+2025-03-24 21:38:11,032 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866691.0324104
+2025-03-24 21:38:12,034 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866692.0338666
+2025-03-24 21:38:12,034 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866692.03434
+2025-03-24 21:38:13,035 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866693.0357962
+2025-03-24 21:38:13,036 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866693.036229
+2025-03-24 21:38:13,571 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:38:14,037 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866694.037683
+2025-03-24 21:38:14,038 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866694.0386944
+2025-03-24 21:38:15,040 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866695.040178
+2025-03-24 21:38:15,040 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866695.04067
+2025-03-24 21:38:16,042 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866696.042058
+2025-03-24 21:38:16,042 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866696.0425725
+2025-03-24 21:38:17,044 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866697.043936
+2025-03-24 21:38:17,044 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866697.0444179
+2025-03-24 21:38:18,046 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866698.0458846
+2025-03-24 21:38:18,046 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866698.0464215
+2025-03-24 21:38:19,047 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866699.0477762
+2025-03-24 21:38:19,049 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866699.049102
+2025-03-24 21:38:20,050 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866700.050499
+2025-03-24 21:38:20,051 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866700.0509386
+2025-03-24 21:38:21,052 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866701.0523915
+2025-03-24 21:38:21,052 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866701.0528045
+2025-03-24 21:38:22,054 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866702.0542166
+2025-03-24 21:38:22,054 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866702.0546453
+2025-03-24 21:38:23,056 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866703.0560992
+2025-03-24 21:38:23,056 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866703.0565221
+2025-03-24 21:38:23,679 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 33472), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:38:24,058 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866704.057979
+2025-03-24 21:38:24,059 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866704.0590014
+2025-03-24 21:38:25,060 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866705.060401
+2025-03-24 21:38:25,060 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866705.060862
+2025-03-24 21:38:26,062 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866706.0622168
+2025-03-24 21:38:26,062 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866706.0626495
+2025-03-24 21:38:27,064 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866707.0641015
+2025-03-24 21:38:27,064 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866707.0645108
+2025-03-24 21:38:28,066 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866708.0659761
+2025-03-24 21:38:28,066 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866708.0665169
+2025-03-24 21:38:29,068 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866709.068081
+2025-03-24 21:38:29,069 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866709.0691214
+2025-03-24 21:38:30,070 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866710.0702198
+2025-03-24 21:38:30,070 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866710.0706558
+2025-03-24 21:38:31,072 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866711.072118
+2025-03-24 21:38:31,072 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866711.0725944
+2025-03-24 21:38:31,306 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.69|8052 from ('192.168.86.69', 44795)
+2025-03-24 21:38:31,307 - UI update queued: status_messages at 1742866711.3070521
+2025-03-24 21:38:32,074 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866712.0740871
+2025-03-24 21:38:32,074 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866712.0745575
+2025-03-24 21:38:33,058 - BCAST_SENT: FAKE_DIREWOLF|192.168.86.49|8052
+2025-03-24 21:38:33,059 - UI update queued: status_messages at 1742866713.0593646
+2025-03-24 21:38:33,059 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.49|8052 from ('192.168.86.49', 58109)
+2025-03-24 21:38:33,060 - UI update queued: status_messages at 1742866713.059997
+2025-03-24 21:38:33,076 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866713.0759294
+2025-03-24 21:38:33,076 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866713.076358
+2025-03-24 21:38:33,427 - Peer disconnected: ('192.168.86.69', 8052) (no data received)
+2025-03-24 21:38:33,427 - UI update queued: status_messages at 1742866713.427734
+2025-03-24 21:38:33,428 - Clearing peer_socket ('192.168.86.69', 8052) due to disconnection
+2025-03-24 21:38:33,680 - Peer state check: peer_socket=None, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:38:33,680 - Attempting outbound connection to 192.168.86.69:8052
+2025-03-24 21:38:33,680 - UI update queued: status_messages at 1742866713.6807046
+2025-03-24 21:38:33,799 - Connected outbound to peer 192.168.86.69:8052
+2025-03-24 21:38:33,799 - UI update queued: peer_status at 1742866713.7996883
+2025-03-24 21:38:33,800 - Connected to peer: ('192.168.86.69', 8052)
+2025-03-24 21:38:33,801 - UI update queued: status_messages at 1742866713.8009439
+2025-03-24 21:38:34,077 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866714.077702
+2025-03-24 21:38:34,078 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866714.0781493
+2025-03-24 21:38:35,079 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866715.079612
+2025-03-24 21:38:35,080 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866715.0800948
+2025-03-24 21:38:36,081 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866716.0814543
+2025-03-24 21:38:36,082 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866716.0819407
+2025-03-24 21:38:37,083 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866717.0834546
+2025-03-24 21:38:37,083 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866717.083917
+2025-03-24 21:38:38,085 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866718.08538
+2025-03-24 21:38:38,085 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866718.0858855
+2025-03-24 21:38:39,087 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866719.0874057
+2025-03-24 21:38:39,089 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866719.089565
+2025-03-24 21:38:40,090 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866720.0902214
+2025-03-24 21:38:40,090 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866720.0906649
+2025-03-24 21:38:41,092 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866721.0921192
+2025-03-24 21:38:41,092 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866721.092542
+2025-03-24 21:38:42,094 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866722.093908
+2025-03-24 21:38:42,094 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866722.094439
+2025-03-24 21:38:43,096 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866723.095895
+2025-03-24 21:38:43,096 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866723.0963206
+2025-03-24 21:38:43,868 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:38:43,952 - Received raw data from peer ('192.168.86.69', 8052) at 1742866723.9524753: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:38:43,952 - Peer ('192.168.86.69', 8052): Valid KISS frame structure: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:38:43,953 - Parsed callsigns - src=0SVR00-1, dest=?ALL-0
+2025-03-24 21:38:43,953 - Extracted payload bytes: 4d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e (len=47)
+2025-03-24 21:38:43,953 - Successfully decoded payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+2025-03-24 21:38:43,954 - Packet received from 0SVR00-1 to ?ALL from peer ('192.168.86.69', 8052) at 1742866723.9524753: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2)
+2025-03-24 21:38:43,954 - Sending to KISS client ('127.0.0.1', 35742) at 1742866723.954296
+2025-03-24 21:38:43,958 - Packet delivery to KISS client ('127.0.0.1', 35742) confirmed at 1742866723.958112
+2025-03-24 21:38:44,097 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866724.097776
+2025-03-24 21:38:44,099 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866724.0997756
+2025-03-24 21:38:45,101 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866725.1012623
+2025-03-24 21:38:45,101 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866725.1017888
+2025-03-24 21:38:46,102 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866726.1022215
+2025-03-24 21:38:46,102 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866726.1026974
+2025-03-24 21:38:47,104 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866727.104162
+2025-03-24 21:38:47,104 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866727.1046405
+2025-03-24 21:38:48,106 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866728.106009
+2025-03-24 21:38:48,106 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866728.1065776
+2025-03-24 21:38:49,108 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866729.1080394
+2025-03-24 21:38:49,109 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866729.1093059
+2025-03-24 21:38:50,110 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866730.1101148
+2025-03-24 21:38:50,110 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866730.1105535
+2025-03-24 21:38:51,112 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866731.1120095
+2025-03-24 21:38:51,112 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866731.1124513
+2025-03-24 21:38:52,114 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866732.1139066
+2025-03-24 21:38:52,114 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866732.1143754
+2025-03-24 21:38:53,115 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866733.1157215
+2025-03-24 21:38:53,116 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866733.1161351
+2025-03-24 21:38:53,891 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:38:54,117 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866734.1175833
+2025-03-24 21:38:54,118 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866734.1185656
+2025-03-24 21:38:55,120 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866735.120049
+2025-03-24 21:38:55,120 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866735.1205227
+2025-03-24 21:38:56,122 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866736.1219757
+2025-03-24 21:38:56,122 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866736.1224031
+2025-03-24 21:38:57,123 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866737.1238513
+2025-03-24 21:38:57,124 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866737.1242516
+2025-03-24 21:38:58,125 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866738.1257772
+2025-03-24 21:38:58,126 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866738.126305
+2025-03-24 21:38:59,127 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866739.1276324
+2025-03-24 21:38:59,129 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866739.129553
+2025-03-24 21:39:00,130 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866740.1302235
+2025-03-24 21:39:00,130 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866740.1307034
+2025-03-24 21:39:01,132 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866741.1321661
+2025-03-24 21:39:01,132 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866741.1326692
+2025-03-24 21:39:02,134 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866742.1340775
+2025-03-24 21:39:02,134 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866742.1345727
+2025-03-24 21:39:03,136 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866743.1360378
+2025-03-24 21:39:03,136 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866743.1365147
+2025-03-24 21:39:03,940 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:39:04,138 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866744.1379285
+2025-03-24 21:39:04,138 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866744.1385698
+2025-03-24 21:39:05,140 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866745.1399353
+2025-03-24 21:39:05,140 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866745.1403635
+2025-03-24 21:39:06,141 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866746.1416614
+2025-03-24 21:39:06,142 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866746.1421633
+2025-03-24 21:39:07,143 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866747.1436245
+2025-03-24 21:39:07,146 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866747.1460977
+2025-03-24 21:39:08,147 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866748.1475909
+2025-03-24 21:39:08,148 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866748.1481006
+2025-03-24 21:39:09,149 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866749.1495657
+2025-03-24 21:39:09,150 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866749.1501043
+2025-03-24 21:39:10,151 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866750.1515734
+2025-03-24 21:39:10,152 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866750.1520197
+2025-03-24 21:39:11,153 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866751.153486
+2025-03-24 21:39:11,154 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866751.1539981
+2025-03-24 21:39:12,155 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866752.15542
+2025-03-24 21:39:12,156 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866752.1565788
+2025-03-24 21:39:13,158 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866753.1579702
+2025-03-24 21:39:13,158 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866753.1585417
+2025-03-24 21:39:13,975 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:39:14,160 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866754.1600144
+2025-03-24 21:39:14,160 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866754.160409
+2025-03-24 21:39:15,162 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866755.1619291
+2025-03-24 21:39:15,162 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866755.1624372
+2025-03-24 21:39:16,163 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866756.1630929
+2025-03-24 21:39:16,163 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866756.1635923
+2025-03-24 21:39:17,165 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866757.165074
+2025-03-24 21:39:17,166 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866757.1666284
+2025-03-24 21:39:18,168 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866758.168141
+2025-03-24 21:39:18,168 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866758.1686807
+2025-03-24 21:39:19,170 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866759.1701987
+2025-03-24 21:39:19,170 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866759.1707103
+2025-03-24 21:39:20,172 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866760.1720097
+2025-03-24 21:39:20,172 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866760.1724617
+2025-03-24 21:39:21,174 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866761.173914
+2025-03-24 21:39:21,174 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866761.1743536
+2025-03-24 21:39:22,175 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866762.1758218
+2025-03-24 21:39:22,176 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866762.1769283
+2025-03-24 21:39:23,178 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866763.1782234
+2025-03-24 21:39:23,178 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866763.1787171
+2025-03-24 21:39:24,180 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866764.1801908
+2025-03-24 21:39:24,180 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866764.1806953
+2025-03-24 21:39:24,275 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:39:25,182 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866765.1820846
+2025-03-24 21:39:25,182 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866765.1825411
+2025-03-24 21:39:26,184 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866766.1839964
+2025-03-24 21:39:26,184 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866766.1844254
+2025-03-24 21:39:27,186 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866767.1858819
+2025-03-24 21:39:27,187 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866767.1869507
+2025-03-24 21:39:28,188 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866768.1883318
+2025-03-24 21:39:28,188 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866768.1888444
+2025-03-24 21:39:29,190 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866769.190109
+2025-03-24 21:39:29,190 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866769.1905382
+2025-03-24 21:39:30,192 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866770.1918867
+2025-03-24 21:39:30,192 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866770.192325
+2025-03-24 21:39:31,193 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866771.193777
+2025-03-24 21:39:31,194 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866771.1942446
+2025-03-24 21:39:31,313 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.69|8052 from ('192.168.86.69', 44795)
+2025-03-24 21:39:31,313 - UI update queued: status_messages at 1742866771.3138533
+2025-03-24 21:39:32,195 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866772.1957052
+2025-03-24 21:39:32,196 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866772.1961892
+2025-03-24 21:39:33,059 - BCAST_SENT: FAKE_DIREWOLF|192.168.86.49|8052
+2025-03-24 21:39:33,060 - UI update queued: status_messages at 1742866773.060329
+2025-03-24 21:39:33,060 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.49|8052 from ('192.168.86.49', 58109)
+2025-03-24 21:39:33,060 - UI update queued: status_messages at 1742866773.0606482
+2025-03-24 21:39:33,197 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866773.1975625
+2025-03-24 21:39:33,197 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866773.197941
+2025-03-24 21:39:34,199 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866774.1993408
+2025-03-24 21:39:34,199 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866774.1998339
+2025-03-24 21:39:34,410 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:39:35,201 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866775.2012978
+2025-03-24 21:39:35,201 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866775.201781
+2025-03-24 21:39:36,203 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866776.2032797
+2025-03-24 21:39:36,203 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866776.2037466
+2025-03-24 21:39:37,205 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866777.205204
+2025-03-24 21:39:37,205 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866777.205652
+2025-03-24 21:39:38,206 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866778.206224
+2025-03-24 21:39:38,206 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866778.2067277
+2025-03-24 21:39:39,208 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866779.2080874
+2025-03-24 21:39:39,208 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866779.2085836
+2025-03-24 21:39:40,210 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866780.2099342
+2025-03-24 21:39:40,210 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866780.2104278
+2025-03-24 21:39:41,212 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866781.21188
+2025-03-24 21:39:41,212 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866781.2123
+2025-03-24 21:39:42,213 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866782.2138038
+2025-03-24 21:39:42,214 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866782.2142656
+2025-03-24 21:39:43,215 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866783.2157218
+2025-03-24 21:39:43,216 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866783.2161624
+2025-03-24 21:39:43,960 - Received raw data from peer ('192.168.86.69', 8052) at 1742866783.9603064: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:39:43,960 - Peer ('192.168.86.69', 8052): Valid KISS frame structure: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:39:43,961 - Parsed callsigns - src=0SVR00-1, dest=?ALL-0
+2025-03-24 21:39:43,961 - Extracted payload bytes: 4d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e (len=47)
+2025-03-24 21:39:43,961 - Successfully decoded payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+2025-03-24 21:39:43,961 - Packet received from 0SVR00-1 to ?ALL from peer ('192.168.86.69', 8052) at 1742866783.9603064: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2)
+2025-03-24 21:39:43,962 - Sending to KISS client ('127.0.0.1', 35742) at 1742866783.9623206
+2025-03-24 21:39:43,966 - Packet delivery to KISS client ('127.0.0.1', 35742) confirmed at 1742866783.9661143
+2025-03-24 21:39:44,219 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866784.2188525
+2025-03-24 21:39:44,220 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866784.2207165
+2025-03-24 21:39:44,448 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:39:45,222 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866785.222219
+2025-03-24 21:39:45,222 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866785.2227423
+2025-03-24 21:39:46,224 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866786.2242053
+2025-03-24 21:39:46,224 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866786.2246828
+2025-03-24 21:39:47,226 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866787.2261624
+2025-03-24 21:39:47,226 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866787.226659
+2025-03-24 21:39:48,228 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866788.22813
+2025-03-24 21:39:48,228 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866788.2286477
+2025-03-24 21:39:49,230 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866789.230114
+2025-03-24 21:39:49,231 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866789.2313666
+2025-03-24 21:39:50,233 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866790.2328975
+2025-03-24 21:39:50,233 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866790.2334008
+2025-03-24 21:39:51,234 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866791.234218
+2025-03-24 21:39:51,234 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866791.2346566
+2025-03-24 21:39:52,236 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866792.2361104
+2025-03-24 21:39:52,236 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866792.2365456
+2025-03-24 21:39:53,238 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866793.2378895
+2025-03-24 21:39:53,238 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866793.2383263
+2025-03-24 21:39:54,239 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866794.2397842
+2025-03-24 21:39:54,240 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866794.2408495
+2025-03-24 21:39:54,470 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:39:55,242 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866795.2422178
+2025-03-24 21:39:55,242 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866795.2426767
+2025-03-24 21:39:56,244 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866796.2441328
+2025-03-24 21:39:56,244 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866796.244558
+2025-03-24 21:39:57,246 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866797.246006
+2025-03-24 21:39:57,246 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866797.24644
+2025-03-24 21:39:58,247 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866798.2477944
+2025-03-24 21:39:58,248 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866798.2483056
+2025-03-24 21:39:59,249 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866799.2489498
+2025-03-24 21:39:59,250 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866799.2500057
+2025-03-24 21:40:00,251 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866800.2515273
+2025-03-24 21:40:00,252 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866800.2519999
+2025-03-24 21:40:01,253 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866801.2534642
+2025-03-24 21:40:01,254 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866801.2539651
+2025-03-24 21:40:02,255 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866802.2553732
+2025-03-24 21:40:02,255 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866802.2558377
+2025-03-24 21:40:03,257 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866803.2572944
+2025-03-24 21:40:03,257 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866803.2577465
+2025-03-24 21:40:04,258 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866804.2582235
+2025-03-24 21:40:04,260 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866804.2601268
+2025-03-24 21:40:04,503 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:40:05,261 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866805.261608
+2025-03-24 21:40:05,262 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866805.2621057
+2025-03-24 21:40:06,263 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866806.263577
+2025-03-24 21:40:06,264 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866806.2640405
+2025-03-24 21:40:07,265 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866807.2653935
+2025-03-24 21:40:07,265 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866807.265815
+2025-03-24 21:40:08,266 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866808.2662287
+2025-03-24 21:40:08,266 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866808.2667425
+2025-03-24 21:40:09,268 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866809.2681124
+2025-03-24 21:40:09,268 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866809.268544
+2025-03-24 21:40:10,269 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866810.2689323
+2025-03-24 21:40:10,269 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866810.269353
+2025-03-24 21:40:11,270 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866811.2702386
+2025-03-24 21:40:11,270 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866811.2706778
+2025-03-24 21:40:12,272 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866812.2720256
+2025-03-24 21:40:12,272 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866812.272444
+2025-03-24 21:40:13,274 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866813.2738974
+2025-03-24 21:40:13,274 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866813.2743614
+2025-03-24 21:40:14,275 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866814.2758222
+2025-03-24 21:40:14,276 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866814.276268
+2025-03-24 21:40:14,585 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:40:15,277 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866815.277624
+2025-03-24 21:40:15,278 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866815.278123
+2025-03-24 21:40:16,279 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866816.2796478
+2025-03-24 21:40:16,280 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866816.2800732
+2025-03-24 21:40:17,281 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866817.2815077
+2025-03-24 21:40:17,282 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866817.281991
+2025-03-24 21:40:18,283 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866818.2834132
+2025-03-24 21:40:18,283 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866818.2838197
+2025-03-24 21:40:19,285 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866819.2851915
+2025-03-24 21:40:19,285 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866819.2857056
+2025-03-24 21:40:20,286 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866820.2862267
+2025-03-24 21:40:20,286 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866820.2867284
+2025-03-24 21:40:21,288 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866821.2886457
+2025-03-24 21:40:21,289 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866821.289412
+2025-03-24 21:40:22,290 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866822.2902324
+2025-03-24 21:40:22,290 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866822.29078
+2025-03-24 21:40:23,292 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866823.292252
+2025-03-24 21:40:23,292 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866823.2927434
+2025-03-24 21:40:24,294 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866824.2942145
+2025-03-24 21:40:24,294 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866824.294667
+2025-03-24 21:40:24,751 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 36806), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:40:25,296 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866825.2960114
+2025-03-24 21:40:25,297 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866825.297384
+2025-03-24 21:40:26,298 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866826.2982247
+2025-03-24 21:40:26,298 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866826.2987287
+2025-03-24 21:40:27,300 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866827.3001864
+2025-03-24 21:40:27,300 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866827.3006284
+2025-03-24 21:40:28,302 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866828.302109
+2025-03-24 21:40:28,302 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866828.3026216
+2025-03-24 21:40:29,304 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866829.30408
+2025-03-24 21:40:29,304 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866829.304525
+2025-03-24 21:40:30,306 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866830.3058815
+2025-03-24 21:40:30,307 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866830.307011
+2025-03-24 21:40:31,308 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866831.3084843
+2025-03-24 21:40:31,308 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866831.3089035
+2025-03-24 21:40:31,320 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.69|8052 from ('192.168.86.69', 44795)
+2025-03-24 21:40:31,320 - UI update queued: status_messages at 1742866831.3206565
+2025-03-24 21:40:32,310 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866832.3102238
+2025-03-24 21:40:32,310 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866832.3106818
+2025-03-24 21:40:33,060 - BCAST_SENT: FAKE_DIREWOLF|192.168.86.49|8052
+2025-03-24 21:40:33,061 - UI update queued: status_messages at 1742866833.0613394
+2025-03-24 21:40:33,061 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.49|8052 from ('192.168.86.49', 58109)
+2025-03-24 21:40:33,062 - UI update queued: status_messages at 1742866833.0619905
+2025-03-24 21:40:33,312 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866833.3121693
+2025-03-24 21:40:33,312 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866833.3125494
+2025-03-24 21:40:33,918 - Peer disconnected: ('192.168.86.69', 8052) (no data received)
+2025-03-24 21:40:33,918 - UI update queued: status_messages at 1742866833.9186723
+2025-03-24 21:40:33,918 - Clearing peer_socket ('192.168.86.69', 8052) due to disconnection
+2025-03-24 21:40:34,313 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866834.3132722
+2025-03-24 21:40:34,313 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866834.3137896
+2025-03-24 21:40:34,752 - Peer state check: peer_socket=None, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:40:34,752 - Attempting outbound connection to 192.168.86.69:8052
+2025-03-24 21:40:34,752 - UI update queued: status_messages at 1742866834.7526987
+2025-03-24 21:40:35,151 - Connected outbound to peer 192.168.86.69:8052
+2025-03-24 21:40:35,151 - UI update queued: peer_status at 1742866835.1517868
+2025-03-24 21:40:35,152 - Connected to peer: ('192.168.86.69', 8052)
+2025-03-24 21:40:35,153 - UI update queued: status_messages at 1742866835.1529763
+2025-03-24 21:40:35,315 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866835.3149602
+2025-03-24 21:40:35,315 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866835.3153436
+2025-03-24 21:40:36,316 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866836.316333
+2025-03-24 21:40:36,316 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866836.3168247
+2025-03-24 21:40:37,318 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866837.3182144
+2025-03-24 21:40:37,318 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866837.3186483
+2025-03-24 21:40:38,320 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866838.3200085
+2025-03-24 21:40:38,320 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866838.320517
+2025-03-24 21:40:39,322 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866839.3218775
+2025-03-24 21:40:39,324 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866839.3248236
+2025-03-24 21:40:40,326 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866840.3262126
+2025-03-24 21:40:40,326 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866840.3266647
+2025-03-24 21:40:41,328 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866841.3281217
+2025-03-24 21:40:41,328 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866841.3285818
+2025-03-24 21:40:42,330 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866842.3300624
+2025-03-24 21:40:42,330 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866842.3304691
+2025-03-24 21:40:43,332 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866843.3319237
+2025-03-24 21:40:43,332 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866843.3323498
+2025-03-24 21:40:43,983 - Received raw data from peer ('192.168.86.69', 8052) at 1742866843.983641: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:40:43,984 - Peer ('192.168.86.69', 8052): Valid KISS frame structure: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0
+2025-03-24 21:40:43,984 - Parsed callsigns - src=0SVR00-1, dest=?ALL-0
+2025-03-24 21:40:43,984 - Extracted payload bytes: 4d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e (len=47)
+2025-03-24 21:40:43,985 - Successfully decoded payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2
+2025-03-24 21:40:43,985 - Packet received from 0SVR00-1 to ?ALL from peer ('192.168.86.69', 8052) at 1742866843.983641: c0007e82989840404060a6aca46060626103f04d7c5356523030317c4e4f4e457c38313139336233396165613062373035323239323734333436386339336465321e907ec0 (payload: M|SVR001|NONE|81193b39aea0b7052292743468c93de2)
+2025-03-24 21:40:43,985 - Sending to KISS client ('127.0.0.1', 35742) at 1742866843.9855154
+2025-03-24 21:40:43,990 - Packet delivery to KISS client ('127.0.0.1', 35742) confirmed at 1742866843.9901114
+2025-03-24 21:40:44,333 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866844.3337035
+2025-03-24 21:40:44,335 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866844.3351285
+2025-03-24 21:40:45,175 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 55594), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:40:45,336 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866845.3365993
+2025-03-24 21:40:45,337 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866845.3369782
+2025-03-24 21:40:46,338 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866846.3382177
+2025-03-24 21:40:46,338 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866846.3386614
+2025-03-24 21:40:47,340 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866847.3401225
+2025-03-24 21:40:47,340 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866847.340609
+2025-03-24 21:40:48,341 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866848.3411953
+2025-03-24 21:40:48,341 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866848.3417094
+2025-03-24 21:40:49,342 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866849.3422163
+2025-03-24 21:40:49,343 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866849.343591
+2025-03-24 21:40:50,345 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866850.34507
+2025-03-24 21:40:50,345 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866850.3455489
+2025-03-24 21:40:51,346 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866851.3462186
+2025-03-24 21:40:51,346 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866851.346678
+2025-03-24 21:40:52,348 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866852.348134
+2025-03-24 21:40:52,348 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866852.34858
+2025-03-24 21:40:53,350 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866853.350063
+2025-03-24 21:40:53,350 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866853.350481
+2025-03-24 21:40:54,351 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866854.3511012
+2025-03-24 21:40:54,352 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866854.3522062
+2025-03-24 21:40:55,353 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866855.353685
+2025-03-24 21:40:55,354 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866855.3542385
+2025-03-24 21:40:56,021 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 55594), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:40:56,355 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866856.3556902
+2025-03-24 21:40:56,356 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866856.3560474
+2025-03-24 21:40:57,357 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866857.3575003
+2025-03-24 21:40:57,358 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866857.3579957
+2025-03-24 21:40:58,359 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866858.3594086
+2025-03-24 21:40:58,359 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866858.3599093
+2025-03-24 21:40:59,361 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866859.3613665
+2025-03-24 21:40:59,362 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866859.3624392
+2025-03-24 21:41:00,364 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866860.3639238
+2025-03-24 21:41:00,364 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866860.3644006
+2025-03-24 21:41:01,366 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866861.3658633
+2025-03-24 21:41:01,366 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866861.3664043
+2025-03-24 21:41:02,367 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866862.3677619
+2025-03-24 21:41:02,368 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866862.3682308
+2025-03-24 21:41:03,369 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866863.3695867
+2025-03-24 21:41:03,370 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866863.3700843
+2025-03-24 21:41:04,371 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866864.371562
+2025-03-24 21:41:04,373 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866864.3729534
+2025-03-24 21:41:05,374 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866865.374229
+2025-03-24 21:41:05,374 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866865.374703
+2025-03-24 21:41:06,041 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 55594), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:41:06,376 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866866.3761628
+2025-03-24 21:41:06,376 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866866.376573
+2025-03-24 21:41:07,378 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866867.3780673
+2025-03-24 21:41:07,378 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866867.3785686
+2025-03-24 21:41:08,380 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866868.380037
+2025-03-24 21:41:08,380 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866868.3805478
+2025-03-24 21:41:09,382 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866869.382016
+2025-03-24 21:41:09,383 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866869.3832343
+2025-03-24 21:41:10,384 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866870.384712
+2025-03-24 21:41:10,385 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866870.38516
+2025-03-24 21:41:11,386 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866871.3862178
+2025-03-24 21:41:11,386 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866871.386646
+2025-03-24 21:41:12,388 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866872.3880005
+2025-03-24 21:41:12,388 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866872.3884735
+2025-03-24 21:41:13,390 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866873.3899298
+2025-03-24 21:41:13,390 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866873.3903952
+2025-03-24 21:41:14,391 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866874.3918498
+2025-03-24 21:41:14,392 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866874.392842
+2025-03-24 21:41:15,394 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866875.394221
+2025-03-24 21:41:15,394 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866875.394677
+2025-03-24 21:41:16,396 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866876.396142
+2025-03-24 21:41:16,396 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866876.396638
+2025-03-24 21:41:17,398 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866877.3981152
+2025-03-24 21:41:17,398 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866877.3986201
+2025-03-24 21:41:18,053 - Peer 192.168.86.69 not responding, closing
+2025-03-24 21:41:18,053 - UI update queued: status_messages at 1742866878.0535865
+2025-03-24 21:41:18,053 - UI update queued: peer_status at 1742866878.0538688
+2025-03-24 21:41:18,054 - Peer state check: peer_socket=None, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:41:18,054 - Attempting outbound connection to 192.168.86.69:8052
+2025-03-24 21:41:18,054 - UI update queued: status_messages at 1742866878.0547256
+2025-03-24 21:41:18,400 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866878.4000778
+2025-03-24 21:41:18,400 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866878.4004853
+2025-03-24 21:41:18,411 - Connected outbound to peer 192.168.86.69:8052
+2025-03-24 21:41:18,412 - UI update queued: peer_status at 1742866878.4120004
+2025-03-24 21:41:18,413 - Connected to peer: ('192.168.86.69', 8052)
+2025-03-24 21:41:18,413 - UI update queued: status_messages at 1742866878.41331
+2025-03-24 21:41:19,402 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866879.4019463
+2025-03-24 21:41:19,403 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866879.403469
+2025-03-24 21:41:20,405 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866880.4049408
+2025-03-24 21:41:20,405 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866880.4053838
+2025-03-24 21:41:21,406 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866881.4062161
+2025-03-24 21:41:21,406 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866881.40665
+2025-03-24 21:41:22,408 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866882.408103
+2025-03-24 21:41:22,408 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866882.408529
+2025-03-24 21:41:23,410 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866883.4098854
+2025-03-24 21:41:23,410 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866883.410429
+2025-03-24 21:41:24,414 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866884.4141328
+2025-03-24 21:41:24,415 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866884.4151726
+2025-03-24 21:41:25,416 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866885.4163938
+2025-03-24 21:41:25,416 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866885.4169147
+2025-03-24 21:41:26,418 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866886.4181395
+2025-03-24 21:41:26,418 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866886.4186008
+2025-03-24 21:41:27,420 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866887.4200623
+2025-03-24 21:41:27,420 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866887.4205031
+2025-03-24 21:41:28,422 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866888.4219568
+2025-03-24 21:41:28,422 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866888.422605
+2025-03-24 21:41:28,602 - Peer state check: peer_socket=<socket.socket fd=11, family=2, type=1, proto=0, laddr=('192.168.86.49', 38514), raddr=('192.168.86.69', 8052)>, discovered_peers={'192.168.86.69': 8052}
+2025-03-24 21:41:29,424 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866889.4239984
+2025-03-24 21:41:29,425 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866889.4250572
+2025-03-24 21:41:30,426 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866890.4262161
+2025-03-24 21:41:30,426 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866890.426661
+2025-03-24 21:41:31,327 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.69|8052 from ('192.168.86.69', 44795)
+2025-03-24 21:41:31,327 - UI update queued: status_messages at 1742866891.3278885
+2025-03-24 21:41:31,428 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866891.428067
+2025-03-24 21:41:31,428 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866891.428604
+2025-03-24 21:41:32,430 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866892.430146
+2025-03-24 21:41:32,430 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866892.4306529
+2025-03-24 21:41:33,062 - BCAST_SENT: FAKE_DIREWOLF|192.168.86.49|8052
+2025-03-24 21:41:33,062 - UI update queued: status_messages at 1742866893.06251
+2025-03-24 21:41:33,062 - BCAST_RCVD: FAKE_DIREWOLF|192.168.86.49|8052 from ('192.168.86.49', 58109)
+2025-03-24 21:41:33,063 - UI update queued: status_messages at 1742866893.063152
+2025-03-24 21:41:33,432 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866893.4320853
+2025-03-24 21:41:33,432 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866893.4325218
+2025-03-24 21:41:34,438 - KISS client ('127.0.0.1', 35742): Receive loop iteration complete at 1742866894.4381385
+2025-03-24 21:41:34,438 - KISS client ('127.0.0.1', 35742): Entering receive loop at 1742866894.438538

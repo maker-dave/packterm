@@ -1,0 +1,673 @@
+#!/usr/bin/env python3
+# server.py
+# Version 4.0.0 - 2025-03-22  # CHANGE v4.0.0: Added CMS with push sync, compression, menu access
+
+# Chunk 1 v4.0.0 - Imports, Early Globals, and Utilities
+import os
+import sys
+import time
+import socket
+import threading
+import hashlib
+import logging
+import shutil
+import curses
+import glob
+import select
+import traceback
+import configparser
+import re
+import queue
+import crcmod
+import json
+import zlib  # Added for AX.25 compression
+from datetime import datetime
+from collections import defaultdict
+from pathlib import Path  # Added for CMS path handling
+
+comms_log = []
+screen_dirty = True
+clients = []  # (callsign, last_data_time)
+clients_lock = threading.Lock()
+forms_md5 = None
+push_md5 = None  # Added for CMS push sync
+last_mtime = 0
+last_push_mtime = 0  # Added for CMS push sync
+show_menu = False
+menu_selection = 0
+syncing_clients = set()
+last_broadcast = {}
+kiss_socket = None
+kiss_socket_ready = threading.Event()
+last_md5_time = None
+response_parts = {}
+
+# CMS Config
+CMS_DIR = Path(os.path.expanduser('~/terminal/cms'))
+CMS_PUSH_DIR = CMS_DIR / "push"
+CMS_DIR.mkdir(exist_ok=True)
+CMS_PUSH_DIR.mkdir(exist_ok=True)
+
+def log_event(message, ui=False, submission_details=False, submissions=False, submission_payload=False, segment_failure=False, socket_state=False, retries=False, ui_transitions=False, search_query=False, search_results=False, search_parsing=False, csv_processing=False, client_state=False, packet_build=False, packet_parse=False, sync_state=False, sync_md5=False, sync_forms=False, client_packet=False, packet_integrity=False, form_deletion=False, sync_start=False, sync_completion=False, packet_queue=False, client_queue=False, ui_packet_handling=False, queue_state=False, startup_errors=False, backups=False, connection_attempts=False, packet_drop=False, thread_state=False, form_field_creation=False, form_preview=False, field_positioning=False, table_edit=False, form_save=False, ui_render=False, form_sync_error=False, packet_fragments=False, sync_mismatches=False, forms_management=False, kiss_framing=False, packet_timing=False, ax25_state=False, ax25_packet=False, kiss_packet_received=False, ax25_parse_error=False, packet_send_failure=False, socket_send_state=False, socket_send_bytes=False, socket_flush=False, socket_config=False, broadcast_state=False, socket_error=False, thread_error=False, startup_sync=False, thread_sync=False, socket_init=False, ax25_header=False, ax25_parsing_error=False, json_rebuild=False, diff_state=False, broadcast_md5=False, ax25_raw_payload=False, ax25_fcs=False, sync_broadcast=False, sync_response=False, payload_validation=False, packet_length=False, transmission_validation=False, form_content=False, packet_sanitization=False, sync_packet_validation=False, form_field_validation=False, pre_send_validation=False, packet_raw_bytes=False, form_field_sanitization=False, ax25_frame_validation=False, command_validation=False, packet_handling=False, file_io=False, filesystem_sync=False, md5_change=False, multi_packet=False, buffer_management=False, cms_sync=False, cms_operations=False, cms_packet_build=False, cms_ui_state=False):  # CHANGE v4.0.0: Added CMS logging
+    logging.info(message)
+    if ui:
+        comms_log.append((message, datetime.now().strftime('%H:%M:%S')))
+        if len(comms_log) > 19:
+            comms_log.pop(0)
+        global screen_dirty
+        screen_dirty = True
+    # Existing logging (abridged)
+    if submission_details and LOG_SUBMISSION_DETAILS: logging.info("Submission Detail: " + message)
+    if backups: logging.info("Backup: " + message)  # Always on
+    # New CMS logging
+    if cms_sync and LOG_CMS_SYNC: logging.info("CMS Sync: " + message)
+    if cms_operations and LOG_CMS_OPERATIONS: logging.info("CMS Operation: " + message)
+    if cms_packet_build and LOG_CMS_PACKET_BUILD: logging.info("CMS Packet Build: " + message)
+    if cms_ui_state and LOG_CMS_UI_STATE: logging.info("CMS UI State: " + message)
+    # ... other existing logging ...
+
+def log_comms(message):
+    if not message.startswith(f"0{CALLSIGN}>ALL:M|"):  # Exclude MD5 broadcasts from UI
+        log_event(message, ui=True)
+
+def backup_script():
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    backup_path = os.path.join(BACKUP_DIR, "server_" + timestamp + ".py")
+    shutil.copy2(__file__, backup_path)
+    log_event("Backed up to " + backup_path, ui=False, backups=True)
+
+VERSION = "4.0.0"  # CHANGE v4.0.0: Major update
+PACLEN = 255
+
+config = configparser.ConfigParser()
+CONFIG_FILE = os.path.join(os.path.expanduser('~/terminal'), 'server.conf')
+if not os.path.exists(CONFIG_FILE):
+    config['Settings'] = {
+        'callsign': 'SVR001',
+        'paclen': str(PACLEN),
+        'log_client_details': 'True',
+        'log_form_sync': 'True',
+        'log_submissions': 'True',
+        'broadcast_interval': '60',
+        'client_timeout': '1800',
+        'cms_sync_enabled': 'True',  # Added for CMS push sync
+        'cms_sync_max_age': '604800',  # 1 week in seconds
+        # Existing logging toggles (abridged)
+        'log_submission_details': 'True',
+        'log_packet_parsing': 'False',
+        # New CMS logging toggles
+        'log_cms_sync': 'True',
+        'log_cms_operations': 'True',
+        'log_cms_packet_build': 'True',
+        'log_cms_ui_state': 'False',  # Off to reduce spam
+        # ... other existing settings ...
+    }
+    with open(CONFIG_FILE, 'w') as configfile:
+        config.write(configfile)
+config.read(CONFIG_FILE)
+HOME_DIR = config.get('Settings', 'home_dir', fallback=os.path.expanduser('~/terminal'))
+FORMS_DIR = os.path.join(HOME_DIR, 'forms')
+DATA_DIR = os.path.join(HOME_DIR, 'server_data')
+LOG_FILE = os.path.join(DATA_DIR, 'server.log')
+BACKUP_DIR = os.path.join(HOME_DIR, 'backups')
+CALLSIGN = config.get('Settings', 'callsign', fallback='SVR001')
+PACLEN = config.getint('Settings', 'paclen', fallback=PACLEN)
+CMS_SYNC_ENABLED = config.getboolean('Settings', 'cms_sync_enabled', fallback=True)
+CMS_SYNC_MAX_AGE = config.getint('Settings', 'cms_sync_max_age', fallback=604800)
+# Existing config vars (abridged)
+LOG_SUBMISSION_DETAILS = config.getboolean('Settings', 'log_submission_details', fallback=True)
+LOG_CMS_SYNC = config.getboolean('Settings', 'log_cms_sync', fallback=True)
+LOG_CMS_OPERATIONS = config.getboolean('Settings', 'log_cms_operations', fallback=True)
+LOG_CMS_PACKET_BUILD = config.getboolean('Settings', 'log_cms_packet_build', fallback=True)
+LOG_CMS_UI_STATE = config.getboolean('Settings', 'log_cms_ui_state', fallback=False)
+# ... other existing config vars ...
+
+packet_queue = queue.Queue(maxsize=config.getint('Settings', 'queue_maxsize', fallback=100))
+if os.path.exists(LOG_FILE):
+    os.remove(LOG_FILE)
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format='%(asctime)s - %(message)s')
+log_event("Deleted old log file", ui=False)
+log_event(f"Initial packet_queue size: {packet_queue.qsize()}", ui=False, queue_state=True)
+
+# Chunk 2 v4.0.0 - Utility Functions
+def get_callsign(stdscr):
+    # ... unchanged ...
+
+def build_ax25_packet(source, dest, payload, compress=False):
+    crc16 = crcmod.predefined.mkCrcFun('crc-ccitt-false')
+    def encode_callsign(callsign, ssid=0, last=False):
+        callsign = callsign.ljust(6)[:6].upper()
+        ssid_byte = (0x60 | (ssid << 1) | (1 if last else 0))
+        return bytes([ord(c) << 1 for c in callsign]) + bytes([ssid_byte])
+    payload_bytes = payload.encode()
+    if compress:
+        payload_bytes = zlib.compress(payload_bytes)
+        payload = f"C|{payload_bytes.hex()}"
+    max_payload = PACLEN - 32
+    if len(payload) > max_payload:
+        log_event(f"Payload exceeds max ({max_payload}): {len(payload)} bytes, splitting", packet_length=True, multi_packet=True)
+        parts = [payload[i:i + max_payload] for i in range(0, len(payload), max_payload)]
+        packets = []
+        for i, part in enumerate(parts):
+            tagged_payload = f"{i+1}:{len(parts)}|{part}"
+            if LOG_PAYLOAD_VALIDATION:
+                log_event(f"Payload part {i+1}/{len(parts)}: {tagged_payload}", payload_validation=True, multi_packet=True)
+            address = encode_callsign(dest) + encode_callsign(source, last=True)
+            frame = address + b'\x03\xF0' + tagged_payload.encode()
+            fcs = crc16(frame).to_bytes(2, 'little')
+            packet = b'\x7E' + frame + fcs + b'\x7E'
+            if LOG_AX25_PACKET:
+                log_event(f"Built AX.25 packet {i+1}/{len(parts)}: dest={dest}, src={source}, payload={tagged_payload}", ax25_packet=True, multi_packet=True)
+            packets.append(packet)
+        return packets
+    if LOG_PAYLOAD_VALIDATION:
+        log_event(f"Payload validated: {payload}", ui=False, payload_validation=True)
+    address = encode_callsign(dest) + encode_callsign(source, last=True)
+    frame = address + b'\x03\xF0' + payload.encode()
+    fcs = crc16(frame).to_bytes(2, 'little')
+    packet = b'\x7E' + frame + fcs + b'\x7E'
+    if LOG_AX25_PACKET:
+        log_event(f"Built AX.25 packet: dest={dest}, src={source}, payload={payload}, hex={packet.hex()}", ui=False, ax25_packet=True)
+    return [packet]
+
+def build_kiss_packet(ax25_packet):
+    # ... unchanged ...
+
+# CMS Functions
+def check_push_changed():
+    global last_push_mtime
+    now = time.time()
+    files = [f for f in CMS_PUSH_DIR.rglob('*.txt') if now - os.path.getmtime(f) <= CMS_SYNC_MAX_AGE]
+    current_mtime = max([os.path.getmtime(f) for f in files] or [0])
+    if current_mtime > last_push_mtime:
+        last_push_mtime = current_mtime
+        log_event(f"Push directory changed, new mtime: {current_mtime}", ui=False, sync_state=True, cms_sync=True)
+        return True
+    return False
+
+def update_cms_push_index():
+    global push_md5
+    push_index_path = CMS_DIR / 'push_index.json'
+    if CMS_SYNC_ENABLED and check_push_changed():
+        push_dict = {"push": {}}
+        now = time.time()
+        txt_files = [f for f in CMS_PUSH_DIR.rglob('*.txt') if now - os.path.getmtime(f) <= CMS_SYNC_MAX_AGE]
+        for filename in txt_files:
+            rel_path = filename.relative_to(CMS_PUSH_DIR).as_posix()
+            with open(filename, 'rb') as f:
+                content = f.read()
+                file_md5 = hashlib.md5(content).hexdigest()
+                push_dict["push"][rel_path] = {"md5": file_md5, "mtime": os.path.getmtime(filename)}
+            if LOG_CMS_SYNC:
+                log_event(f"Hashed CMS push {rel_path}: {file_md5}", ui=False, cms_sync=True)
+        with open(push_index_path, 'w') as f:
+            json.dump(push_dict, f, indent=2)
+            os.fsync(f.fileno())
+        with open(push_index_path, 'r') as f:
+            push_index_content = f.read()
+        new_push_md5 = hashlib.md5(push_index_content.encode()).hexdigest()
+        if new_push_md5 != push_md5 and push_md5 is not None:
+            log_event(f"Push MD5 changed from {push_md5} to {new_push_md5}", ui=True, md5_change=True, cms_sync=True)
+        push_md5 = new_push_md5
+        log_event(f"Computed MD5 from push_index.json: {push_md5}", ui=False, sync_md5=True, cms_sync=True)
+    elif push_md5 is None and CMS_SYNC_ENABLED:
+        try:
+            with open(push_index_path, 'r') as f:
+                push_index_content = f.read()
+            push_md5 = hashlib.md5(push_index_content.encode()).hexdigest()
+        except FileNotFoundError:
+            push_md5 = hashlib.md5('{"push": {}}'.encode()).hexdigest()
+        log_event(f"Initial Push MD5: {push_md5}", ui=False, sync_md5=True, cms_sync=True)
+    return push_md5
+
+def list_cms_content(category):
+    cat_path = CMS_DIR / category
+    if not cat_path.is_dir():
+        log_event(f"Invalid CMS category: {category}", ui=False, cms_operations=True)
+        return f"L|{CALLSIGN}|{category}|Error: Invalid category"
+    files = [f for f in cat_path.iterdir() if f.is_file() and f.suffix == ".txt"]
+    response = f"L|{CALLSIGN}|{category}|{len(files)} items - " + ", ".join(f.name[:-4] for f in files) if files else "No items"
+    log_event(f"Listed CMS category {category}: {response}", ui=False, cms_operations=True)
+    return response
+
+def get_cms_content(category, item_id):
+    file_path = CMS_DIR / category / f"{item_id}.txt"
+    if not file_path.is_file():
+        log_event(f"CMS item not found: {file_path}", ui=False, cms_operations=True)
+        return f"G001/001|{CALLSIGN}|{category}|{item_id}|Error: Item not found"
+    with open(file_path, "r") as f:
+        content = f.read().encode()
+    packets = [f"G{i+1:03d}/{len(packets):03d}|{CALLSIGN}|{category}|{item_id}|{p.hex()}"
+               for i, p in enumerate(content[i:i+PACLEN-32] for i in range(0, len(content), PACLEN-32))]
+    log_event(f"Sending {len(packets)} CMS packets for {file_path}", ui=False, cms_packet_build=True)
+    return packets
+
+def post_cms_content(category, item_id, content, max_age=None):
+    cat_path = CMS_DIR / category
+    cat_path.mkdir(parents=True, exist_ok=True)
+    file_path = cat_path / f"{item_id}.txt"
+    with open(file_path, "w") as f:
+        f.write(content)
+    if max_age:
+        os.utime(file_path, times=(time.time(), time.time() + int(max_age)))
+        log_event(f"Set CMS item {file_path} max_age to {max_age}s", ui=False, cms_operations=True)
+    log_event(f"Posted CMS content to {file_path}", ui=False, cms_operations=True)
+    return f"A|{CALLSIGN}|{category}|{item_id}|SUCCESS"
+
+# Chunk 3 v4.0.0 - Form and CMS Sync Functions
+def check_forms_changed():
+    # ... unchanged ...
+
+def update_forms_index():
+    # ... unchanged ...
+
+def broadcast_forms_md5(stop_event):
+    global forms_md5, push_md5, last_md5_time
+    log_event("Starting broadcast_forms_md5 thread", ui=False, thread_state=True)
+    kiss_socket_ready.wait()
+    log_event("kiss_socket ready, proceeding with broadcasts", ui=False, thread_sync=True)
+    if forms_md5 is None:
+        forms_md5 = update_forms_index()
+    if push_md5 is None and CMS_SYNC_ENABLED:
+        push_md5 = update_cms_push_index()
+    while not stop_event.is_set():
+        start_time = time.time()
+        try:
+            if check_forms_changed():
+                forms_md5 = update_forms_index()
+            if CMS_SYNC_ENABLED and check_push_changed():
+                push_md5 = update_cms_push_index()
+            # Forms MD5
+            payload = f"M|{CALLSIGN}|NONE|{forms_md5}"
+            ax25_packets = build_ax25_packet(CALLSIGN, "ALL", payload)
+            for ax25_packet in ax25_packets:
+                kiss_frame = build_kiss_packet(ax25_packet)
+                kiss_socket.send(kiss_frame)
+                log_comms(f"0{CALLSIGN}>ALL:{payload}")
+            # CMS Push MD5
+            if CMS_SYNC_ENABLED:
+                payload = f"M|{CALLSIGN}|PUSH|{push_md5}"
+                ax25_packets = build_ax25_packet(CALLSIGN, "ALL", payload)
+                for ax25_packet in ax25_packets:
+                    kiss_frame = build_kiss_packet(ax25_packet)
+                    kiss_socket.send(kiss_frame)
+                    log_comms(f"0{CALLSIGN}>ALL:{payload}")
+            last_md5_time = datetime.now().strftime('%H:%M')
+        except Exception as e:
+            log_event(f"Broadcast failed: {e}\n{traceback.format_exc()}", ui=False, packet_send_failure=True, socket_error=True)
+        elapsed = time.time() - start_time
+        time.sleep(max(0, BROADCAST_INTERVAL - elapsed))
+
+# Chunk 4 v4.0.0 - AX.25 Handling
+def handle_ax25(stop_event):
+    global kiss_socket
+    crc16 = crcmod.predefined.mkCrcFun('crc-ccitt-false')
+    log_event("Starting handle_ax25 thread", ui=False, thread_state=True)
+    kiss_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    kiss_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    try:
+        kiss_socket.connect((FAKE_DIREWOLF_HOST, FAKE_DIREWOLF_PORT))
+        log_event(f"Connected to Fake Direwolf at {FAKE_DIREWOLF_HOST}:{FAKE_DIREWOLF_PORT}", ui=False, ax25_state=True)
+        kiss_socket_ready.set()
+    except Exception as e:
+        log_event(f"Failed to connect to Fake Direwolf: {e}\n{traceback.format_exc()}", ui=False, startup_errors=True)
+        stop_event.set()
+        return
+    buffer = b""
+    segments = {}
+    while not stop_event.is_set():
+        readable, _, _ = select.select([kiss_socket], [], [], 1.0)
+        if readable:
+            try:
+                data = kiss_socket.recv(512)
+                if not data:
+                    raise ConnectionError("Fake Direwolf disconnected")
+                buffer += data
+                if LOG_KISS_PACKET_RECEIVED:
+                    log_event(f"Raw data received: {data.hex()}", ui=False, kiss_packet_received=True)
+                while b'\xC0' in buffer[1:]:
+                    start = buffer.find(b'\xC0')
+                    end = buffer.find(b'\xC0', start + 1)
+                    if end == -1:
+                        break
+                    frame = buffer[start:end + 1]
+                    buffer = buffer[end + 1:]
+                    ax25_packet = frame[2:-1]
+                    if len(ax25_packet) < 18 or ax25_packet[0] != 0x7E or ax25_packet[-1] != 0x7E:
+                        log_event(f"Invalid AX.25 frame: {frame.hex()[:50]}", ui=False, ax25_parse_error=True)
+                        continue
+                    frame_content = ax25_packet[1:-3]
+                    received_fcs = ax25_packet[-3:-1]
+                    calculated_fcs = crc16(frame_content).to_bytes(2, 'little')
+                    if received_fcs != calculated_fcs:
+                        log_event(f"FCS mismatch: {frame.hex()[:50]}", ui=False, ax25_parse_error=True)
+                        continue
+                    address = ax25_packet[1:15]
+                    dest = ''.join(chr(b >> 1) for b in address[:6]).strip()
+                    src = ''.join(chr(b >> 1) for b in address[7:13]).strip()
+                    payload_start = 17
+                    payload_end = -3
+                    raw_payload = ax25_packet[payload_start:payload_end]
+                    payload = raw_payload.decode('ascii', errors='replace')
+                    if payload.startswith("C|"):
+                        payload = zlib.decompress(bytes.fromhex(payload[2:])).decode('ascii', errors='replace')
+                    log_comms(f"0{src}>{dest}:{payload}")
+                    parts = payload.split('|', 3)
+                    if len(parts) != 4:
+                        log_event(f"Malformed packet payload: {payload[:50]}", ui=False, segment_failure=True)
+                        continue
+                    function, callsign, form_id, payload_content = parts
+                    if ':' in payload_content[:5] and function in ['X', 'S', 'I', 'L', 'G', 'P']:
+                        seq_total, content = payload_content.split('|', 1)
+                        seq, total = map(int, seq_total.split(':'))
+                        key = f"{callsign}:{form_id}"
+                        response_parts.setdefault(key, {})[seq] = content
+                        if len(response_parts[key]) == total:
+                            full_payload = ''.join(response_parts[key][i] for i in range(1, total + 1))
+                            packet_queue.put_nowait((callsign, f"0{src}>{dest}:{function}|{callsign}|{form_id}|{full_payload}", time.time()))
+                            del response_parts[key]
+                        continue
+                    last_data_time = time.time()
+                    with clients_lock:
+                        if callsign not in [c[0] for c in clients]:
+                            clients.append((callsign, last_data_time))
+                        else:
+                            for i, (cs, _) in enumerate(clients):
+                                if cs == callsign:
+                                    clients[i] = (cs, last_data_time)
+                                    break
+                    packet_queue.put_nowait((callsign, f"0{src}>{dest}:{payload}", last_data_time))
+            except Exception as e:
+                log_event(f"AX.25 error: {e}\n{traceback.format_exc()}", ui=False, segment_failure=True)
+                break
+        time.sleep(0.1)
+    kiss_socket.close()
+    log_event("Fake Direwolf connection closed", ui=False, ax25_state=True)
+
+# Chunk 5 v4.0.0 - Forms and CMS Management Utils
+def load_form_data(form_id):
+    # ... unchanged ...
+
+def create_form(form_id, desc, fields):
+    # ... unchanged ...
+
+# Chunk 6 v4.0.0 - People.csv Initialization
+def init_people_csv():
+    # ... unchanged ...
+
+# Chunk 7 v4.0.0 - UI Colors
+def init_colors():
+    # ... unchanged ...
+
+# Chunk 8 v4.0.0 - Forms Management Screen
+def forms_management_screen(stdscr):
+    # ... unchanged ...
+
+# Chunk 9 v4.0.0 - Form Edit Screen
+def form_edit_screen(stdscr, form_id):
+    # ... unchanged ...
+
+# Chunk 10 v4.0.0 - CMS Management Screen
+def cms_management_screen(stdscr):
+    curses.curs_set(0)
+    stdscr.nodelay(True)
+    selection = 0
+    screen_dirty = True
+    while True:
+        categories = [str(Path(d).relative_to(CMS_DIR)) for d, _, _ in os.walk(CMS_DIR) if d != str(CMS_DIR)]
+        if screen_dirty:
+            stdscr.clear()
+            RED, GREEN, _, LIGHT_BLUE = init_colors()
+            max_y, max_x = stdscr.getmaxyx()
+            border = "=" * (max_x - 2)
+            stdscr.addstr(0, 0, border, curses.color_pair(RED))
+            stdscr.addstr(1, 2, "CMS Management", curses.color_pair(LIGHT_BLUE))
+            stdscr.addstr(2, 2, "Categories:", curses.color_pair(LIGHT_BLUE))
+            for i, cat in enumerate(categories[:15], start=3):
+                if i - 3 == selection:
+                    stdscr.addstr(i, 4, cat, curses.color_pair(GREEN) | curses.A_REVERSE)
+                else:
+                    stdscr.addstr(i, 4, cat, curses.color_pair(GREEN))
+            if categories and selection < len(categories):
+                cat = categories[selection]
+                files = [f.name[:-4] for f in (CMS_DIR / cat).glob('*.txt')]
+                stdscr.addstr(2, 40, f"Items in {cat}:", curses.color_pair(LIGHT_BLUE))
+                for i, item in enumerate(files[:10], start=3):
+                    stdscr.addstr(i, 42, item, curses.color_pair(GREEN))
+            stdscr.addstr(max_y - 2, 2, "= Up/Down=Select Esc=Back =", curses.color_pair(GREEN))
+            stdscr.addstr(max_y - 1, 0, border, curses.color_pair(RED))
+            stdscr.refresh()
+            screen_dirty = False
+            if LOG_CMS_UI_STATE:
+                log_event(f"CMS UI rendered: selection={selection}, categories={categories[:15]}", ui=False, cms_ui_state=True)
+        char = stdscr.getch()
+        if char == -1:
+            continue
+        if char == curses.KEY_UP and selection > 0:
+            selection -= 1
+            screen_dirty = True
+        elif char == curses.KEY_DOWN and selection < len(categories) - 1 and selection < 14:
+            selection += 1
+            screen_dirty = True
+        elif char == 27:
+            return
+
+# Chunk 11 v4.0.0 - Update UI
+def update_ui(stdscr):
+    global screen_dirty, show_menu, menu_selection
+    if not screen_dirty:
+        return
+    max_y, max_x = stdscr.getmaxyx()
+    stdscr.clear()
+    border = "=" * (max_x - 2)
+    stdscr.addstr(0, 0, border, curses.color_pair(1))
+    stdscr.addstr(1, 2, "Packet Radio Server", curses.color_pair(4))
+    stdscr.addstr(1, 40, "Direwolf [Connected]", curses.color_pair(4))
+    stdscr.addstr(2, 2, f"Callsign:{CALLSIGN}", curses.color_pair(4))
+    stdscr.addstr(3, 2, "Recent Clients:", curses.color_pair(4))
+    stdscr.addstr(2, 40, "Comms Log", curses.color_pair(4))
+    stdscr.addstr(3, 40, "=" * 19, curses.color_pair(1))
+    with clients_lock:
+        now = time.time()
+        clients[:] = [(cs, ls) for cs, ls in clients if now - ls < CLIENT_TIMEOUT]
+        for i, (callsign, last_data_time) in enumerate(clients[:max_y-6], start=4):
+            timestamp = datetime.fromtimestamp(last_data_time).strftime('%H:%M:%S')
+            display = f"{callsign} - {timestamp}"[:35]
+            stdscr.addstr(i, 4, display, curses.color_pair(2))
+    for i, (msg, ts) in enumerate(comms_log[-(max_y-7):], start=4):
+        if i < max_y-3:
+            stdscr.addstr(i, 40, (msg[:38] + " - " + ts)[:38], curses.color_pair(2))
+    stdscr.addstr(max_y-2, 40, f"Last MD5 broadcast: {last_md5_time or 'N/A'}", curses.color_pair(2))
+    stdscr.addstr(max_y-1, 40, f"Forms MD5: {forms_md5 or 'N/A'}", curses.color_pair(2))
+    stdscr.addstr(max_y-3, 40, f"Push MD5: {push_md5 or 'N/A'}", curses.color_pair(2))  # Added CMS push MD5
+    stdscr.addstr(max_y-2, 2, "-= Commands: D=Menu =-", curses.color_pair(2))
+    stdscr.addstr(max_y-1, 0, border, curses.color_pair(1))
+    if show_menu:
+        menu_width = 22
+        menu_height = 8
+        menu_y = (max_y - menu_height) // 2
+        menu_x = (max_x - menu_width) // 2
+        options = [("Main Screen", True), ("Forms Management", True), ("CMS Management", True), ("Quit", True)]  # Added CMS option
+        stdscr.addstr(menu_y, menu_x, "+====================+", curses.color_pair(1))
+        for i, (opt, active) in enumerate(options):
+            color = 2 if active else 1
+            if i == menu_selection:
+                stdscr.addstr(menu_y + 1 + i, menu_x, "| " + opt.ljust(18) + " |", curses.color_pair(color) | curses.A_REVERSE)
+            else:
+                stdscr.addstr(menu_y + 1 + i, menu_x, "| " + opt.ljust(18) + " |", curses.color_pair(color))
+        stdscr.addstr(menu_y + 5, menu_x, "| Up/Down=Move       |", curses.color_pair(2))
+        stdscr.addstr(menu_y + 6, menu_x, "| Enter=Sel Esc=Back |", curses.color_pair(2))
+        stdscr.addstr(menu_y + 7, menu_x, "+====================+", curses.color_pair(1))
+    stdscr.refresh()
+    screen_dirty = False
+
+# Chunk 12 v4.0.0 - Main Loop
+def main(stdscr):
+    global CALLSIGN, screen_dirty, show_menu, menu_selection, kiss_socket
+    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(FORMS_DIR, exist_ok=True)
+    os.makedirs(CMS_DIR, exist_ok=True)
+    CALLSIGN = get_callsign(stdscr)
+    RED, GREEN, YELLOW, LIGHT_BLUE = init_colors()
+    stdscr.clear()
+    stdscr.nodelay(True)
+    stdscr.refresh()
+    log_event(f"Server starting with AX.25 on {FAKE_DIREWOLF_HOST}:{FAKE_DIREWOLF_PORT} (v{VERSION})", ui=False, ax25_state=True)
+    init_people_csv()
+    stop_event = threading.Event()
+    broadcast_thread = threading.Thread(target=broadcast_forms_md5, args=(stop_event,))
+    broadcast_thread.daemon = True
+    broadcast_thread.start()
+    ax25_thread = threading.Thread(target=handle_ax25, args=(stop_event,))
+    ax25_thread.daemon = True
+    ax25_thread.start()
+    kiss_socket_ready.wait()
+    while True:
+        update_ui(stdscr)
+        char = stdscr.getch()
+        if char == ord('q') or char == ord('Q') and not show_menu:
+            stop_event.set()
+            kiss_socket.close()
+            log_event("Server shutdown complete", ui=False, ax25_state=True)
+            break
+        elif char == ord('d') or char == ord('D'):
+            show_menu = not show_menu
+            menu_selection = 0
+            screen_dirty = True
+        elif show_menu:
+            if char == curses.KEY_UP and menu_selection > 0:
+                menu_selection -= 1
+                screen_dirty = True
+            elif char == curses.KEY_DOWN and menu_selection < 3:  # Updated for new menu option
+                menu_selection += 1
+                screen_dirty = True
+            elif char == 10:
+                if menu_selection == 0:
+                    show_menu = False
+                elif menu_selection == 1:
+                    forms_management_screen(stdscr)
+                elif menu_selection == 2:
+                    cms_management_screen(stdscr)
+                elif menu_selection == 3:
+                    stop_event.set()
+                    kiss_socket.close()
+                    log_event("Server shutdown complete", ui=False, ax25_state=True)
+                    break
+                screen_dirty = True
+            elif char == 27:
+                show_menu = False
+                screen_dirty = True
+        if not show_menu or menu_selection != 1:
+            while not packet_queue.empty():
+                try:
+                    callsign, packet, last_data_time = packet_queue.get_nowait()
+                    header, payload = packet.split(':', 1)
+                    parts = payload.split('|', 3)
+                    if len(parts) != 4:
+                        log_event(f"Malformed packet: {payload[:50]}", ui=False, segment_failure=True)
+                        continue
+                    function, _, form_id, payload_content = parts
+                    if LOG_PACKET_HANDLING:
+                        log_event(f"Processing packet: function={function}, callsign={callsign}, form_id={form_id}", packet_handling=True)
+                    if function == 'I':
+                        # ... unchanged INSERT handling ...
+                    elif function == 'S':
+                        # ... unchanged SEARCH handling ...
+                    elif function == 'X':
+                        if form_id == "PUSH" and CMS_SYNC_ENABLED:
+                            log_event(f"Received X (PUSH INDEX) from {callsign}: {payload_content[:50]}", ui=False, diff_state=True, cms_sync=True)
+                            syncing_clients.add(callsign)
+                            try:
+                                client_push = {}
+                                for pair in payload_content.split('|'):
+                                    if ':' in pair:
+                                        fname, fhash = pair.split(':', 1)
+                                        client_push[fname] = fhash
+                                push_index_path = CMS_DIR / 'push_index.json'
+                                try:
+                                    with open(push_index_path, 'r') as f:
+                                        server_push = json.load(f)['push']
+                                except FileNotFoundError:
+                                    server_push = {}
+                                now = time.time()
+                                for fname, data in server_push.items():
+                                    if now - data['mtime'] > CMS_SYNC_MAX_AGE:
+                                        continue
+                                    if fname not in client_push or client_push[fname] != data['md5']:
+                                        with open(CMS_PUSH_DIR / fname, 'r') as f:
+                                            content = f.read().strip()
+                                        response = f"U|{CALLSIGN}|{fname}|{content.replace('\n', '~')}"
+                                        ax25_packets = build_ax25_packet(CALLSIGN, "ALL", response, compress=True)
+                                        for ax25_packet in ax25_packets:
+                                            kiss_frame = build_kiss_packet(ax25_packet)
+                                            kiss_socket.send(kiss_frame)
+                                            log_comms(f"0{CALLSIGN}>ALL:{response}")
+                                        if LOG_CMS_SYNC:
+                                            log_event(f"Sent U (PUSH_UPDATE) for {fname}", ui=False, cms_sync=True)
+                                for fname in client_push:
+                                    if fname not in server_push or (now - server_push.get(fname, {}).get('mtime', 0) > CMS_SYNC_MAX_AGE):
+                                        response = f"D|{CALLSIGN}|{fname}|"
+                                        ax25_packets = build_ax25_packet(CALLSIGN, "ALL", response)
+                                        for ax25_packet in ax25_packets:
+                                            kiss_frame = build_kiss_packet(ax25_packet)
+                                            kiss_socket.send(kiss_frame)
+                                            log_comms(f"0{CALLSIGN}>ALL:{response}")
+                                        if LOG_CMS_SYNC:
+                                            log_event(f"Sent D (PUSH_DELETE) for {fname}", ui=False, cms_sync=True)
+                            finally:
+                                syncing_clients.remove(callsign)
+                                log_event(f"Push sync completed for {callsign}", ui=False, sync_completion=True, cms_sync=True)
+                        else:
+                            # ... unchanged forms X handling ...
+                    elif function == 'L':
+                        response = list_cms_content(form_id)
+                        ax25_packets = build_ax25_packet(CALLSIGN, callsign, response)
+                        for ax25_packet in ax25_packets:
+                            kiss_frame = build_kiss_packet(ax25_packet)
+                            kiss_socket.send(kiss_frame)
+                            log_comms(f"0{CALLSIGN}>{callsign}:{response}")
+                    elif function == 'G':
+                        responses = get_cms_content(form_id, payload_content)
+                        for response in responses:
+                            ax25_packets = build_ax25_packet(CALLSIGN, callsign, response, compress=True)
+                            for ax25_packet in ax25_packets:
+                                kiss_frame = build_kiss_packet(ax25_packet)
+                                kiss_socket.send(kiss_frame)
+                                log_comms(f"0{CALLSIGN}>{callsign}:{response}")
+                    elif function == 'P':
+                        category, item_id, rest = payload_content.split('|', 2)
+                        content = rest
+                        max_age = None
+                        if '|' in rest:
+                            content, max_age = rest.rsplit('|', 1)
+                            max_age = max_age if max_age.isdigit() else None
+                        response = post_cms_content(category, item_id, content, max_age)
+                        ax25_packets = build_ax25_packet(CALLSIGN, callsign, response)
+                        for ax25_packet in ax25_packets:
+                            kiss_frame = build_kiss_packet(ax25_packet)
+                            kiss_socket.send(kiss_frame)
+                            log_comms(f"0{CALLSIGN}>{callsign}:{response}")
+                    elif function not in ['I', 'S', 'X', 'U', 'D', 'M', 'A', 'R', 'G', 'C', 'L', 'G', 'P']:
+                        log_event(f"Received invalid command '{function}' from {callsign}", command_validation=True)
+                    packet_queue.task_done()
+                except queue.Empty:
+                    break
+        time.sleep(0.05)
+
+# Chunk 13 v4.0.0 - Design Goals and Statuses
+# DESIGN GOALS AND CHANGES:
+# - See server_mini_revisions_20250322_v4.0.0.txt for this update (v4.0.0)
+# - Full history in PacketRadioTerminalServiceManual [REVISION_SUMMARY]
+
+backup_script()
+
+# Chunk 14 v4.0.0 - Entry Point
+if __name__ == "__main__":
+    try:
+        curses.wrapper(main)
+    except Exception as e:
+        with open(LOG_FILE, 'a') as f:
+            f.write(str(datetime.now()) + " - Fatal error: " + str(e) + " - traceback: " + traceback.format_exc() + "\n")
+        log_event("Startup failed: " + str(e), ui=False, startup_errors=True)
+        sys.exit(1)

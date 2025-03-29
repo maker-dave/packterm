@@ -1,0 +1,18 @@
+Add fixes and updates.
+
+Enable/add logging that may be useful in troubleshooting these issues. Use your best judgement about what could be useful.
+
+Logging types should be able to separately be turned on and off in the config file.
+
+Turn off logging that are not useful and could cause log spam. Backups logging always stay on.
+
+Create a seperate mini revisions history in plain text for a txt file. Include comments about all changes. Later we will compile all mini revision histories into the main revision history.
+
+I have attached the code to be modified to help you focus on what you're doing.
+
+Do not remove code without permission and even then I prefer you comment out code instead of deleting.
+
+I will be checking the number of lines of code from the code I just sent against the code you generate. If there is a significant deviation in lines expected and line produced in relation to the base code, that is a red flag that requires investigation.
+Do not generate code until I say so.
+
+Do you have any questions?

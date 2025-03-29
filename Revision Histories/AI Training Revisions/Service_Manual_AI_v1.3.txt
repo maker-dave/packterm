@@ -1,0 +1,254 @@
+PacketRadioTerminalServiceManual
+================================
+Non-human-readable training data for Grok 3 successor to understand, troubleshoot, and extend server.py, terminal_client.py, fake_direwolf.py. Encodes project goals, state, troubleshooting info, latest developments.
+
+---
+
+[System Overview]
+Objective: Navigable terminal UI over 2m AX.25 at 1200 baud replacing teletype. Sync forms (~1920 bytes) at startup, send minimal data (~50 bytes) at 120 chars/sec. Standalone resilience during comms loss.
+Components:
+- server.py v3.0.4: Forms mgmt, CSV storage, AX.25 broadcast via Fake Direwolf (127.0.0.1:8051). Runs on Raspberry Pi 4 (pi4.lan), Direwolf, DigiRig Mobile, HTX-242. Path: /home/aprs/terminal/. Lines: ~1650 (Chunk 13). Callsign: SVR001 default (Chunk 1).
+- terminal_client.py v4.3.5: Curses UI, syncs with server via AX.25, submits data (INSERT), searches records (SEARCH). Runs on Panasonic CF-29 Mk3 (debian.lan), same stack. Path: /opt/terminal_client/. Lines: ~1500+ (Chunk 11). Callsign: CLT001 default (Chunk 1).
+- fake_direwolf.py v14: AX.25 packet relay between server/client, KISS framing, LAN discovery. Runs on pi4.lan/debian.lan. KISS_PORT: 8051 (v3+). Logs: ~/terminal/server_data/fake_direwolf.log (v3+).
+- client_install.sh: Sets up client dirs (/opt/terminal_client/, /opt/terminal_client/forms/), perms, deps (Python, curses, crcmod).
+
+[File Formats]
+Forms (TXT):
+- Server: /home/aprs/terminal/forms/<form_id>.txt (e.g., GB.txt, TM01.txt)
+- Client: /opt/terminal_client/forms/<form_id>.txt
+- Format: desc:<description>\n<fid>,<label>,<row>,<col>,<length>\n
+- Example (GB.txt): desc:GENERAL BROADCAST\nL01,GB,3,12,256\nR01,GENERAL BROADCAST,3,32,256\nL02,Attention,4,12,256\nR02,Copy,4,32,256\nL03,Priority,5,12,256\nR03,Date,5,32,256\nL04,Message,6,12,256
+- Example (TM01.txt): desc:TOAST MANAGER\nL01,TM01,3,12,256\nR01,TOAST MANAGER,3,32,256\nL02,Toaster,4,12,256\nL03,Toasted,5,12,256\nL04,Toast,6,12,256
+Forms Index (JSON):
+- Server: /home/aprs/terminal/forms/forms_index.json
+- Format: {"forms": {"<form_id>.txt": {"md5": "<hash>"}, ...}}
+- Example: {"forms": {"GB.txt": {"md5": "fb3ba93d441edeb1f3cedafa07d57a0f"}, "TM01.txt": {"md5": "<hash>"}}}
+- Issue: Outdated (Mar 5 22:07 vs. GB.txt Mar 11 19:15, TM01.txt Mar 16 17:03), lists ST01/LG01/MD01/BB01/IN01 not in dir.
+Submissions (CSV):
+- Path: /home/aprs/terminal/server_data/<form_id>_submissions.csv
+- Format: <timestamp>,<callsign>,<payload>
+- Example: 1741739525,KC8QKU,L01Field1|R01Field2|L02Field3
+Index: <form_id>:<md5>|... from build_forms_index() (terminal_client.py Chunk 3, ~L370; server.py not implemented).
+
+[Sync Protocol]
+Server Broadcast:
+- Packet: MD5|<callsign>|NONE|<md5>\n (server.py Chunk 3, ~L300)
+- Interval: 60s (BROADCAST_INTERVAL, server.py Chunk 1, ~L40)
+- Func: broadcast_forms_md5() hashes /home/aprs/terminal/forms/*.txt in binary (Chunk 3, ~L280), sends via AX.25 (0SVR001>ALL:<payload>) (Chunk 3, ~L320)
+Client Check:
+- Func: kiss_listener() (terminal_client.py Chunk 6, ~L900) receives MD5, compares to local hash_forms_dir() (Chunk 3, ~L350)
+- Mismatch: Sends INDEX:<server_callsign>:<index> (Chunk 7, ~L1380), index from build_forms_index() (Chunk 3, ~L370)
+- Example: INDEX:SVR001:GB:fb3ba93d441edeb1f3cedafa07d57a0f
+Server Response:
+- Packet: FORM_UPDATE|<callsign>|<fname>|<content ~ instead of \n>\n (server.py Chunk 12, ~L1640)
+- Packet: FORM_DELETE|<callsign>|<fname>|\n (Chunk 12, ~L1670)
+- Logic: main() diffs client_forms vs server_forms (Chunk 12, ~L1610), server_forms from /home/aprs/terminal/forms/*.txt
+Client Write:
+- kiss_listener() (Chunk 6, ~L950) saves FORM_UPDATE to /opt/terminal_client/forms/<fname>.txt, ~ to \n (Chunk 7, ~L1410)
+- kiss_listener() (Chunk 6, ~L970) deletes FORM_DELETE fname from /opt/terminal_client/forms/ (Chunk 7, ~L1420)
+
+[Data Flow]
+Submission:
+- Client: send_to_kiss() (terminal_client.py Chunk 6, ~L820) packs INSERT|<callsign>|<form_id>|<payload>\n or SEARCH|<callsign>|<form_id>|<payload>\n, splits at PACLEN=255 (Chunk 1, ~L30) if >255 bytes
+- Server: main() (server.py Chunk 12, ~L1570) saves INSERT to CSV, sends ACK|<callsign>|<form_id>|SUCCESS\n; SEARCH returns SEARCH_RESULT|<callsign>|<form_id>|<matches ~>\n
+Retrieval: Planned REQ_DATA:—not implemented.
+
+[Radio Comms Setup]
+Hardware:
+- Server: Pi 4, Direwolf, DigiRig, HTX-242 (2m, 5W–45W). Portable (backpack, power bank) or stationary. Antenna: Whip (low power) or folding dipole (high power, tree).
+- Client: CF-29 Mk3, same stack. Mobile/fixed. Antenna: Whip or external.
+Software:
+- AX.25: Direwolf 1200 baud AFSK/FM, ax25d routing via Fake Direwolf (127.0.0.1:8051).
+- Protocol: AX.25 datagrams (server.py v2.9+, terminal_client.py v4.0+), replaced TCP (server.py v2.8, terminal_client.py v3.6.2).
+- Config: direwolf.conf—callsigns (SVR001-0 server, CLT001-0 client default), beacon off, digipeat off.
+Operation:
+- Freq: 2m (144-148 MHz), avoid APRS (e.g., 144.390 MHz)—deployment-specific.
+- Mode: Simplex, 1200 baud, 1-2 packets/sec.
+- Resilience: Server MD5 every 60s (server.py Chunk 3, ~L320); client retries 5x every 5s (terminal_client.py Chunk 1, ~L30).
+
+[CURRENT_STATE_20250316]
+- Server_v3.0.4:
+  - Runs on pi4.lan, AX.25 via Fake Direwolf (127.0.0.1:8051). IP: 192.168.86.69 (prior TCP ref).
+  - Lines: ~1650 (Chunk 13, was ~1620 in v3.0.3).
+  - Callsign: SVR001 default (Chunk 1).
+  - Comms Log: Shows sent MD5 packets (e.g., "MD5|SVR001|NONE|1d597a623ea975a3dea5c93ff1f245e4" at 20:48:01, LOG_PACKET_BUILD ui=True, Chunk 3), received INDEX not shown in UI (e.g., "INDEX:SVR001:GB:fb3ba93d441edeb1f3cedafa07d57a0f" at 20:48:01,286, LOG_CLIENT_PACKET ui=False, Chunk 4).
+  - Logs: server.log confirms MD5 broadcasts every 60s (e.g., 20:48:01), INDEX received (20:48:01,286), FORM_UPDATE sent (implied, not UI-logged), no FORM_UPDATE|TM01 logged.
+  - Forms: /home/aprs/terminal/forms/ has GB.txt (Mar 11 19:15), TM01.txt (Mar 16 17:03), forms_index.json (Mar 5 22:07, outdated: ST01/LG01/MD01/BB01/IN01).
+- Client_v4.3.5:
+  - Runs on debian.lan, AX.25 via Fake Direwolf (127.0.0.1:8051). IP: 192.168.86.49 (prior TCP ref).
+  - Lines: ~1500+ (Chunk 11, was ~1470 in v4.3.4).
+  - Callsign: KC8QKU (user-entered, default CLT001, Chunk 1).
+  - Comms Log: Blank despite MD5 receipt (e.g., 20:48:01), INDEX sent (20:48:01), FORM_UPDATE received (implied by "Loaded form GB" 20:48:01), queue restriction in main (Chunk 7, ~L1370) and ui=True filtering (Chunk 3, ~L300) suspected.
+  - Logs: skippys_messups.log shows startup (20:48:01), INDEX sent ("KC8QKU>SVR001:INDEX:SVR001:GB:fb3ba93d441edeb1f3cedafa07d57a0f" 20:48:01), FORM_UPDATE processed ("Loaded form GB" 20:48:01), no TM01 update logged.
+- Fake_Direwolf_v14:
+  - Runs on pi4.lan/debian.lan, KISS_PORT 8051, logs to ~/terminal/server_data/fake_direwolf.log.
+  - Features: Relays AX.25 packets (server->client, client->server), prevents loopback (v10+), direction check (v14: lower IP initiates).
+- Issues:
+  - Server: forms_index.json outdated (Mar 5 vs. Mar 16), not rebuilt on form changes (GB.txt, TM01.txt added, ST01/etc. removed). MD5 from hash_forms_dir() (Chunk 3, ~L280) uses *.txt, not forms_index.json, but TM01 not sent in FORM_UPDATE (Chunk 12, ~L1640). LOG_CLIENT_PACKET not in UI (Chunk 4, ~L510, ui=False default).
+  - Client: Comms Log blank for MD5/INDEX/FORM_UPDATE (20:48:01), 'not form_fields' in main (Chunk 7, ~L1370) blocks queue, sync_state not ui=True (Chunk 3, ~L300). No TM01.txt received despite server having it.
+  - Fake Direwolf: No explicit issues, relays packets (v14 logs confirm INDEX/FORM_UPDATE passthrough), but check for drops if TM01 missing.
+- Next:
+  - Server: Rebuild forms_index.json on form change (add to update_forms_index, Chunk 3, ~L300), ensure TM01 FORM_UPDATE sent (debug main diff, Chunk 12, ~L1610), fix LOG_CLIENT_PACKET ui=True (Chunk 4, ~L510).
+  - Client: Fix Comms Log—add sync_state to ui=True (Chunk 3, ~L300), remove 'not form_fields' (Chunk 7, ~L1370), verify TM01 receipt.
+  - Test: Send INDEX with GB only, confirm TM01 FORM_UPDATE in server.log/client Comms Log.
+
+[REVISION_SUMMARY]
+- Server:
+  - v1.78: INDEX parsing, FORMS diffs (2025-03-07)
+  - v1.88: Simplified handle_client(), submission logs (2025-03-08)
+  - v1.89: PACLEN, socket/UI logs, moved init_colors (2025-03-08)
+  - v1.90–1.93: Search, unified packet format, sync logs (2025-03-08)
+  - v1.94: FORM_UPDATE ~ delimiter, packet_integrity logs (2025-03-09)
+  - v1.95: Fixed f-string syntax, form_edit_screen (2025-03-09)
+  - v1.97: Full f-string fixes for Python 3.5 (2025-03-09)
+  - v2.00: FORM_DELETE in handle_client (2025-03-09)
+  - v2.01: Forced MD5 recalc in broadcast_forms_md5() (2025-03-09)
+  - v2.03.2: Fixed comms_log NameError (2025-03-09)
+  - v2.03.3: Fixed QUEUE_MAXSIZE NameError (2025-03-09)
+  - v2.03.5: Callsign default, UI packets, logging enhancements (2025-03-10)
+  - v2.6: Fixed col 80 overflow in form_edit_screen (80→79) (2025-03-11)
+  - v2.8: Simplified forms_management_screen (*.txt only), UI theme (red/green/cyan) (2025-03-11)
+  - v2.9: TCP->AX.25 via Fake Direwolf, KISS framing, logs (kiss_framing, packet_timing, ax25_state) (2025-03-11)
+  - v3.0: Full AX.25 FCS, logs (ax25_packet, kiss_packet_received, ax25_parse_error, packet_send_failure) (2025-03-11)
+  - v3.0.1: Socket send logs (socket_send_state, socket_send_bytes, socket_flush, socket_config), TCP_NODELAY (2025-03-11)
+  - v3.0.2: Unconditional broadcasts, logs (broadcast_state, socket_error, thread_error), disabled spammy logs (2025-03-11)
+  - v3.0.3: Fixed startup race with kiss_socket, logs (startup_sync, thread_sync, socket_init) (2025-03-11)
+  - v3.0.4: Fixed AX.25 INDEX parsing, logs (ax25_header, ax25_parsing_error), disabled spammy logs (form_preview, ui_render, packet_timing) (2025-03-22)
+- Client:
+  - v2.84: Fixed \n\n buffering, UI tweaks (Pre-2025-03-07)
+  - v2.89: Streamlined send_to_server(), submission logs (2025-03-07)
+  - v2.90: Fixed double sends, timeouts, UI stickiness (2025-03-08)
+  - v2.94: Unified packet format, sync logs (2025-03-09)
+  - v2.95: Fixed StopIteration, sync logs (2025-03-09)
+  - v2.96: Packet_integrity logs, UI refresh post-sync (2025-03-09)
+  - v2.98: UI tweaks in redraw_screen(), reduced log noise (2025-03-11)
+  - v3.00: FORM_DELETE in server_listener (2025-03-14)
+  - v3.03: Packet queue, logging updates (2025-03-09)
+  - v3.04: Callsign default, UI packets, logging enhancements (2025-03-10)
+  - v3.5: Updated redraw_screen UI (labels left, static top, centered Submit/Cancel), logs (form_ui_layout, input_field_state) (2025-03-11)
+  - v3.6.2: Fixed max_x NameError in main (2025-03-11)
+  - v4.0: TCP->AX.25 via Fake Direwolf, KISS framing, logs (kiss_framing, ax25_state) (2025-03-11)
+  - v4.1: Fixed AX.25 decode, robust error handling, logs (ax25_packet, ax25_parse_error, kiss_packet_received) (2025-03-11)
+  - v4.2: Fixed TCP Comms Log, improved AX.25 parsing, logs (packet_validation, md5_comparison, packet_relay, ui_redraw) (2025-03-11)
+  - v4.3: Fixed MD5 strip, send retries, manual reconnect, logs (socket_send_bytes, socket_send_failure, socket_reconnect, socket_status) (2025-03-11)
+  - v4.3.1: Aggressive UPDATE logs (socket_send_raw, socket_buffer, ui_comms_log, etc.) (2025-03-11)
+  - v4.3.2: Fixed f-string in send_to_kiss, restored kiss_listener (2025-03-11)
+  - v4.3.3: Enhanced send_to_kiss, connect_kiss_socket helper (2025-03-11)
+  - v4.3.4: Fixed send failure, logs (socket_validation, packet_transmission) (2025-03-11)
+  - v4.3.5: Proper AX.25 with build_ax25_packet, SSID config, logs (ax25_build, ax25_validation, kiss_validation, fcs_calculation) (2025-03-18)
+- Fake_Direwolf:
+  - v1: Initial KISS relay (8001->debian.lan:8002) (2025-03-14)
+  - v2: Curses UI, LAN discovery, PEER_PORT 8052, BROADCAST_PORT 5000 (2025-03-14)
+  - v3: KISS_PORT 8051, file logging, active_kiss_clients, parse_ax25_callsigns (2025-03-14)
+  - v4: Status_messages deque, UI section (2025-03-14)
+  - v5: select.select() in peer_manager, writable/errored checks (2025-03-14)
+  - v7: decode_payload (ASCII/<non-ascii>) (2025-03-14)
+  - v8: Fixed decode_payload offset (len-3) (2025-03-14)
+  - v9: Reverted to hex-only (2025-03-14)
+  - v10: Reintroduced decode_payload (len-2), detailed send/forward logs, no loopback (2025-03-14)
+  - v11: Simplified status_display startup (2025-03-14)
+  - v12: Reverted to named threads with IDs (2025-03-14)
+  - v14: Direction check (lower IP connects), peer_server rejects inbound if local IP < peer (2025-03-14)
+
+[TROUBLESHOOTING]
+- Connection Fails:
+  - Symptoms: Client "Connection refused" (skippys_messups.log, e.g., 22:12:29–22:27:46)
+  - Check: Server: server.log "Connected to Fake Direwolf" (e.g., 20:48:01); Client: skippys_messups.log "Connected to 127.0.0.1:8051" (e.g., 20:48:01)
+  - Fix: Start server (python3 /home/aprs/terminal/server.py); check Fake Direwolf (python3 fake_direwolf.py); ping 127.0.0.1:8051; AX.25: /tmp/direwolf.log
+- MD5 Sync Stalls:
+  - Symptoms: Server MD5 persists post-deletion (e.g., 8241bea... 18:30:53–18:35:24)
+  - Status: Fixed in v2.01 (server.py)
+  - Check: MD5 updates (e.g., 1d597a623ea975a3dea5c93ff1f245e4 20:48:01)
+  - Fix: broadcast_forms_md5() forces recalc (Chunk 3, ~L320)
+- Forms Index Outdated:
+  - Symptoms: forms_index.json (Mar 5) lists ST01/LG01/MD01/BB01/IN01, dir has GB.txt (Mar 11), TM01.txt (Mar 16), TM01 not synced (20:48:01)
+  - Check: Server: ls -l /home/aprs/terminal/forms/, server.log FORM_UPDATE|TM01; Client: ls -l /opt/terminal_client/forms/, skippys_messups.log "Loaded form TM01"
+  - Fix: Add forms_index.json rebuild in update_forms_index() (server.py Chunk 3, ~L300), verify main() diff sends TM01 (Chunk 12, ~L1640)
+- Double Send Bug:
+  - Symptoms: Client duplicate "Sending data:" (e.g., 08:41:10)
+  - Status: Fixed in v2.90 (terminal_client.py)
+  - Check: Single "Packet transmission complete" (e.g., 20:48:01)
+  - Fix: main() uses sending flag (Chunk 7, ~L1300)
+- Post-ACK Timeout:
+  - Symptoms: "Send error: timed out" post-"ACK" (e.g., 08:41:15)
+  - Status: Fixed in v2.90
+  - Check: No "Send failed" after "ACK" (e.g., 20:32:05)
+  - Fix: send_to_kiss() resets sending (Chunk 6, ~L880)
+- UI Stays on Form:
+  - Symptoms: Form persists post-submit/Esc (e.g., 08:41:15)
+  - Status: Fixed in v2.90, enhanced v2.96
+  - Check: UI resets (e.g., 20:32:05)
+  - Fix: kiss_listener() calls display_form_list() (Chunk 7, ~L1420)
+- Esc Doesn’t Exit:
+  - Status: Fixed in v2.90
+  - Check: Esc resets unless sending (e.g., 20:32:05)
+  - Fix: main() handles Esc (Chunk 7, ~L1300)
+- Syntax Error (Server):
+  - Symptoms: "SyntaxError: f-string ... backslash" (Chunk 5, ~L286)
+  - Status: Fixed in v1.95
+  - Check: Runs on Python 3.5 (20:48:01)
+  - Fix: handle_client() uses ends_with_newline (Chunk 5, ~L620, v2.8)
+- StopIteration Crash (Client):
+  - Symptoms: Crash in send_to_server() during sync
+  - Status: Fixed in v2.95
+  - Check: No StopIteration (20:48:01)
+  - Fix: send_to_kiss() safely handles form_fields (Chunk 6, ~L820)
+- FORM_DELETE Noise:
+  - Symptoms: Server sends FORM_DELETE|1|, |2| (18:41:43)
+  - Status: Known, not fixed (user preference)
+  - Check: Client ignores, deletes LG01.txt (18:41:43)
+  - Cause: handle_client() misparses UPDATE (Chunk 5, ~L680, v2.8)
+- Comms Log Blank (Client):
+  - Symptoms: MD5 received (20:48:01), UI blank
+  - Check: LOG_PACKET_BUILD (Chunk 6, ~L820), LOG_SYNC_STATE (Chunk 7, ~L1380) with ui=True (Chunk 3, ~L300)
+  - Check: main() queue unrestricted (Chunk 7, ~L1370)
+  - Fix: Add sync_state to ui=True (Chunk 3, ~L300), remove 'not form_fields' (Chunk 7, ~L1370)
+- Comms Log Missing Received (Server):
+  - Symptoms: MD5 sent in UI (20:48:01), no INDEX (20:48:01,286)
+  - Check: LOG_CLIENT_PACKET with ui=True (Chunk 4, ~L510)
+  - Test: Send INDEX, verify server.log
+- max_x Crash (Client):
+  - Symptoms: NameError: max_x on Enter from L04 (20:24:52)
+  - Status: Fixed in v3.6.2
+  - Check: No crash on Enter (20:32:05)
+  - Fix: Added max_y, max_x = stdscr.getmaxyx() in main (Chunk 7, ~L1044)
+- AX.25 INDEX Parsing:
+  - Symptoms: INDEX packets misparsed, TM01 not sent (20:48:01)
+  - Status: Fixed in v3.0.4 (server.py)
+  - Check: server.log FORM_UPDATE|TM01 after INDEX (20:48:01,286)
+  - Fix: handle_ax25() parses SSID/last bit (Chunk 4, ~L510)
+
+[MEMORY_DATA]
+- User_20250310: Done for night ~21:XX, requested doc updates.
+- Logs_20250310: server.log (MD5 21:26:34), skippys_messups.log (MD5 21:26:34), GrabLogs (21:29:55–21:30:00).
+- Screenshots_20250310: Server Comms Log (MD5 sent), Client Comms Log (blank).
+- Theories_20250310: Server: LOG_CLIENT_PACKET not firing (Chunk 5); Client: Queue restriction (Chunk 7, ~L1050), sync_state not ui=True (Chunk 3).
+- User_20250311: Requested doc updates, video games ~20:XX, provided logs (server.log 20:32:05 INSERT, skippys_messups.log 20:24:52 crash), confirmed v3.6.2 fix (GB_submissions.csv).
+- Logs_20250311: server.log (INSERT 20:32:05, ACK), skippys_messups.log (v3.5 crash 20:24:52, v3.6.2 INSERT 20:32:05), GrabLogs (20:32:18).
+- Screenshots_20250311: None, assumed Server Comms Log (MD5 only), Client Comms Log (blank).
+- Theories_20250311: Server: LOG_CLIENT_PACKET ui=True not triggering (Chunk 5, ~L670); Client: Queue block (Chunk 7, ~L1050), sync_state not ui=True (Chunk 3, ~L300).
+- User_20250316: Debugging update process, provided dir listing (ls -l /home/aprs/terminal/forms/), cat *.txt/*.json, logs (server.log 20:48:01, skippys_messups.log 20:48:01), latest code (server.py v3.0.4, terminal_client.py v4.3.5, fake_direwolf.py v14 history).
+- Logs_20250316: server.log (MD5 20:48:01, INDEX 20:48:01,286), skippys_messups.log (INDEX sent 20:48:01, "Loaded form GB" 20:48:01), no TM01 update.
+- Dir_20250316: /home/aprs/terminal/forms/—forms_index.json (Mar 5 22:07), GB.txt (Mar 11 19:15), TM01.txt (Mar 16 17:03).
+- Theories_20250316: Server: forms_index.json not rebuilt (Chunk 3, ~L300), TM01 FORM_UPDATE not sent (Chunk 12, ~L1640); Client: TM01 not received, queue/UI issues persist (Chunk 7, ~L1370).
+
+[TRAINING_DIRECTIVES]
+- Review: Revision History (server.py v1.7–v3.0.4, terminal_client.py v2.13–v4.3.5, fake_direwolf.py v1–v14).
+- Study: CURRENT_STATE_20250316 for latest status, issues.
+- Test: Send INDEX (GB only), check server.log (FORM_UPDATE|TM01), skippys_messups.log (TM01 receipt), Comms Logs.
+- Fix: Server—rebuild forms_index.json in update_forms_index() (Chunk 3, ~L300), ensure TM01 FORM_UPDATE (Chunk 12, ~L1640), LOG_CLIENT_PACKET ui=True (Chunk 4, ~L510).
+- Fix: Client—add sync_state to ui=True (Chunk 3, ~L300), remove 'not form_fields' (Chunk 7, ~L1370).
+- Log: Test results, propose fixes in CURRENT_STATE_20250316 Issues/Next.
+- Focus: server.py Chunks 3/4/12, terminal_client.py Chunks 3/6/7, fake_direwolf.py v14 mechanics.
+- Directives_20250316:
+  - Analyze: Server forms_index.json mismatch (Mar 5 vs. Mar 16), MD5 vs. diff logic (Chunk 3, ~L280; Chunk 12, ~L1610).
+  - Debug: TM01 FORM_UPDATE absence—server diff (Chunk 12, ~L1610), Fake Direwolf relay (v14), client receipt (Chunk 7, ~L1410).
+  - Enhance: Logging—enable LOG_PACKET_BUILD/LOG_AX25_PACKET ui=True (server.py Chunk 1), LOG_SYNC_FORMS (terminal_client.py Chunk 1).
+  - Validate: AX.25 FCS (server.py Chunk 2, ~L250; terminal_client.py Chunk 3, ~L400), KISS framing (server.py Chunk 2, ~L270; terminal_client.py Chunk 6, ~L850).
+
+[Design Principles]
+- Low Bandwidth: Sync forms once (~1920 bytes), data ~50 bytes
+- Resilience: Queue submits, retry syncs—solo during outages
+- Simplicity: TXT forms, CSV storage—no DB
+- Scalability: Broadcasts for 12+ clients (tested 1, 192.168.86.49)
+- Accuracy: MD5 ensures form integrity, AX.25 FCS validates packets

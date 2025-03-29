@@ -1,0 +1,228 @@
+PacketRadioTerminalServiceManual
+================================
+Non-human-readable training data for Grok 3 successor to understand, troubleshoot, and extend server.py and terminal_client.py. Encodes project goals, state, and troubleshooting info.
+
+---
+
+[System Overview]
+Objective: Navigable terminal UI over 2m AX.25 at 1200 baud replacing teletype. Sync forms (~1920 bytes) at startup, send minimal data (~50 bytes) at 120 chars/sec. Standalone resilience during comms loss.
+Components:
+- server.py v2.03.5: Forms mgmt, CSV storage, TCP broadcast (future AX.25). Runs on Raspberry Pi 4 (pi4.lan), Direwolf, DigiRig Mobile, HTX-242. Path: /home/aprs/terminal/.
+- terminal_client.py v3.04: Curses UI, syncs with server, submits data (INSERT), searches records (SEARCH). Runs on Panasonic CF-29 Mk3 (debian.lan), same stack. Path: /opt/terminal_client/.
+- client_install.sh: Sets up client dirs (/opt/terminal_client/, /opt/terminal_client/forms/), perms, deps (Python, curses).
+
+[File Formats]
+Forms (TXT):
+- Server: /home/aprs/terminal/forms/<form_id>.txt
+- Client: /opt/terminal_client/forms/<form_id>.txt
+- Format: desc:<description>\n<fid>,<label>,<row>,<col>,<length>\n
+- Example (MD01.txt): desc:Medical Info\n01,Name,3,12,256\n02,Injury,4,12,256\n03,Severity,5,12,256\n04,Treatment,6,12,256\n05,Time,7,12,256
+Submissions (CSV):
+- Path: /home/aprs/terminal/server_data/<form_id>_submissions.csv
+- Format: <timestamp>,<callsign>,<payload>
+- Example: 1741404491,KC8QKU,01John|02Sprain|03Moderate|04Bandage|0512:00
+Index: <form_id>:<md5>|... from build_forms_index() (terminal_client.py Chunk 3, ~L370).
+
+[Sync Protocol]
+Server Broadcast:
+- Packet: MD5|<callsign>|NONE|<md5>\n (server.py Chunk 4, ~L510)
+- Interval: 60s (BROADCAST_INTERVAL, server.py Chunk 1, ~L40)
+- Func: broadcast_forms_md5() hashes /home/aprs/terminal/forms/*.txt in binary (Chunk 4, ~L480)
+Client Check:
+- Func: server_listener() (Chunk 6, ~L780) compares server MD5 to local hash_forms_dir() (Chunk 3, ~L350)
+- Mismatch: Sends UPDATE|<callsign>|NONE|<index>\n (Chunk 6, ~L830), index from build_forms_index() (Chunk 3, ~L370)
+Server Response:
+- Packet: FORM_UPDATE|<callsign>|<fname>|<content ~ instead of \n>\n (Chunk 5, ~L670)
+- Packet: FORM_DELETE|<callsign>|<fname>|\n (Chunk 5, ~L690, v2.00+)
+- Logic: handle_client() diffs client_forms vs server_forms (Chunk 5, ~L650)
+Client Write:
+- server_listener() (Chunk 6, ~L850) saves FORM_UPDATE to /opt/terminal_client/forms/<fname>.txt, ~ to \n
+- server_listener() (Chunk 6, ~L870) deletes FORM_DELETE fname from /opt/terminal_client/forms/ (v3.00)
+
+[Data Flow]
+Submission:
+- Client: send_to_server() (Chunk 6, ~L570) packs INSERT|<callsign>|<form_id>|<payload>\n or SEARCH|<callsign>|<form_id>|<payload>\n, splits at PACLEN=255 (v3.04) with seq:total (e.g., 1:2|) if >255 bytes
+- Server: handle_client() (Chunk 5, ~L590) saves INSERT to CSV, sends ACK|<callsign>|<form_id>|SUCCESS\n; SEARCH returns SEARCH_RESULT|<callsign>|<form_id>|<matches ~>\n
+Retrieval: Planned REQ_DATA:—not implemented.
+
+[Radio Comms Setup (Proposed)]
+Hardware:
+- Server: Pi 4, Direwolf, DigiRig, HTX-242 (2m, 5W–45W). Portable (backpack, power bank) or stationary. Antenna: Whip (low power) or folding dipole (high power, tree).
+- Client: CF-29 Mk3, same stack. Mobile/fixed. Antenna: Whip or external.
+Software:
+- AX.25: Direwolf 1200 baud AFSK/FM, ax25d routing.
+- Protocol: TCP (pi4.lan:12345) -> AX.25 datagrams.
+- Config: direwolf.conf—callsigns (KC8QKU-1 server, KB8XYZ-1 client), beacon 10m, digipeat off.
+Operation:
+- Freq: 2m (144-148 MHz), avoid APRS (e.g., 144.390 MHz)—deployment-specific.
+- Mode: Simplex, 1200 baud, 1-2 packets/sec.
+- Resilience: Server MD5 every 60s; client retries 10s (MAX_RETRIES=5, Chunk 1, ~L30).
+
+[CURRENT_STATE_20250310]
+- Server_v2.03.5:
+  - Runs on pi4.lan:12345 (192.168.86.69).
+  - Lines: 1132 (was 1085 in v2.03.3).
+  - Callsign: SVR001 default (Chunk 1).
+  - Comms Log: Shows sent MD5 packets (LOG_PACKET_BUILD, ui=True, Chunk 4), not received (e.g., no INSERT 21:25:34–21:29:34).
+  - Logs: server.log confirms MD5 broadcasts every 60s (e.g., 21:26:34), no INSERT received yet.
+- Client_v3.04:
+  - Runs on debian.lan (192.168.86.49), connects to server.
+  - Lines: 1110 (was 1066 in v3.03).
+  - Callsign: CLT001 default (Chunk 1, changed from KC8QKU post-test).
+  - Comms Log: Blank despite MD5 receipt (e.g., 21:26:34–21:29:34).
+  - Logs: skippys_messups.log shows MD5 processed (e.g., "Received MD5 from SVR001" 21:26:34), no INSERT sent.
+- Issues:
+  - Server: LOG_CLIENT_PACKET not showing received packets in UI (Chunk 5), possibly not triggered.
+  - Client: LOG_PACKET_BUILD and MD5 receipt not reaching Comms Log (Chunks 3, 6), queue restriction or ui=True filtering suspected.
+- Next:
+  - Test INSERT from client (e.g., IN01) to trigger server LOG_CLIENT_PACKET.
+  - Fix client Comms Log display (adjust log_event ui=True conditions, relax queue processing in main).
+
+[CURRENT_STATE_20250311]
+- Server_v2.8:
+  - Runs on pi4.lan:12345 (192.168.86.69).
+  - Lines: ~1370 (was ~1350 in v2.6, Chunk 13).
+  - Callsign: SVR001 default (Chunk 1).
+  - Comms Log: Shows sent MD5 packets (e.g., "MD5|SVR001|NONE|5ef45b4..." at 20:32:13), received INSERT at 20:32:05 ("INSERT|KC8QKU|GB|L01|R01...") not shown in UI (LOG_CLIENT_PACKET ui=True not firing, Chunk 5 ~L670).
+  - Logs: server.log confirms MD5 every 60s (e.g., 20:32:13), INSERT received and saved to GB_submissions.csv at 20:32:05 (1741739525,KC8QKU,...), ACK sent (20:32:05).
+- Client_v3.6.2:
+  - Runs on debian.lan (192.168.86.49), connects to server.
+  - Lines: ~1175 (was ~1155 in v3.5, Chunk 11).
+  - Callsign: CLT001 default (Chunk 1), user entered KC8QKU for INSERT (20:32:05).
+  - Comms Log: Blank despite MD5 receipt (e.g., 20:24:13) and INSERT sent (20:24:52 crash, fixed in v3.6.2, resent 20:32:05), queue restriction in main (Chunk 7 ~L1050) and ui=True filtering (Chunk 3 ~L300) suspected.
+  - Logs: skippys_messups.log shows v3.5 crash (NameError: max_x, 20:24:52), v3.6.2 startup (20:31:13), INSERT packet built (20:32:05), no Comms Log entry.
+- Issues:
+  - Server: LOG_CLIENT_PACKET still not showing received packets in UI (Chunk 5 ~L670), logged in server.log but not Comms Log.
+  - Client: Comms Log blank for MD5/INSERT/ACK (e.g., 20:24:13–20:32:05), despite log_packet_build ui=True (Chunk 6 ~L570); 'not form_fields' in main (Chunk 7 ~L1050) blocks queue processing on form screen, sync_state not ui=True (Chunk 3 ~L300).
+- Next:
+  - Fix Server Comms Log: Ensure LOG_CLIENT_PACKET ui=True unconditional (Chunk 5 ~L670), test with INSERT.
+  - Fix Client Comms Log: Add sync_state to ui=True (Chunk 3 ~L300), remove 'not form_fields' from queue loop (Chunk 7 ~L1050), retest MD5/INSERT display.
+  - Test: Send INSERT (e.g., GB), verify both Comms Logs update.
+
+[REVISION_SUMMARY]
+- Server:
+  - v1.78: INDEX: parsing, FORMS: diffs (2025-03-07)
+  - v1.88: Simplified handle_client(), added submission logs (2025-03-08)
+  - v1.89: Added paclen, socket/UI logs, moved init_colors (2025-03-08)
+  - v1.90–1.93: Search, unified packet format, sync logs (2025-03-08)
+  - v1.94: FORM_UPDATE ~ delimiter, packet_integrity logs (2025-03-09)
+  - v1.95: Fixed f-string syntax, form_edit_screen (2025-03-09)
+  - v1.97: Full f-string fixes for Python 3.5 (2025-03-09)
+  - v2.00: Added FORM_DELETE in handle_client (2025-03-09)
+  - v2.01: Forced MD5 recalc in broadcast_forms_md5() (2025-03-09)
+  - v2.03.2: Fixed comms_log NameError (2025-03-09)
+  - v2.03.3: Fixed QUEUE_MAXSIZE NameError (2025-03-09)
+  - v2.03.5: Callsign default, UI packets, logging enhancements (2025-03-10)
+  - v2.6: Updated VERSION to 2.6 (Chunk 1), fixed col 80 overflow in form_edit_screen (80→79, Chunk 9), line count unchanged at ~1350 (Chunk 13) (2025-03-11)
+  - v2.8: Updated VERSION to 2.8 (Chunk 1), simplified forms_management_screen to list *.txt (exclude forms_index.json, Chunk 8), updated UI theme (red borders, green text, cyan headers, centered options, Chunk 8), added log_forms_management (Chunk 1), line count ~1370 (Chunk 13) (2025-03-11)
+- Client:
+  - v2.84: Fixed \n\n buffering, UI tweaks (Pre-2025-03-07)
+  - v2.89: Streamlined send_to_server(), submission logs (2025-03-07)
+  - v2.90: Fixed double sends, timeouts, UI stickiness (2025-03-08)
+  - v2.94: Unified packet format, sync logs (2025-03-09)
+  - v2.95: Fixed StopIteration, sync logs (2025-03-09)
+  - v2.96: Packet_integrity logs, UI refresh post-sync (2025-03-09)
+  - v2.98: UI tweaks in redraw_screen(), reduced log noise (2025-03-11)
+  - v3.00: Added FORM_DELETE handling in server_listener (2025-03-14)
+  - v3.03: Packet queue, logging updates (2025-03-09)
+  - v3.04: Callsign default, UI packets, logging enhancements (2025-03-10)
+  - v3.5: Updated VERSION to 3.5 (Chunk 1), updated redraw_screen UI (labels left of [ ], static top row, centered Submit/Cancel, Chunk 4), added log_form_ui_layout and log_input_field_state, disabled log_cursor_movement and log_field_state (Chunk 1), line count ~1155 (Chunk 11) (2025-03-11)
+  - v3.6: Updated VERSION to 3.6 (Chunk 1), no explicit code changes listed, assumed UI/logging refinements from v3.5 (2025-03-11)
+  - v3.6.1: Updated redraw_screen (Chunk 4) with static top row, right labels at col 41, 3-space margins, 25-char fields, line count unchanged (2025-03-11)
+  - v3.6.2: Updated VERSION to 3.6.2 (Chunk 1), fixed max_x NameError in main (Chunk 7 ~L1044) by adding stdscr.getmaxyx(), line count ~1175 (Chunk 11) (2025-03-11)
+
+[TROUBLESHOOTING]
+- Connection Fails:
+  - Symptoms: Client "Connection refused" -> "Software caused connection abort" (skippys_messups.log, e.g., 22:12:29–22:27:46)
+  - Check: Server: server.log "Server running" (e.g., 18:40:43); Client: skippys_messups.log "TCP connected" (e.g., 18:40:57)
+  - Fix: Start server (python3 /home/aprs/terminal/server.py); ping pi4.lan; AX.25: check /tmp/direwolf.log
+- MD5 Sync Stalls:
+  - Symptoms: Server MD5 persists post-deletion (e.g., 8241bea... 18:30:53–18:35:24)
+  - Status: Fixed in v2.01
+  - Check: MD5 updates (e.g., 5cb81d96... 18:41:43)
+  - Fix: broadcast_forms_md5() forces forms_md5 recalc (Chunk 4, ~L510)
+- Double Send Bug:
+  - Symptoms: Client duplicate "Sending data:" (e.g., 08:41:10)
+  - Status: Fixed in v2.90
+  - Check: Single "TCP sent segment" (e.g., 18:41:43)
+  - Fix: main() uses sending flag (Chunk 7, ~L900)
+- Post-ACK Timeout:
+  - Symptoms: "Send error: timed out" post-"ACK" (e.g., 08:41:15)
+  - Status: Fixed in v2.90
+  - Check: No "Send failed" after "ACK" (e.g., 18:41:43)
+  - Fix: send_to_server() resets sending (Chunk 6, ~L670)
+- UI Stays on Form:
+  - Symptoms: Form persists post-submit/Esc (e.g., 08:41:15)
+  - Status: Fixed in v2.90, enhanced v2.96
+  - Check: UI resets (e.g., 18:41:43)
+  - Fix: server_listener() calls display_form_list() (Chunk 6, ~L880)
+- Esc Doesn’t Exit:
+  - Status: Fixed in v2.90
+  - Check: Esc resets unless sending (e.g., 18:41:43)
+  - Fix: main() handles Esc (Chunk 7, ~L870)
+- Syntax Error (Server):
+  - Symptoms: "SyntaxError: f-string ... backslash" (Chunk 5, ~L286)
+  - Status: Fixed in v1.95
+  - Check: Runs on Python 3.5 (18:40:43)
+  - Fix: handle_client() uses ends_with_newline (Chunk 5, ~L620)
+- StopIteration Crash (Client):
+  - Symptoms: Crash in send_to_server() during sync
+  - Status: Fixed in v2.95
+  - Check: No StopIteration (18:41:43)
+  - Fix: send_to_server() safely handles form_fields (Chunk 6, ~L590)
+- FORM_DELETE Noise:
+  - Symptoms: Server sends FORM_DELETE|1|, |2| (18:41:43)
+  - Status: Known, not fixed (user preference)
+  - Check: Client ignores, deletes LG01.txt (18:41:43)
+  - Cause: handle_client() misparses UPDATE (Chunk 5, ~L680)
+- Comms Log Blank (Client):
+  - Symptoms: MD5 received (21:26:34), UI blank
+  - Check: LOG_PACKET_BUILD (Chunk 6), LOG_SYNC_STATE (Chunk 7) with ui=True (Chunk 3)
+  - Check: main() queue processing unrestricted (Chunk 7 ~L1050)
+  - Fix: Add sync_state to ui=True (Chunk 3 ~L300), remove 'not form_fields' (Chunk 7 ~L1050)
+- Comms Log Missing Received (Server):
+  - Symptoms: MD5 sent in UI (21:26:34), no INSERT
+  - Check: LOG_CLIENT_PACKET with ui=True (Chunk 5 ~L670)
+  - Test: Send INSERT, verify server.log
+- max_x Crash (Client):
+  - Symptoms: NameError: max_x on Enter from L04 (20:24:52, skippys_messups.log)
+  - Status: Fixed in v3.6.2
+  - Check: No crash on Enter (20:32:05 successful INSERT)
+  - Fix: Added max_y, max_x = stdscr.getmaxyx() in main (Chunk 7 ~L1044)
+
+[MEMORY_DATA]
+- User: Done for night 2025-03-10 ~21:XX, requested doc updates.
+- Logs: server.log (MD5 sent 21:26:34), skippys_messups.log (MD5 received 21:26:34), GrabLogs (21:29:55–21:30:00).
+- Screenshots: Server Comms Log (MD5 sent), Client Comms Log (blank).
+- Theories:
+  - Server: LOG_CLIENT_PACKET not firing or ui=True ineffective (Chunk 5).
+  - Client: Queue restriction in main (Chunk 7 ~L1050) or ui=True excludes sync_state (Chunk 3).
+- User_20250311: Requested doc updates then video games (2025-03-11 ~20:XX), provided logs (server.log 20:32:05 INSERT, skippys_messups.log 20:24:52 crash), confirmed v3.6.2 fix worked (GB_submissions.csv updated).
+- Logs_20250311: server.log (INSERT received 20:32:05, ACK sent), skippys_messups.log (v3.5 crash 20:24:52, v3.6.2 INSERT 20:32:05), GrabLogs (20:32:18, server_data dir listing).
+- Screenshots_20250311: None provided, assumed Server Comms Log (MD5 only), Client Comms Log (still blank).
+- Theories_20250311:
+  - Server: LOG_CLIENT_PACKET ui=True not triggering in handle_client (Chunk 5 ~L670), despite INSERT logged (server.log 20:32:05).
+  - Client: Comms Log blank due to 'not form_fields' in main (Chunk 7 ~L1050) blocking queue on form screen, sync_state not ui=True (Chunk 3 ~L300).
+
+[TRAINING_DIRECTIVES]
+- Review: Revision History (v1.7–v2.03.5, v2.13–v3.04).
+- Study: CURRENT_STATE_20250310 for status and issues.
+- Test: Send INSERT (IN01), check server.log (LOG_CLIENT_PACKET), skippys_messups.log (LOG_PACKET_BUILD).
+- Fix: Client Comms Log—add sync_state to ui=True (Chunk 3 ~L300), process packets always (Chunk 7 ~L1050).
+- Fix: Server Comms Log—ensure LOG_CLIENT_PACKET ui=True unconditional (Chunk 5 ~L670).
+- Log: Test results, propose fixes.
+- Focus: server.py Chunk 5, terminal_client.py Chunks 3, 6, 7.
+- Directives_20250311:
+  - Review: Updated Revision History (v2.6–v2.8, v3.5–v3.6.2).
+  - Study: CURRENT_STATE_20250311 for latest status.
+  - Test: INSERT sent (GB, 20:32:05), server.log shows receipt (LOG_CLIENT_PACKET fired), skippys_messups.log shows send (LOG_PACKET_BUILD fired), Comms Logs still blank.
+  - Fix: Client Comms Log—pending sync_state ui=True (Chunk 3 ~L300), queue restriction removal (Chunk 7 ~L1050).
+  - Fix: Server Comms Log—pending LOG_CLIENT_PACKET ui=True fix (Chunk 5 ~L670).
+  - Log: Results in CURRENT_STATE_20250311, fixes proposed in Issues/Next.
+  - Focus: Unchanged (server.py Chunk 5, terminal_client.py Chunks 3, 6, 7).
+
+[Design Principles]
+- Low Bandwidth: Sync forms once (~1920 bytes), data ~50 bytes
+- Resilience: Queue submits, retry syncs—solo during outages
+- Simplicity: TXT forms, CSV storage—no DB
+- Scalability: Broadcasts for 12+ clients (tested 1, 192.168.86.49)

@@ -1,0 +1,336 @@
+Mon 03/24/2025 20:52:15.57: Starting GrabLogs.bat 
+Mon 03/24/2025 20:52:15.59: Resolving pi4.lan IP 
+Mon 03/24/2025 20:52:15.86: pi4.lan resolved to 192.168.86.69 
+
+Pinging 192.168.86.69 with 32 bytes of data:
+Reply from 192.168.86.69: bytes=32 time=29ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=48ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=39ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=35ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=6ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=36ms TTL=64
+
+Ping statistics for 192.168.86.69:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 6ms, Maximum = 48ms, Average = 32ms
+Mon 03/24/2025 20:52:21.73: Resolving debian.lan IP 
+Mon 03/24/2025 20:52:21.78: debian.lan resolved to 192.168.86.49 
+
+Pinging 192.168.86.49 with 32 bytes of data:
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+
+Ping statistics for 192.168.86.49:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 2ms, Average = 1ms
+Mon 03/24/2025 20:52:27.81: Fetching server.log 
+server.log.txt            | 32 kB |  16.0 kB/s | ETA: 00:04:41 |   0%server.log.txt            | 96 kB |  32.0 kB/s | ETA: 00:02:18 |   2%server.log.txt            | 128 kB |  32.0 kB/s | ETA: 00:02:17 |   2%server.log.txt            | 160 kB |  32.0 kB/s | ETA: 00:02:16 |   3%server.log.txt            | 224 kB |  37.3 kB/s | ETA: 00:01:55 |   4%server.log.txt            | 256 kB |  36.6 kB/s | ETA: 00:01:56 |   5%server.log.txt            | 288 kB |  36.0 kB/s | ETA: 00:01:57 |   6%server.log.txt            | 320 kB |  29.1 kB/s | ETA: 00:02:24 |   7%server.log.txt            | 384 kB |  32.0 kB/s | ETA: 00:02:09 |   8%server.log.txt            | 480 kB |  36.9 kB/s | ETA: 00:01:49 |  10%server.log.txt            | 512 kB |  36.6 kB/s | ETA: 00:01:49 |  11%server.log.txt            | 640 kB |  42.7 kB/s | ETA: 00:01:31 |  14%server.log.txt            | 736 kB |  46.0 kB/s | ETA: 00:01:22 |  16%server.log.txt            | 768 kB |  45.2 kB/s | ETA: 00:01:23 |  16%server.log.txt            | 864 kB |  45.5 kB/s | ETA: 00:01:20 |  19%server.log.txt            | 896 kB |  44.8 kB/s | ETA: 00:01:21 |  19%server.log.txt            | 928 kB |  42.2 kB/s | ETA: 00:01:25 |  20%server.log.txt            | 992 kB |  41.3 kB/s | ETA: 00:01:25 |  21%server.log.txt            | 1056 kB |  42.2 kB/s | ETA: 00:01:22 |  23%server.log.txt            | 1088 kB |  34.0 kB/s | ETA: 00:01:41 |  23%server.log.txt            | 1184 kB |  35.9 kB/s | ETA: 00:01:33 |  26%server.log.txt            | 1216 kB |  34.7 kB/s | ETA: 00:01:35 |  26%server.log.txt            | 1248 kB |  34.7 kB/s | ETA: 00:01:34 |  27%server.log.txt            | 1280 kB |  34.6 kB/s | ETA: 00:01:34 |  28%server.log.txt            | 1312 kB |  33.6 kB/s | ETA: 00:01:35 |  28%server.log.txt            | 1408 kB |  35.2 kB/s | ETA: 00:01:28 |  31%server.log.txt            | 1504 kB |  36.7 kB/s | ETA: 00:01:22 |  33%server.log.txt            | 1568 kB |  37.3 kB/s | ETA: 00:01:19 |  34%server.log.txt            | 1632 kB |  38.0 kB/s | ETA: 00:01:16 |  35%server.log.txt            | 1824 kB |  41.5 kB/s | ETA: 00:01:05 |  40%server.log.txt            | 2176 kB |  48.4 kB/s | ETA: 00:00:48 |  47%server.log.txt            | 2464 kB |  53.6 kB/s | ETA: 00:00:38 |  54%server.log.txt            | 2624 kB |  55.8 kB/s | ETA: 00:00:34 |  57%server.log.txt            | 2752 kB |  57.3 kB/s | ETA: 00:00:31 |  60%server.log.txt            | 2848 kB |  58.1 kB/s | ETA: 00:00:29 |  62%server.log.txt            | 2912 kB |  58.2 kB/s | ETA: 00:00:27 |  64%server.log.txt            | 2976 kB |  58.4 kB/s | ETA: 00:00:26 |  65%server.log.txt            | 3168 kB |  60.9 kB/s | ETA: 00:00:22 |  69%server.log.txt            | 3200 kB |  60.4 kB/s | ETA: 00:00:22 |  70%server.log.txt            | 3328 kB |  61.6 kB/s | ETA: 00:00:19 |  73%server.log.txt            | 3360 kB |  61.1 kB/s | ETA: 00:00:19 |  74%server.log.txt            | 3488 kB |  62.3 kB/s | ETA: 00:00:16 |  76%server.log.txt            | 3616 kB |  63.4 kB/s | ETA: 00:00:14 |  79%server.log.txt            | 3680 kB |  63.4 kB/s | ETA: 00:00:13 |  81%server.log.txt            | 3712 kB |  62.9 kB/s | ETA: 00:00:13 |  81%server.log.txt            | 3744 kB |  61.4 kB/s | ETA: 00:00:12 |  82%server.log.txt            | 3840 kB |  61.9 kB/s | ETA: 00:00:11 |  84%server.log.txt            | 3904 kB |  62.0 kB/s | ETA: 00:00:10 |  86%server.log.txt            | 3936 kB |  61.5 kB/s | ETA: 00:00:09 |  86%server.log.txt            | 3968 kB |  60.1 kB/s | ETA: 00:00:09 |  87%server.log.txt            | 4000 kB |  59.7 kB/s | ETA: 00:00:08 |  88%server.log.txt            | 4032 kB |  53.1 kB/s | ETA: 00:00:09 |  88%server.log.txt            | 4192 kB |  54.4 kB/s | ETA: 00:00:06 |  92%server.log.txt            | 4224 kB |  54.2 kB/s | ETA: 00:00:05 |  93%server.log.txt            | 4256 kB |  51.9 kB/s | ETA: 00:00:05 |  93%server.log.txt            | 4320 kB |  52.0 kB/s | ETA: 00:00:04 |  95%server.log.txt            | 4352 kB |  50.0 kB/s | ETA: 00:00:03 |  95%server.log.txt            | 4384 kB |  49.8 kB/s | ETA: 00:00:03 |  96%Mon 03/24/2025 20:53:58.47: Starting GrabLogs.bat 
+Mon 03/24/2025 20:53:58.48: Resolving pi4.lan IP 
+Mon 03/24/2025 20:53:58.56: pi4.lan resolved to 192.168.86.69 
+
+Pinging 192.168.86.69 with 32 bytes of data:
+Reply from 192.168.86.69: bytes=32 time=18ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=75ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=14ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=33ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=51ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=15ms TTL=64
+
+Ping statistics for 192.168.86.69:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 14ms, Maximum = 75ms, Average = 34ms
+Mon 03/24/2025 20:54:04.54: Resolving debian.lan IP 
+Mon 03/24/2025 20:54:04.61: debian.lan resolved to 192.168.86.49 
+
+Pinging 192.168.86.49 with 32 bytes of data:
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=19ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=4ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=4ms TTL=64
+
+Ping statistics for 192.168.86.49:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 19ms, Average = 5ms
+Mon 03/24/2025 20:54:10.49: Fetching server.log 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:02:31 |   0%server.log.txt            | 96 kB |  48.0 kB/s | ETA: 00:01:39 |   1%server.log.txt            | 128 kB |  42.7 kB/s | ETA: 00:01:51 |   2%server.log.txt            | 352 kB |  88.0 kB/s | ETA: 00:00:51 |   7%server.log.txt            | 544 kB | 108.8 kB/s | ETA: 00:00:39 |  11%server.log.txt            | 672 kB | 112.0 kB/s | ETA: 00:00:37 |  13%server.log.txt            | 704 kB | 100.6 kB/s | ETA: 00:00:41 |  14%server.log.txt            | 864 kB |  96.0 kB/s | ETA: 00:00:41 |  17%server.log.txt            | 992 kB |  99.2 kB/s | ETA: 00:00:39 |  20%server.log.txt            | 1088 kB |  98.9 kB/s | ETA: 00:00:38 |  22%server.log.txt            | 1216 kB | 101.3 kB/s | ETA: 00:00:36 |  24%server.log.txt            | 1280 kB |  98.5 kB/s | ETA: 00:00:36 |  26%server.log.txt            | 1376 kB |  91.7 kB/s | ETA: 00:00:38 |  28%server.log.txt            | 1440 kB |  90.0 kB/s | ETA: 00:00:38 |  29%server.log.txt            | 1696 kB |  99.8 kB/s | ETA: 00:00:31 |  34%server.log.txt            | 1952 kB | 108.4 kB/s | ETA: 00:00:26 |  40%server.log.txt            | 2112 kB | 105.6 kB/s | ETA: 00:00:26 |  43%server.log.txt            | 2144 kB |  93.2 kB/s | ETA: 00:00:29 |  44%server.log.txt            | 2240 kB |  93.3 kB/s | ETA: 00:00:28 |  46%server.log.txt            | 2304 kB |  92.2 kB/s | ETA: 00:00:27 |  47%server.log.txt            | 2336 kB |  80.6 kB/s | ETA: 00:00:31 |  48%server.log.txt            | 2432 kB |  81.1 kB/s | ETA: 00:00:30 |  49%server.log.txt            | 2496 kB |  80.5 kB/s | ETA: 00:00:29 |  51%server.log.txt            | 2592 kB |  81.0 kB/s | ETA: 00:00:28 |  53%server.log.txt            | 2624 kB |  79.5 kB/s | ETA: 00:00:28 |  53%server.log.txt            | 2752 kB |  80.9 kB/s | ETA: 00:00:26 |  56%server.log.txt            | 2976 kB |  85.0 kB/s | ETA: 00:00:22 |  61%server.log.txt            | 3136 kB |  87.1 kB/s | ETA: 00:00:19 |  64%server.log.txt            | 3168 kB |  85.6 kB/s | ETA: 00:00:19 |  65%server.log.txt            | 3200 kB |  84.2 kB/s | ETA: 00:00:19 |  65%server.log.txt            | 3232 kB |  80.8 kB/s | ETA: 00:00:20 |  66%server.log.txt            | 3264 kB |  79.6 kB/s | ETA: 00:00:20 |  67%server.log.txt            | 3328 kB |  79.2 kB/s | ETA: 00:00:19 |  68%server.log.txt            | 3360 kB |  78.1 kB/s | ETA: 00:00:19 |  69%server.log.txt            | 3456 kB |  78.5 kB/s | ETA: 00:00:17 |  71%server.log.txt            | 3584 kB |  79.6 kB/s | ETA: 00:00:16 |  73%server.log.txt            | 3648 kB |  79.3 kB/s | ETA: 00:00:15 |  74%server.log.txt            | 3712 kB |  79.0 kB/s | ETA: 00:00:14 |  76%server.log.txt            | 3744 kB |  78.0 kB/s | ETA: 00:00:14 |  76%server.log.txt            | 3776 kB |  77.1 kB/s | ETA: 00:00:14 |  77%server.log.txt            | 3936 kB |  78.7 kB/s | ETA: 00:00:11 |  80%server.log.txt            | 4032 kB |  77.5 kB/s | ETA: 00:00:10 |  82%server.log.txt            | 4064 kB |  76.7 kB/s | ETA: 00:00:10 |  83%server.log.txt            | 4096 kB |  75.9 kB/s | ETA: 00:00:10 |  84%server.log.txt            | 4128 kB |  75.1 kB/s | ETA: 00:00:09 |  84%server.log.txt            | 4224 kB |  75.4 kB/s | ETA: 00:00:08 |  86%server.log.txt            | 4320 kB |  75.8 kB/s | ETA: 00:00:07 |  88%server.log.txt            | 4384 kB |  75.6 kB/s | ETA: 00:00:06 |  90%server.log.txt            | 4512 kB |  76.5 kB/s | ETA: 00:00:04 |  92%server.log.txt            | 4544 kB |  75.7 kB/s | ETA: 00:00:04 |  93%server.log.txt            | 4672 kB |  76.6 kB/s | ETA: 00:00:02 |  96%server.log.txt            | 4800 kB |  76.2 kB/s | ETA: 00:00:00 |  98%server.log.txt            | 4832 kB |  75.5 kB/s | ETA: 00:00:00 |  99%server.log.txt            | 4864 kB |  73.7 kB/s | ETA: 00:00:00 |  99%^CMon 03/24/2025 20:55:20.84: Starting GrabLogs.bat 
+Mon 03/24/2025 20:55:20.85: Resolving pi4.lan IP 
+Mon 03/24/2025 20:55:22.10: pi4.lan resolved to 192.168.86.69 
+
+Pinging 192.168.86.69 with 32 bytes of data:
+Reply from 192.168.86.69: bytes=32 time=73ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=87ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=15ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=18ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=107ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=105ms TTL=64
+
+Ping statistics for 192.168.86.69:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 15ms, Maximum = 107ms, Average = 67ms
+Mon 03/24/2025 20:55:28.64: Resolving debian.lan IP 
+Mon 03/24/2025 20:55:28.73: debian.lan resolved to 192.168.86.49 
+
+Pinging 192.168.86.49 with 32 bytes of data:
+Reply from 192.168.86.49: bytes=32 time<1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=4ms TTL=64
+
+Ping statistics for 192.168.86.49:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 4ms, Average = 1ms
+Mon 03/24/2025 20:55:34.59: Fetching server.log 
+server.log.txt            | 32 kB |  16.0 kB/s | ETA: 00:05:19 |   0%server.log.txt            | 128 kB |  42.7 kB/s | ETA: 00:01:57 |   2%server.log.txt            | 192 kB |  32.0 kB/s | ETA: 00:02:34 |   3%server.log.txt            | 224 kB |  32.0 kB/s | ETA: 00:02:33 |   4%server.log.txt            | 384 kB |  48.0 kB/s | ETA: 00:01:39 |   7%server.log.txt            | 416 kB |  46.2 kB/s | ETA: 00:01:42 |   8%server.log.txt            | 448 kB |  44.8 kB/s | ETA: 00:01:44 |   8%server.log.txt            | 544 kB |  45.3 kB/s | ETA: 00:01:41 |  10%server.log.txt            | 640 kB |  49.2 kB/s | ETA: 00:01:31 |  12%server.log.txt            | 736 kB |  52.6 kB/s | ETA: 00:01:23 |  14%server.log.txt            | 800 kB |  53.3 kB/s | ETA: 00:01:21 |  15%server.log.txt            | 960 kB |  60.0 kB/s | ETA: 00:01:09 |  18%server.log.txt            | 992 kB |  58.4 kB/s | ETA: 00:01:11 |  19%server.log.txt            | 1056 kB |  55.6 kB/s | ETA: 00:01:13 |  20%server.log.txt            | 1120 kB |  56.0 kB/s | ETA: 00:01:11 |  21%server.log.txt            | 1216 kB |  57.9 kB/s | ETA: 00:01:07 |  23%server.log.txt            | 1280 kB |  58.2 kB/s | ETA: 00:01:06 |  24%server.log.txt            | 1376 kB |  59.8 kB/s | ETA: 00:01:02 |  26%server.log.txt            | 1408 kB |  56.3 kB/s | ETA: 00:01:06 |  27%server.log.txt            | 1504 kB |  57.8 kB/s | ETA: 00:01:02 |  29%server.log.txt            | 1632 kB |  60.4 kB/s | ETA: 00:00:58 |  31%server.log.txt            | 1664 kB |  59.4 kB/s | ETA: 00:00:58 |  32%server.log.txt            | 1696 kB |  58.5 kB/s | ETA: 00:00:58 |  32%server.log.txt            | 1728 kB |  57.6 kB/s | ETA: 00:00:59 |  33%server.log.txt            | 1792 kB |  56.0 kB/s | ETA: 00:00:59 |  34%server.log.txt            | 1856 kB |  56.2 kB/s | ETA: 00:00:58 |  36%server.log.txt            | 1920 kB |  56.5 kB/s | ETA: 00:00:57 |  37%server.log.txt            | 1984 kB |  55.1 kB/s | ETA: 00:00:57 |  38%server.log.txt            | 2272 kB |  61.4 kB/s | ETA: 00:00:46 |  44%server.log.txt            | 2560 kB |  67.4 kB/s | ETA: 00:00:38 |  49%server.log.txt            | 2720 kB |  69.7 kB/s | ETA: 00:00:34 |  52%server.log.txt            | 3008 kB |  75.2 kB/s | ETA: 00:00:28 |  58%server.log.txt            | 3264 kB |  79.6 kB/s | ETA: 00:00:23 |  63%server.log.txt            | 3488 kB |  83.0 kB/s | ETA: 00:00:19 |  67%server.log.txt            | 3904 kB |  90.8 kB/s | ETA: 00:00:13 |  75%server.log.txt            | 4256 kB |  96.7 kB/s | ETA: 00:00:09 |  82%server.log.txt            | 4320 kB |  93.9 kB/s | ETA: 00:00:08 |  84%server.log.txt            | 4448 kB |  92.7 kB/s | ETA: 00:00:07 |  86%server.log.txt            | 4480 kB |  91.4 kB/s | ETA: 00:00:07 |  87%server.log.txt            | 4576 kB |  91.5 kB/s | ETA: 00:00:06 |  89%server.log.txt            | 4640 kB |  91.0 kB/s | ETA: 00:00:05 |  90%server.log.txt            | 4704 kB |  90.5 kB/s | ETA: 00:00:04 |  91%server.log.txt            | 4768 kB |  90.0 kB/s | ETA: 00:00:04 |  92%server.log.txt            | 4928 kB |  91.3 kB/s | ETA: 00:00:02 |  95%server.log.txt            | 4992 kB |  90.8 kB/s | ETA: 00:00:01 |  97%server.log.txt            | 5024 kB |  89.7 kB/s | ETA: 00:00:01 |  97%server.log.txt            | 5056 kB |  88.7 kB/s | ETA: 00:00:00 |  98%server.log.txt            | 5120 kB |  86.8 kB/s | ETA: 00:00:00 |  99%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 20:56:35.73: WARN: Failed to fetch server.log, retrying (1/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:02:46 |   0%server.log.txt            | 64 kB |  64.0 kB/s | ETA: 00:01:22 |   1%server.log.txt            | 192 kB |  64.0 kB/s | ETA: 00:01:20 |   3%server.log.txt            | 224 kB |  44.8 kB/s | ETA: 00:01:54 |   4%server.log.txt            | 256 kB |  42.7 kB/s | ETA: 00:01:59 |   4%server.log.txt            | 352 kB |  44.0 kB/s | ETA: 00:01:53 |   6%server.log.txt            | 480 kB |  53.3 kB/s | ETA: 00:01:31 |   8%server.log.txt            | 544 kB |  54.4 kB/s | ETA: 00:01:28 |  10%server.log.txt            | 608 kB |  55.3 kB/s | ETA: 00:01:25 |  11%server.log.txt            | 672 kB |  51.7 kB/s | ETA: 00:01:30 |  12%server.log.txt            | 768 kB |  54.9 kB/s | ETA: 00:01:23 |  14%server.log.txt            | 832 kB |  55.5 kB/s | ETA: 00:01:21 |  15%server.log.txt            | 864 kB |  54.0 kB/s | ETA: 00:01:22 |  16%server.log.txt            | 928 kB |  54.6 kB/s | ETA: 00:01:20 |  17%server.log.txt            | 1024 kB |  56.9 kB/s | ETA: 00:01:15 |  19%server.log.txt            | 1088 kB |  57.3 kB/s | ETA: 00:01:14 |  20%server.log.txt            | 1248 kB |  62.4 kB/s | ETA: 00:01:05 |  23%server.log.txt            | 1344 kB |  64.0 kB/s | ETA: 00:01:02 |  25%server.log.txt            | 1568 kB |  71.3 kB/s | ETA: 00:00:53 |  29%server.log.txt            | 1728 kB |  75.1 kB/s | ETA: 00:00:48 |  32%server.log.txt            | 1952 kB |  81.3 kB/s | ETA: 00:00:41 |  36%server.log.txt            | 2112 kB |  84.5 kB/s | ETA: 00:00:38 |  39%server.log.txt            | 2304 kB |  88.6 kB/s | ETA: 00:00:34 |  43%server.log.txt            | 2336 kB |  86.5 kB/s | ETA: 00:00:34 |  43%server.log.txt            | 2368 kB |  81.7 kB/s | ETA: 00:00:36 |  44%server.log.txt            | 2400 kB |  80.0 kB/s | ETA: 00:00:36 |  44%server.log.txt            | 2496 kB |  80.5 kB/s | ETA: 00:00:35 |  46%server.log.txt            | 2592 kB |  63.2 kB/s | ETA: 00:00:43 |  48%server.log.txt            | 2624 kB |  58.3 kB/s | ETA: 00:00:46 |  49%server.log.txt            | 3040 kB |  66.1 kB/s | ETA: 00:00:34 |  56%server.log.txt            | 3104 kB |  66.0 kB/s | ETA: 00:00:33 |  58%server.log.txt            | 3136 kB |  65.3 kB/s | ETA: 00:00:33 |  58%server.log.txt            | 3168 kB |  64.7 kB/s | ETA: 00:00:33 |  59%server.log.txt            | 3232 kB |  64.6 kB/s | ETA: 00:00:32 |  60%server.log.txt            | 3264 kB |  61.6 kB/s | ETA: 00:00:33 |  61%server.log.txt            | 3360 kB |  62.2 kB/s | ETA: 00:00:31 |  62%server.log.txt            | 3392 kB |  61.7 kB/s | ETA: 00:00:31 |  63%server.log.txt            | 3424 kB |  57.1 kB/s | ETA: 00:00:33 |  64%Mon 03/24/2025 20:57:43.70: Starting GrabLogs.bat 
+Mon 03/24/2025 20:57:43.71: Resolving pi4.lan IP 
+Mon 03/24/2025 20:57:44.04: pi4.lan resolved to 192.168.86.69 
+
+Pinging 192.168.86.69 with 32 bytes of data:
+Reply from 192.168.86.69: bytes=32 time=159ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=226ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=19ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=23ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=149ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=120ms TTL=64
+
+Ping statistics for 192.168.86.69:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 19ms, Maximum = 226ms, Average = 116ms
+Mon 03/24/2025 20:57:49.96: Resolving debian.lan IP 
+Mon 03/24/2025 20:57:50.01: debian.lan resolved to 192.168.86.49 
+
+Pinging 192.168.86.49 with 32 bytes of data:
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=4ms TTL=64
+
+Ping statistics for 192.168.86.49:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 4ms, Average = 1ms
+Mon 03/24/2025 20:57:55.93: Fetching server.log 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:02:53 |   0%server.log.txt            | 64 kB |   9.1 kB/s | ETA: 00:10:05 |   1%server.log.txt            | 160 kB |  20.0 kB/s | ETA: 00:04:31 |   2%server.log.txt            | 224 kB |  24.9 kB/s | ETA: 00:03:35 |   4%server.log.txt            | 320 kB |  32.0 kB/s | ETA: 00:02:44 |   5%server.log.txt            | 448 kB |  40.7 kB/s | ETA: 00:02:06 |   8%server.log.txt            | 544 kB |  41.8 kB/s | ETA: 00:02:00 |   9%server.log.txt            | 576 kB |  41.1 kB/s | ETA: 00:02:02 |  10%server.log.txt            | 608 kB |  35.8 kB/s | ETA: 00:02:19 |  10%server.log.txt            | 640 kB |  32.0 kB/s | ETA: 00:02:34 |  11%server.log.txt            | 672 kB |  32.0 kB/s | ETA: 00:02:33 |  12%server.log.txt            | 704 kB |  25.1 kB/s | ETA: 00:03:14 |  12%server.log.txt            | 736 kB |  25.4 kB/s | ETA: 00:03:11 |  13%server.log.txt            | 800 kB |  25.8 kB/s | ETA: 00:03:05 |  14%server.log.txt            | 896 kB |  28.0 kB/s | ETA: 00:02:47 |  16%server.log.txt            | 928 kB |  27.3 kB/s | ETA: 00:02:51 |  16%server.log.txt            | 960 kB |  24.6 kB/s | ETA: 00:03:08 |  17%server.log.txt            | 992 kB |  22.0 kB/s | ETA: 00:03:29 |  17%server.log.txt            | 1152 kB |  25.0 kB/s | ETA: 00:02:57 |  20%server.log.txt            | 1184 kB |  25.2 kB/s | ETA: 00:02:55 |  21%server.log.txt            | 1216 kB |  24.3 kB/s | ETA: 00:03:00 |  21%server.log.txt            | 1248 kB |  22.3 kB/s | ETA: 00:03:15 |  22%server.log.txt            | 1280 kB |  22.5 kB/s | ETA: 00:03:12 |  22%server.log.txt            | 1344 kB |  22.8 kB/s | ETA: 00:03:06 |  24%server.log.txt            | 1376 kB |  22.9 kB/s | ETA: 00:03:04 |  24%server.log.txt            | 1408 kB |  23.1 kB/s | ETA: 00:03:01 |  25%server.log.txt            | 1472 kB |  23.7 kB/s | ETA: 00:02:53 |  26%server.log.txt            | 1536 kB |  24.4 kB/s | ETA: 00:02:46 |  27%server.log.txt            | 1632 kB |  25.5 kB/s | ETA: 00:02:35 |  29%server.log.txt            | 1664 kB |  25.6 kB/s | ETA: 00:02:33 |  29%server.log.txt            | 1760 kB |  26.7 kB/s | ETA: 00:02:23 |  31%server.log.txt            | 1984 kB |  29.6 kB/s | ETA: 00:02:02 |  35%server.log.txt            | 2080 kB |  30.6 kB/s | ETA: 00:01:55 |  37%server.log.txt            | 2176 kB |  31.5 kB/s | ETA: 00:01:48 |  38%server.log.txt            | 2208 kB |  30.7 kB/s | ETA: 00:01:50 |  39%server.log.txt            | 2304 kB |  31.6 kB/s | ETA: 00:01:44 |  41%server.log.txt            | 2368 kB |  31.2 kB/s | ETA: 00:01:43 |  42%server.log.txt            | 2432 kB |  31.6 kB/s | ETA: 00:01:40 |  43%server.log.txt            | 2464 kB |  30.8 kB/s | ETA: 00:01:41 |  44%server.log.txt            | 2496 kB |  30.4 kB/s | ETA: 00:01:41 |  44%server.log.txt            | 2560 kB |  30.8 kB/s | ETA: 00:01:38 |  45%Mon 03/24/2025 20:59:21.81: Starting GrabLogs.bat 
+Mon 03/24/2025 20:59:21.83: Resolving pi4.lan IP 
+Mon 03/24/2025 20:59:21.89: WARN: Failed to resolve pi4.lan IP, using hostname 
+Mon 03/24/2025 20:59:21.91: Resolving debian.lan IP 
+Mon 03/24/2025 20:59:21.95: debian.lan resolved to 192.168.86.49 
+
+Pinging 192.168.86.49 with 32 bytes of data:
+Reply from 192.168.86.49: bytes=32 time=4ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=3ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=3ms TTL=64
+
+Ping statistics for 192.168.86.49:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 4ms, Average = 2ms
+Mon 03/24/2025 20:59:27.88: Fetching server.log 
+ssh_init: Host does not exist
+Mon 03/24/2025 20:59:27.93: WARN: Failed to fetch server.log, retrying (1/6) in 2s 
+ssh_init: Host does not exist
+Mon 03/24/2025 20:59:29.19: WARN: Failed to fetch server.log, retrying (2/6) in 2s 
+ssh_init: Host does not exist
+Mon 03/24/2025 20:59:31.22: WARN: Failed to fetch server.log, retrying (3/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:03:03 |   0%server.log.txt            | 64 kB |  32.0 kB/s | ETA: 00:03:02 |   1%server.log.txt            | 96 kB |  24.0 kB/s | ETA: 00:04:02 |   1%server.log.txt            | 224 kB |  44.8 kB/s | ETA: 00:02:07 |   3%server.log.txt            | 288 kB |  48.0 kB/s | ETA: 00:01:57 |   4%server.log.txt            | 320 kB |  45.7 kB/s | ETA: 00:02:02 |   5%server.log.txt            | 352 kB |  44.0 kB/s | ETA: 00:02:06 |   5%server.log.txt            | 416 kB |  46.2 kB/s | ETA: 00:01:59 |   7%server.log.txt            | 480 kB |  48.0 kB/s | ETA: 00:01:53 |   8%server.log.txt            | 512 kB |  46.5 kB/s | ETA: 00:01:56 |   8%server.log.txt            | 704 kB |  58.7 kB/s | ETA: 00:01:28 |  11%server.log.txt            | 736 kB |  52.6 kB/s | ETA: 00:01:38 |  12%server.log.txt            | 768 kB |  38.4 kB/s | ETA: 00:02:14 |  12%server.log.txt            | 928 kB |  44.2 kB/s | ETA: 00:01:52 |  15%server.log.txt            | 992 kB |  45.1 kB/s | ETA: 00:01:49 |  16%server.log.txt            | 1024 kB |  44.5 kB/s | ETA: 00:01:49 |  17%server.log.txt            | 1120 kB |  46.7 kB/s | ETA: 00:01:42 |  18%server.log.txt            | 1152 kB |  42.7 kB/s | ETA: 00:01:51 |  19%server.log.txt            | 1280 kB |  45.7 kB/s | ETA: 00:01:41 |  21%server.log.txt            | 1344 kB |  46.3 kB/s | ETA: 00:01:38 |  22%server.log.txt            | 1376 kB |  44.4 kB/s | ETA: 00:01:42 |  23%server.log.txt            | 1408 kB |  44.0 kB/s | ETA: 00:01:42 |  23%server.log.txt            | 1472 kB |  42.1 kB/s | ETA: 00:01:45 |  24%server.log.txt            | 1664 kB |  46.2 kB/s | ETA: 00:01:32 |  28%server.log.txt            | 1728 kB |  46.7 kB/s | ETA: 00:01:29 |  29%server.log.txt            | 1760 kB |  46.3 kB/s | ETA: 00:01:29 |  29%server.log.txt            | 1792 kB |  44.8 kB/s | ETA: 00:01:32 |  30%server.log.txt            | 1920 kB |  44.7 kB/s | ETA: 00:01:29 |  32%server.log.txt            | 1984 kB |  45.1 kB/s | ETA: 00:01:27 |  33%server.log.txt            | 2016 kB |  44.8 kB/s | ETA: 00:01:27 |  34%server.log.txt            | 2048 kB |  43.6 kB/s | ETA: 00:01:28 |  34%server.log.txt            | 2112 kB |  42.2 kB/s | ETA: 00:01:30 |  35%server.log.txt            | 2208 kB |  41.7 kB/s | ETA: 00:01:29 |  37%server.log.txt            | 2368 kB |  43.9 kB/s | ETA: 00:01:20 |  40%server.log.txt            | 2528 kB |  46.0 kB/s | ETA: 00:01:13 |  42%server.log.txt            | 2624 kB |  46.9 kB/s | ETA: 00:01:10 |  44%server.log.txt            | 2688 kB |  46.3 kB/s | ETA: 00:01:09 |  45%server.log.txt            | 2720 kB |  44.6 kB/s | ETA: 00:01:11 |  45%server.log.txt            | 2816 kB |  43.3 kB/s | ETA: 00:01:11 |  47%server.log.txt            | 2880 kB |  40.0 kB/s | ETA: 00:01:15 |  48%server.log.txt            | 2944 kB |  40.3 kB/s | ETA: 00:01:13 |  49%server.log.txt            | 2976 kB |  39.7 kB/s | ETA: 00:01:14 |  50%server.log.txt            | 3040 kB |  40.0 kB/s | ETA: 00:01:11 |  51%server.log.txt            | 3104 kB |  40.3 kB/s | ETA: 00:01:09 |  52%server.log.txt            | 3136 kB |  40.2 kB/s | ETA: 00:01:09 |  52%server.log.txt            | 3168 kB |  39.6 kB/s | ETA: 00:01:09 |  53%server.log.txt            | 3424 kB |  41.3 kB/s | ETA: 00:01:00 |  57%server.log.txt            | 3552 kB |  42.3 kB/s | ETA: 00:00:55 |  60%server.log.txt            | 3744 kB |  44.0 kB/s | ETA: 00:00:49 |  63%server.log.txt            | 3904 kB |  45.4 kB/s | ETA: 00:00:44 |  65%server.log.txt            | 3936 kB |  43.3 kB/s | ETA: 00:00:45 |  66%server.log.txt            | 4000 kB |  43.5 kB/s | ETA: 00:00:44 |  67%server.log.txt            | 4064 kB |  43.7 kB/s | ETA: 00:00:42 |  68%server.log.txt            | 4160 kB |  44.3 kB/s | ETA: 00:00:39 |  70%server.log.txt            | 4256 kB |  44.8 kB/s | ETA: 00:00:37 |  71%server.log.txt            | 4288 kB |  44.7 kB/s | ETA: 00:00:36 |  72%server.log.txt            | 4320 kB |  44.5 kB/s | ETA: 00:00:35 |  72%server.log.txt            | 4352 kB |  44.4 kB/s | ETA: 00:00:35 |  73%server.log.txt            | 4448 kB |  44.9 kB/s | ETA: 00:00:32 |  75%server.log.txt            | 4480 kB |  44.8 kB/s | ETA: 00:00:32 |  75%server.log.txt            | 4512 kB |  44.7 kB/s | ETA: 00:00:31 |  76%server.log.txt            | 4544 kB |  44.1 kB/s | ETA: 00:00:31 |  76%server.log.txt            | 4576 kB |  44.0 kB/s | ETA: 00:00:30 |  77%server.log.txt            | 4608 kB |  43.5 kB/s | ETA: 00:00:30 |  77%server.log.txt            | 4640 kB |  43.4 kB/s | ETA: 00:00:29 |  78%server.log.txt            | 4672 kB |  43.3 kB/s | ETA: 00:00:28 |  78%Mon 03/24/2025 21:01:37.66: Starting GrabLogs.bat 
+Mon 03/24/2025 21:01:37.68: Resolving pi4.lan IP 
+Mon 03/24/2025 21:01:38.05: pi4.lan resolved to 192.168.86.69 
+
+Pinging 192.168.86.69 with 32 bytes of data:
+Reply from 192.168.86.69: bytes=32 time=60ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=208ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=1571ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=14ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=164ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=105ms TTL=64
+
+Ping statistics for 192.168.86.69:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 14ms, Maximum = 1571ms, Average = 353ms
+Mon 03/24/2025 21:01:46.08: Resolving debian.lan IP 
+Mon 03/24/2025 21:01:46.12: WARN: Failed to resolve debian.lan IP, using hostname 
+Mon 03/24/2025 21:01:46.15: Fetching server.log 
+server.log.txt            | 32 kB |  10.7 kB/s | ETA: 00:09:52 |   0%server.log.txt            | 96 kB |  24.0 kB/s | ETA: 00:04:20 |   1%server.log.txt            | 160 kB |  32.0 kB/s | ETA: 00:03:13 |   2%server.log.txt            | 192 kB |  32.0 kB/s | ETA: 00:03:12 |   3%server.log.txt            | 288 kB |  41.1 kB/s | ETA: 00:02:27 |   4%server.log.txt            | 352 kB |  44.0 kB/s | ETA: 00:02:16 |   5%server.log.txt            | 448 kB |  49.8 kB/s | ETA: 00:01:58 |   7%server.log.txt            | 768 kB |  76.8 kB/s | ETA: 00:01:12 |  12%server.log.txt            | 960 kB |  87.3 kB/s | ETA: 00:01:01 |  15%server.log.txt            | 1120 kB |  93.3 kB/s | ETA: 00:00:56 |  17%server.log.txt            | 1216 kB |  86.9 kB/s | ETA: 00:00:59 |  19%server.log.txt            | 1280 kB |  75.3 kB/s | ETA: 00:01:07 |  20%server.log.txt            | 1312 kB |  52.5 kB/s | ETA: 00:01:36 |  20%server.log.txt            | 1600 kB |  55.2 kB/s | ETA: 00:01:26 |  25%server.log.txt            | 1664 kB |  53.7 kB/s | ETA: 00:01:27 |  26%server.log.txt            | 1792 kB |  56.0 kB/s | ETA: 00:01:21 |  28%server.log.txt            | 1888 kB |  57.2 kB/s | ETA: 00:01:18 |  29%server.log.txt            | 1984 kB |  58.4 kB/s | ETA: 00:01:14 |  31%server.log.txt            | 2240 kB |  64.0 kB/s | ETA: 00:01:04 |  35%server.log.txt            | 2400 kB |  66.7 kB/s | ETA: 00:00:59 |  37%server.log.txt            | 2432 kB |  57.9 kB/s | ETA: 00:01:07 |  38%server.log.txt            | 2464 kB |  57.3 kB/s | ETA: 00:01:07 |  38%server.log.txt            | 2496 kB |  53.1 kB/s | ETA: 00:01:12 |  39%server.log.txt            | 2528 kB |  52.7 kB/s | ETA: 00:01:12 |  39%server.log.txt            | 2624 kB |  53.6 kB/s | ETA: 00:01:09 |  41%server.log.txt            | 2656 kB |  53.1 kB/s | ETA: 00:01:09 |  41%server.log.txt            | 2720 kB |  52.3 kB/s | ETA: 00:01:09 |  42%server.log.txt            | 2848 kB |  53.7 kB/s | ETA: 00:01:05 |  44%server.log.txt            | 2912 kB |  53.9 kB/s | ETA: 00:01:03 |  45%server.log.txt            | 2944 kB |  52.6 kB/s | ETA: 00:01:04 |  46%server.log.txt            | 3040 kB |  53.3 kB/s | ETA: 00:01:02 |  47%server.log.txt            | 3168 kB |  54.6 kB/s | ETA: 00:00:58 |  49%server.log.txt            | 3296 kB |  55.9 kB/s | ETA: 00:00:54 |  51%server.log.txt            | 3392 kB |  56.5 kB/s | ETA: 00:00:52 |  53%server.log.txt            | 3488 kB |  57.2 kB/s | ETA: 00:00:50 |  54%server.log.txt            | 3520 kB |  56.8 kB/s | ETA: 00:00:49 |  55%server.log.txt            | 3584 kB |  56.0 kB/s | ETA: 00:00:49 |  56%server.log.txt            | 3616 kB |  55.6 kB/s | ETA: 00:00:49 |  56%server.log.txt            | 3744 kB |  56.7 kB/s | ETA: 00:00:45 |  58%server.log.txt            | 3808 kB |  56.8 kB/s | ETA: 00:00:44 |  59%server.log.txt            | 3968 kB |  58.4 kB/s | ETA: 00:00:40 |  62%server.log.txt            | 4096 kB |  59.4 kB/s | ETA: 00:00:37 |  64%server.log.txt            | 4192 kB |  59.9 kB/s | ETA: 00:00:36 |  66%server.log.txt            | 4416 kB |  62.2 kB/s | ETA: 00:00:31 |  69%server.log.txt            | 4480 kB |  61.4 kB/s | ETA: 00:00:30 |  70%server.log.txt            | 4576 kB |  60.2 kB/s | ETA: 00:00:29 |  72%server.log.txt            | 4640 kB |  60.3 kB/s | ETA: 00:00:28 |  73%server.log.txt            | 4704 kB |  60.3 kB/s | ETA: 00:00:27 |  74%server.log.txt            | 4768 kB |  60.4 kB/s | ETA: 00:00:26 |  75%server.log.txt            | 4800 kB |  60.0 kB/s | ETA: 00:00:25 |  75%server.log.txt            | 4832 kB |  59.7 kB/s | ETA: 00:00:25 |  76%server.log.txt            | 4864 kB |  59.3 kB/s | ETA: 00:00:25 |  76%server.log.txt            | 4960 kB |  59.8 kB/s | ETA: 00:00:23 |  78%server.log.txt            | 5024 kB |  59.8 kB/s | ETA: 00:00:22 |  79%server.log.txt            | 5120 kB |  60.2 kB/s | ETA: 00:00:20 |  80%server.log.txt            | 5312 kB |  61.1 kB/s | ETA: 00:00:17 |  83%server.log.txt            | 5376 kB |  61.1 kB/s | ETA: 00:00:15 |  84%server.log.txt            | 5472 kB |  61.5 kB/s | ETA: 00:00:14 |  86%server.log.txt            | 5568 kB |  61.9 kB/s | ETA: 00:00:12 |  87%server.log.txt            | 5696 kB |  62.6 kB/s | ETA: 00:00:10 |  89%server.log.txt            | 5856 kB |  61.6 kB/s | ETA: 00:00:08 |  92%server.log.txt            | 5984 kB |  57.0 kB/s | ETA: 00:00:06 |  94%server.log.txt            | 6016 kB |  54.7 kB/s | ETA: 00:00:06 |  94%server.log.txt            | 6144 kB |  54.9 kB/s | ETA: 00:00:03 |  96%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:03:44.43: WARN: Failed to fetch server.log, retrying (1/6) in 2s 
+server.log.txt            | 32 kB |  16.0 kB/s | ETA: 00:06:59 |   0%server.log.txt            | 64 kB |  21.3 kB/s | ETA: 00:05:13 |   0%server.log.txt            | 96 kB |  12.0 kB/s | ETA: 00:09:14 |   1%server.log.txt            | 160 kB |  17.8 kB/s | ETA: 00:06:10 |   2%server.log.txt            | 224 kB |  22.4 kB/s | ETA: 00:04:51 |   3%server.log.txt            | 288 kB |  26.2 kB/s | ETA: 00:04:06 |   4%server.log.txt            | 416 kB |  34.7 kB/s | ETA: 00:03:02 |   6%server.log.txt            | 480 kB |  34.3 kB/s | ETA: 00:03:02 |   7%server.log.txt            | 544 kB |  36.3 kB/s | ETA: 00:02:51 |   8%server.log.txt            | 576 kB |  36.0 kB/s | ETA: 00:02:51 |   8%server.log.txt            | 704 kB |  41.4 kB/s | ETA: 00:02:25 |  10%server.log.txt            | 832 kB |  46.2 kB/s | ETA: 00:02:07 |  12%server.log.txt            | 896 kB |  47.2 kB/s | ETA: 00:02:04 |  13%server.log.txt            | 928 kB |  46.4 kB/s | ETA: 00:02:05 |  13%server.log.txt            | 1056 kB |  50.3 kB/s | ETA: 00:01:53 |  15%server.log.txt            | 1120 kB |  50.9 kB/s | ETA: 00:01:50 |  16%server.log.txt            | 1216 kB |  52.9 kB/s | ETA: 00:01:44 |  18%server.log.txt            | 1248 kB |  52.0 kB/s | ETA: 00:01:45 |  18%server.log.txt            | 1376 kB |  55.0 kB/s | ETA: 00:01:37 |  20%server.log.txt            | 1536 kB |  59.1 kB/s | ETA: 00:01:28 |  22%server.log.txt            | 1568 kB |  58.1 kB/s | ETA: 00:01:29 |  23%server.log.txt            | 1664 kB |  59.4 kB/s | ETA: 00:01:25 |  24%server.log.txt            | 1696 kB |  58.5 kB/s | ETA: 00:01:26 |  25%server.log.txt            | 1760 kB |  58.7 kB/s | ETA: 00:01:25 |  26%server.log.txt            | 1856 kB |  59.9 kB/s | ETA: 00:01:21 |  27%server.log.txt            | 1888 kB |  59.0 kB/s | ETA: 00:01:22 |  27%server.log.txt            | 2016 kB |  61.1 kB/s | ETA: 00:01:17 |  29%server.log.txt            | 2176 kB |  64.0 kB/s | ETA: 00:01:11 |  32%server.log.txt            | 2464 kB |  70.4 kB/s | ETA: 00:01:00 |  36%server.log.txt            | 2656 kB |  73.8 kB/s | ETA: 00:00:55 |  39%server.log.txt            | 2880 kB |  75.8 kB/s | ETA: 00:00:51 |  42%server.log.txt            | 2944 kB |  73.6 kB/s | ETA: 00:00:51 |  43%server.log.txt            | 3040 kB |  74.1 kB/s | ETA: 00:00:49 |  45%server.log.txt            | 3072 kB |  73.1 kB/s | ETA: 00:00:50 |  45%server.log.txt            | 3136 kB |  72.9 kB/s | ETA: 00:00:49 |  46%server.log.txt            | 3232 kB |  73.5 kB/s | ETA: 00:00:47 |  47%server.log.txt            | 3264 kB |  72.5 kB/s | ETA: 00:00:48 |  48%server.log.txt            | 3296 kB |  71.7 kB/s | ETA: 00:00:48 |  48%server.log.txt            | 3520 kB |  74.9 kB/s | ETA: 00:00:43 |  52%server.log.txt            | 3776 kB |  78.7 kB/s | ETA: 00:00:37 |  55%server.log.txt            | 3808 kB |  76.2 kB/s | ETA: 00:00:38 |  56%server.log.txt            | 3840 kB |  75.3 kB/s | ETA: 00:00:38 |  56%server.log.txt            | 3872 kB |  64.5 kB/s | ETA: 00:00:44 |  57%server.log.txt            | 4128 kB |  65.5 kB/s | ETA: 00:00:39 |  61%server.log.txt            | 4160 kB |  65.0 kB/s | ETA: 00:00:39 |  61%server.log.txt            | 4288 kB |  66.0 kB/s | ETA: 00:00:37 |  63%server.log.txt            | 4384 kB |  66.4 kB/s | ETA: 00:00:35 |  64%server.log.txt            | 4448 kB |  66.4 kB/s | ETA: 00:00:34 |  65%server.log.txt            | 4512 kB |  66.4 kB/s | ETA: 00:00:33 |  66%server.log.txt            | 4576 kB |  66.3 kB/s | ETA: 00:00:32 |  67%server.log.txt            | 4608 kB |  65.8 kB/s | ETA: 00:00:32 |  68%server.log.txt            | 4704 kB |  66.3 kB/s | ETA: 00:00:30 |  69%server.log.txt            | 4800 kB |  66.7 kB/s | ETA: 00:00:29 |  71%server.log.txt            | 4832 kB |  66.2 kB/s | ETA: 00:00:28 |  71%server.log.txt            | 4928 kB |  61.6 kB/s | ETA: 00:00:29 |  73%server.log.txt            | 5120 kB |  63.2 kB/s | ETA: 00:00:25 |  75%server.log.txt            | 5152 kB |  62.8 kB/s | ETA: 00:00:25 |  76%server.log.txt            | 5216 kB |  62.8 kB/s | ETA: 00:00:24 |  77%server.log.txt            | 5248 kB |  62.5 kB/s | ETA: 00:00:23 |  77%server.log.txt            | 5280 kB |  62.1 kB/s | ETA: 00:00:23 |  78%server.log.txt            | 5312 kB |  61.1 kB/s | ETA: 00:00:23 |  78%server.log.txt            | 5344 kB |  60.0 kB/s | ETA: 00:00:23 |  79%server.log.txt            | 5440 kB |  59.1 kB/s | ETA: 00:00:22 |  80%server.log.txt            | 5472 kB |  58.8 kB/s | ETA: 00:00:21 |  81%server.log.txt            | 5664 kB |  60.3 kB/s | ETA: 00:00:17 |  83%server.log.txt            | 5792 kB |  61.0 kB/s | ETA: 00:00:15 |  85%server.log.txt            | 5824 kB |  60.7 kB/s | ETA: 00:00:15 |  86%server.log.txt            | 5952 kB |  61.4 kB/s | ETA: 00:00:12 |  88%server.log.txt            | 5984 kB |  61.1 kB/s | ETA: 00:00:12 |  88%server.log.txt            | 6048 kB |  61.1 kB/s | ETA: 00:00:11 |  89%server.log.txt            | 6112 kB |  61.1 kB/s | ETA: 00:00:10 |  90%server.log.txt            | 6176 kB |  61.1 kB/s | ETA: 00:00:09 |  91%server.log.txt            | 6208 kB |  60.9 kB/s | ETA: 00:00:08 |  92%server.log.txt            | 6304 kB |  61.2 kB/s | ETA: 00:00:07 |  93%server.log.txt            | 6496 kB |  62.5 kB/s | ETA: 00:00:04 |  96%server.log.txt            | 6592 kB |  62.8 kB/s | ETA: 00:00:02 |  97%server.log.txt            | 6624 kB |  62.5 kB/s | ETA: 00:00:01 |  98%server.log.txt            | 6688 kB |  62.5 kB/s | ETA: 00:00:00 |  99%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:05:37.05: WARN: Failed to fetch server.log, retrying (2/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:03:41 |   0%server.log.txt            | 64 kB |  32.0 kB/s | ETA: 00:03:40 |   0%server.log.txt            | 96 kB |  32.0 kB/s | ETA: 00:03:39 |   1%server.log.txt            | 160 kB |  40.0 kB/s | ETA: 00:02:53 |   2%server.log.txt            | 224 kB |  32.0 kB/s | ETA: 00:03:35 |   3%server.log.txt            | 352 kB |  44.0 kB/s | ETA: 00:02:33 |   4%server.log.txt            | 384 kB |  42.7 kB/s | ETA: 00:02:37 |   5%server.log.txt            | 448 kB |  44.8 kB/s | ETA: 00:02:28 |   6%server.log.txt            | 512 kB |  46.5 kB/s | ETA: 00:02:21 |   7%server.log.txt            | 544 kB |  45.3 kB/s | ETA: 00:02:24 |   7%server.log.txt            | 576 kB |  41.1 kB/s | ETA: 00:02:38 |   8%server.log.txt            | 608 kB |  38.0 kB/s | ETA: 00:02:51 |   8%server.log.txt            | 640 kB |  25.6 kB/s | ETA: 00:04:12 |   9%server.log.txt            | 864 kB |  33.2 kB/s | ETA: 00:03:07 |  12%server.log.txt            | 896 kB |  32.0 kB/s | ETA: 00:03:14 |  12%server.log.txt            | 992 kB |  34.2 kB/s | ETA: 00:02:58 |  13%server.log.txt            | 1056 kB |  35.2 kB/s | ETA: 00:02:51 |  14%server.log.txt            | 1120 kB |  36.1 kB/s | ETA: 00:02:45 |  15%server.log.txt            | 1184 kB |  35.9 kB/s | ETA: 00:02:45 |  16%server.log.txt            | 1280 kB |  37.6 kB/s | ETA: 00:02:34 |  18%server.log.txt            | 1344 kB |  38.4 kB/s | ETA: 00:02:30 |  18%server.log.txt            | 1408 kB |  39.1 kB/s | ETA: 00:02:25 |  19%server.log.txt            | 1472 kB |  39.8 kB/s | ETA: 00:02:21 |  20%server.log.txt            | 1504 kB |  39.6 kB/s | ETA: 00:02:21 |  21%server.log.txt            | 1568 kB |  37.3 kB/s | ETA: 00:02:28 |  22%server.log.txt            | 1600 kB |  37.2 kB/s | ETA: 00:02:28 |  22%server.log.txt            | 1696 kB |  37.7 kB/s | ETA: 00:02:23 |  23%server.log.txt            | 1760 kB |  38.3 kB/s | ETA: 00:02:19 |  24%server.log.txt            | 1920 kB |  39.2 kB/s | ETA: 00:02:12 |  27%server.log.txt            | 1984 kB |  39.7 kB/s | ETA: 00:02:09 |  27%server.log.txt            | 2080 kB |  40.8 kB/s | ETA: 00:02:03 |  29%server.log.txt            | 2144 kB |  41.2 kB/s | ETA: 00:02:00 |  30%server.log.txt            | 2240 kB |  42.3 kB/s | ETA: 00:01:55 |  31%server.log.txt            | 2304 kB |  42.7 kB/s | ETA: 00:01:52 |  32%server.log.txt            | 2368 kB |  43.1 kB/s | ETA: 00:01:50 |  33%server.log.txt            | 2400 kB |  42.9 kB/s | ETA: 00:01:49 |  33%server.log.txt            | 2496 kB |  43.8 kB/s | ETA: 00:01:45 |  35%server.log.txt            | 2560 kB |  44.1 kB/s | ETA: 00:01:43 |  36%server.log.txt            | 2624 kB |  43.7 kB/s | ETA: 00:01:42 |  36%server.log.txt            | 2656 kB |  39.6 kB/s | ETA: 00:01:52 |  37%server.log.txt            | 2912 kB |  42.8 kB/s | ETA: 00:01:37 |  40%server.log.txt            | 2976 kB |  43.1 kB/s | ETA: 00:01:35 |  41%server.log.txt            | 3040 kB |  41.6 kB/s | ETA: 00:01:37 |  42%server.log.txt            | 3072 kB |  41.5 kB/s | ETA: 00:01:37 |  43%server.log.txt            | 3200 kB |  42.1 kB/s | ETA: 00:01:32 |  45%server.log.txt            | 3264 kB |  41.8 kB/s | ETA: 00:01:31 |  45%server.log.txt            | 3392 kB |  42.9 kB/s | ETA: 00:01:26 |  47%server.log.txt            | 3456 kB |  43.2 kB/s | ETA: 00:01:24 |  48%server.log.txt            | 3552 kB |  43.9 kB/s | ETA: 00:01:21 |  49%server.log.txt            | 3680 kB |  44.9 kB/s | ETA: 00:01:16 |  51%server.log.txt            | 3744 kB |  45.1 kB/s | ETA: 00:01:14 |  52%server.log.txt            | 3776 kB |  45.0 kB/s | ETA: 00:01:14 |  53%server.log.txt            | 3808 kB |  44.8 kB/s | ETA: 00:01:13 |  53%server.log.txt            | 3840 kB |  44.7 kB/s | ETA: 00:01:13 |  54%server.log.txt            | 3872 kB |  44.5 kB/s | ETA: 00:01:12 |  54%server.log.txt            | 3968 kB |  44.6 kB/s | ETA: 00:01:10 |  55%server.log.txt            | 4096 kB |  45.5 kB/s | ETA: 00:01:06 |  57%server.log.txt            | 4160 kB |  45.7 kB/s | ETA: 00:01:04 |  58%server.log.txt            | 4256 kB |  46.3 kB/s | ETA: 00:01:01 |  59%server.log.txt            | 4320 kB |  46.5 kB/s | ETA: 00:01:00 |  60%server.log.txt            | 4416 kB |  47.0 kB/s | ETA: 00:00:57 |  62%server.log.txt            | 4480 kB |  47.2 kB/s | ETA: 00:00:55 |  63%server.log.txt            | 4512 kB |  47.0 kB/s | ETA: 00:00:55 |  63%server.log.txt            | 4544 kB |  46.8 kB/s | ETA: 00:00:54 |  63%server.log.txt            | 4576 kB |  46.2 kB/s | ETA: 00:00:54 |  64%server.log.txt            | 4608 kB |  46.1 kB/s | ETA: 00:00:54 |  64%server.log.txt            | 4672 kB |  46.3 kB/s | ETA: 00:00:52 |  65%server.log.txt            | 4768 kB |  46.7 kB/s | ETA: 00:00:50 |  67%server.log.txt            | 4800 kB |  46.6 kB/s | ETA: 00:00:49 |  67%server.log.txt            | 4864 kB |  46.8 kB/s | ETA: 00:00:47 |  68%server.log.txt            | 4928 kB |  46.5 kB/s | ETA: 00:00:46 |  69%server.log.txt            | 5056 kB |  47.3 kB/s | ETA: 00:00:43 |  71%server.log.txt            | 5088 kB |  47.1 kB/s | ETA: 00:00:42 |  71%server.log.txt            | 5184 kB |  47.6 kB/s | ETA: 00:00:40 |  72%server.log.txt            | 5216 kB |  47.4 kB/s | ETA: 00:00:39 |  73%server.log.txt            | 5248 kB |  47.3 kB/s | ETA: 00:00:39 |  73%server.log.txt            | 5280 kB |  46.7 kB/s | ETA: 00:00:39 |  74%server.log.txt            | 5312 kB |  42.8 kB/s | ETA: 00:00:41 |  74%server.log.txt            | 5344 kB |  42.8 kB/s | ETA: 00:00:41 |  75%server.log.txt            | 5376 kB |  42.3 kB/s | ETA: 00:00:40 |  75%server.log.txt            | 5664 kB |  44.3 kB/s | ETA: 00:00:32 |  79%server.log.txt            | 5824 kB |  44.5 kB/s | ETA: 00:00:28 |  81%server.log.txt            | 5888 kB |  41.8 kB/s | ETA: 00:00:29 |  82%server.log.txt            | 6048 kB |  42.3 kB/s | ETA: 00:00:25 |  85%server.log.txt            | 6080 kB |  40.8 kB/s | ETA: 00:00:25 |  85%server.log.txt            | 6144 kB |  39.6 kB/s | ETA: 00:00:24 |  86%server.log.txt            | 6176 kB |  39.3 kB/s | ETA: 00:00:23 |  86%server.log.txt            | 6240 kB |  39.5 kB/s | ETA: 00:00:21 |  87%server.log.txt            | 6336 kB |  39.8 kB/s | ETA: 00:00:19 |  89%server.log.txt            | 6400 kB |  40.0 kB/s | ETA: 00:00:17 |  90%server.log.txt            | 6496 kB |  40.3 kB/s | ETA: 00:00:15 |  91%server.log.txt            | 6624 kB |  40.9 kB/s | ETA: 00:00:11 |  93%server.log.txt            | 6752 kB |  41.4 kB/s | ETA: 00:00:08 |  94%server.log.txt            | 6816 kB |  41.6 kB/s | ETA: 00:00:07 |  95%server.log.txt            | 6880 kB |  41.4 kB/s | ETA: 00:00:05 |  96%server.log.txt            | 6912 kB |  41.4 kB/s | ETA: 00:00:04 |  97%server.log.txt            | 6944 kB |  41.1 kB/s | ETA: 00:00:04 |  97%server.log.txt            | 6976 kB |  37.7 kB/s | ETA: 00:00:03 |  98%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:08:45.11: WARN: Failed to fetch server.log, retrying (3/6) in 2s 
+server.log.txt            | 32 kB |   6.4 kB/s | ETA: 00:20:01 |   0%server.log.txt            | 64 kB |  10.7 kB/s | ETA: 00:11:57 |   0%server.log.txt            | 96 kB |  13.7 kB/s | ETA: 00:09:15 |   1%server.log.txt            | 160 kB |  20.0 kB/s | ETA: 00:06:18 |   2%server.log.txt            | 256 kB |  28.4 kB/s | ETA: 00:04:22 |   3%server.log.txt            | 320 kB |  32.0 kB/s | ETA: 00:03:51 |   4%server.log.txt            | 416 kB |  37.8 kB/s | ETA: 00:03:13 |   5%server.log.txt            | 512 kB |  42.7 kB/s | ETA: 00:02:48 |   6%server.log.txt            | 608 kB |  46.8 kB/s | ETA: 00:02:32 |   7%server.log.txt            | 672 kB |  48.0 kB/s | ETA: 00:02:26 |   8%server.log.txt            | 864 kB |  57.6 kB/s | ETA: 00:01:59 |  11%server.log.txt            | 928 kB |  58.0 kB/s | ETA: 00:01:57 |  12%server.log.txt            | 1056 kB |  62.1 kB/s | ETA: 00:01:47 |  13%server.log.txt            | 1088 kB |  60.4 kB/s | ETA: 00:01:49 |  14%server.log.txt            | 1120 kB |  56.0 kB/s | ETA: 00:01:57 |  14%server.log.txt            | 1184 kB |  53.8 kB/s | ETA: 00:02:01 |  15%server.log.txt            | 1344 kB |  58.4 kB/s | ETA: 00:01:49 |  17%server.log.txt            | 1408 kB |  58.7 kB/s | ETA: 00:01:47 |  18%server.log.txt            | 1536 kB |  59.1 kB/s | ETA: 00:01:44 |  19%server.log.txt            | 1568 kB |  56.0 kB/s | ETA: 00:01:49 |  20%server.log.txt            | 1696 kB |  54.7 kB/s | ETA: 00:01:50 |  21%server.log.txt            | 1856 kB |  56.2 kB/s | ETA: 00:01:44 |  24%server.log.txt            | 1952 kB |  57.4 kB/s | ETA: 00:01:40 |  25%server.log.txt            | 1984 kB |  56.7 kB/s | ETA: 00:01:41 |  25%server.log.txt            | 2144 kB |  59.6 kB/s | ETA: 00:01:33 |  27%server.log.txt            | 2304 kB |  62.3 kB/s | ETA: 00:01:26 |  29%server.log.txt            | 2496 kB |  65.7 kB/s | ETA: 00:01:19 |  32%server.log.txt            | 2688 kB |  68.9 kB/s | ETA: 00:01:13 |  34%server.log.txt            | 2752 kB |  68.8 kB/s | ETA: 00:01:12 |  35%server.log.txt            | 2848 kB |  69.5 kB/s | ETA: 00:01:10 |  36%server.log.txt            | 2880 kB |  67.0 kB/s | ETA: 00:01:12 |  37%server.log.txt            | 2944 kB |  66.9 kB/s | ETA: 00:01:11 |  38%server.log.txt            | 3008 kB |  66.8 kB/s | ETA: 00:01:10 |  38%Mon 03/24/2025 21:09:33.87: Starting GrabLogs.bat 
+Mon 03/24/2025 21:09:33.90: Resolving pi4.lan IP 
+Mon 03/24/2025 21:09:34.01: pi4.lan resolved to 192.168.86.69 
+
+Pinging 192.168.86.69 with 32 bytes of data:
+Reply from 192.168.86.69: bytes=32 time=141ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=130ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=5ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=62ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=26ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=83ms TTL=64
+
+Ping statistics for 192.168.86.69:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 5ms, Maximum = 141ms, Average = 74ms
+Mon 03/24/2025 21:09:40.01: Resolving debian.lan IP 
+Mon 03/24/2025 21:09:40.07: debian.lan resolved to 192.168.86.49 
+
+Pinging 192.168.86.49 with 32 bytes of data:
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=3ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=2ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+
+Ping statistics for 192.168.86.49:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 3ms, Average = 1ms
+Mon 03/24/2025 21:09:45.95: Fetching server.log 
+server.log.txt            | 32 kB |  10.7 kB/s | ETA: 00:00:04 |  41%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:09:50.45: WARN: Failed to fetch server.log, retrying (1/6) in 2s 
+server.log.txt            | 32 kB |  10.7 kB/s | ETA: 00:00:06 |  31%server.log.txt            | 64 kB |  12.8 kB/s | ETA: 00:00:02 |  63%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:09:59.67: WARN: Failed to fetch server.log, retrying (2/6) in 2s 
+server.log.txt            | 32 kB |  16.0 kB/s | ETA: 00:00:06 |  24%server.log.txt            | 64 kB |  21.3 kB/s | ETA: 00:00:03 |  49%server.log.txt            | 128 kB |  32.0 kB/s | ETA: 00:00:00 |  99%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:10:06.83: WARN: Failed to fetch server.log, retrying (3/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:00:03 |  21%server.log.txt            | 96 kB |  48.0 kB/s | ETA: 00:00:01 |  63%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:10:12.47: WARN: Failed to fetch server.log, retrying (4/6) in 2s 
+server.log.txt            | 32 kB |  10.7 kB/s | ETA: 00:00:12 |  18%server.log.txt            | 64 kB |  16.0 kB/s | ETA: 00:00:06 |  37%server.log.txt            | 96 kB |  19.2 kB/s | ETA: 00:00:03 |  56%server.log.txt            | 128 kB |  18.3 kB/s | ETA: 00:00:02 |  75%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:10:21.98: WARN: Failed to fetch server.log, retrying (5/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:00:05 |  15%server.log.txt            | 64 kB |  32.0 kB/s | ETA: 00:00:04 |  31%server.log.txt            | 96 kB |  32.0 kB/s | ETA: 00:00:03 |  47%server.log.txt            | 160 kB |  40.0 kB/s | ETA: 00:00:01 |  79%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:10:28.93: WARN: Failed to fetch server.log, retrying (6/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:00:05 |  14%server.log.txt            | 64 kB |  32.0 kB/s | ETA: 00:00:04 |  28%server.log.txt            | 96 kB |  32.0 kB/s | ETA: 00:00:03 |  43%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:10:34.75: ERROR: Failed to fetch server.log after 6 retries 
+Mon 03/24/2025 21:10:34.80: Fetched server.log - 196608 bytes 
+Mon 03/24/2025 21:10:34.88: Fetching skippys_messups.log 
+skippys_messups.log.txt   | 32 kB |  32.0 kB/s | ETA: 00:00:01 |  47%skippys_messups.log.txt   | 67 kB |  67.7 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:10:35.78: Fetched skippys_messups.log - 69279 bytes 
+Mon 03/24/2025 21:10:35.79: Fetching fake_direwolf_pi4.log 
+fake_direwolf_pi4.log.txt | 22 kB |  22.8 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:10:37.10: Fetched fake_direwolf_pi4.log - 23376 bytes 
+Mon 03/24/2025 21:10:37.11: Fetching fake_direwolf_debian.log 
+fake_direwolf_debian.log. | 10 kB |  10.2 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:10:38.49: Fetched fake_direwolf_debian.log - 10430 bytes 
+Mon 03/24/2025 21:10:38.51: Fetching ax25_sender_pi4.log 
+ax25_sender_pi4.log.txt   | 10 kB |  10.9 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:10:39.23: Fetched ax25_sender_pi4.log - 11115 bytes 
+Mon 03/24/2025 21:10:39.25: Fetching ax25_sender_debian.log 
+ax25_sender_debian.log.tx | 7 kB |   7.7 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:10:40.14: Fetched ax25_sender_debian.log - 7897 bytes 
+Mon 03/24/2025 21:10:40.16: Fetching all .csv files from server_data 
+Mon 03/24/2025 21:10:40.72: Fetching GB_submissions.csv 
+GB_submissions.csv        | 0 kB |   0.2 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:10:41.41: Fetched GB_submissions.csv - 168 bytes 
+Mon 03/24/2025 21:10:41.42: Fetching people.csv 
+people.csv                | 0 kB |   0.1 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:10:42.33: Fetched people.csv - 106 bytes 
+Mon 03/24/2025 21:10:40.69: Fetched CSVs with sizes: 
+BB01_submissions.csv - 40 bytes 
+GB01_submissions.csv - 34 bytes 
+GB_submissions.csv - 168 bytes 
+LG01_submissions.csv - 57 bytes 
+MD01_submissions.csv - 258 bytes 
+people.csv - 106 bytes 
+ST01_submissions.csv - 351 bytes 
+Mon 03/24/2025 21:10:42.54: GrabLogs.bat completed 
+Mon 03/24/2025 21:40:02.00: Starting GrabLogs.bat 
+Mon 03/24/2025 21:40:02.02: Resolving pi4.lan IP 
+Mon 03/24/2025 21:40:02.13: pi4.lan resolved to 192.168.86.69 
+
+Pinging 192.168.86.69 with 32 bytes of data:
+Reply from 192.168.86.69: bytes=32 time=11ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=5ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=9ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=9ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=5ms TTL=64
+Reply from 192.168.86.69: bytes=32 time=5ms TTL=64
+
+Ping statistics for 192.168.86.69:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 5ms, Maximum = 11ms, Average = 7ms
+Mon 03/24/2025 21:40:07.75: Resolving debian.lan IP 
+Mon 03/24/2025 21:40:07.81: debian.lan resolved to 192.168.86.49 
+
+Pinging 192.168.86.49 with 32 bytes of data:
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=4ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=3ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=3ms TTL=64
+Reply from 192.168.86.49: bytes=32 time=1ms TTL=64
+
+Ping statistics for 192.168.86.49:
+    Packets: Sent = 6, Received = 6, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 4ms, Average = 2ms
+Mon 03/24/2025 21:40:13.70: Fetching server.log 
+server.log.txt            | 32 kB |  16.0 kB/s | ETA: 00:00:53 |   3%server.log.txt            | 128 kB |  42.7 kB/s | ETA: 00:00:17 |  14%server.log.txt            | 288 kB |  72.0 kB/s | ETA: 00:00:08 |  32%server.log.txt            | 416 kB |  83.2 kB/s | ETA: 00:00:05 |  46%server.log.txt            | 608 kB | 101.3 kB/s | ETA: 00:00:02 |  68%server.log.txt            | 800 kB | 114.3 kB/s | ETA: 00:00:00 |  90%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:40:22.11: WARN: Failed to fetch server.log, retrying (1/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:00:27 |   3%server.log.txt            | 160 kB |  80.0 kB/s | ETA: 00:00:09 |  17%server.log.txt            | 256 kB |  85.3 kB/s | ETA: 00:00:07 |  27%server.log.txt            | 352 kB |  88.0 kB/s | ETA: 00:00:06 |  38%server.log.txt            | 576 kB | 115.2 kB/s | ETA: 00:00:02 |  62%server.log.txt            | 704 kB | 117.3 kB/s | ETA: 00:00:01 |  76%server.log.txt            | 832 kB | 118.9 kB/s | ETA: 00:00:00 |  90%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:40:32.30: WARN: Failed to fetch server.log, retrying (2/6) in 2s 
+server.log.txt            | 32 kB |  16.0 kB/s | ETA: 00:00:57 |   3%server.log.txt            | 256 kB |  85.3 kB/s | ETA: 00:00:08 |  26%server.log.txt            | 320 kB |  80.0 kB/s | ETA: 00:00:07 |  33%server.log.txt            | 512 kB | 102.4 kB/s | ETA: 00:00:04 |  53%server.log.txt            | 672 kB | 112.0 kB/s | ETA: 00:00:02 |  70%server.log.txt            | 768 kB | 109.7 kB/s | ETA: 00:00:01 |  80%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:40:42.49: WARN: Failed to fetch server.log, retrying (3/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:00:29 |   3%server.log.txt            | 160 kB |  80.0 kB/s | ETA: 00:00:10 |  16%server.log.txt            | 288 kB |  96.0 kB/s | ETA: 00:00:07 |  29%server.log.txt            | 352 kB |  88.0 kB/s | ETA: 00:00:07 |  35%server.log.txt            | 704 kB | 140.8 kB/s | ETA: 00:00:01 |  71%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:40:50.39: WARN: Failed to fetch server.log, retrying (4/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:00:30 |   3%server.log.txt            | 64 kB |  64.0 kB/s | ETA: 00:00:14 |   6%server.log.txt            | 96 kB |  32.0 kB/s | ETA: 00:00:28 |   9%server.log.txt            | 256 kB |  64.0 kB/s | ETA: 00:00:11 |  25%server.log.txt            | 480 kB |  96.0 kB/s | ETA: 00:00:05 |  47%server.log.txt            | 640 kB | 106.7 kB/s | ETA: 00:00:03 |  63%server.log.txt            | 704 kB | 100.6 kB/s | ETA: 00:00:03 |  69%server.log.txt            | 768 kB |  96.0 kB/s | ETA: 00:00:02 |  76%server.log.txt            | 960 kB |  96.0 kB/s | ETA: 00:00:00 |  95%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:41:03.06: WARN: Failed to fetch server.log, retrying (5/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:00:31 |   3%server.log.txt            | 192 kB | 192.0 kB/s | ETA: 00:00:04 |  18%server.log.txt            | 256 kB | 128.0 kB/s | ETA: 00:00:06 |  24%server.log.txt            | 384 kB | 128.0 kB/s | ETA: 00:00:05 |  36%server.log.txt            | 544 kB | 136.0 kB/s | ETA: 00:00:03 |  51%server.log.txt            | 736 kB | 147.2 kB/s | ETA: 00:00:02 |  69%server.log.txt            | 928 kB | 132.6 kB/s | ETA: 00:00:00 |  88%server.log.txt            | 960 kB | 120.0 kB/s | ETA: 00:00:00 |  91%server.log.txt            | 992 kB |  99.2 kB/s | ETA: 00:00:00 |  94%server.log.txt            | 1024 kB |  93.1 kB/s | ETA: 00:00:00 |  97%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:41:18.44: WARN: Failed to fetch server.log, retrying (6/6) in 2s 
+server.log.txt            | 32 kB |  32.0 kB/s | ETA: 00:00:33 |   2%server.log.txt            | 64 kB |  32.0 kB/s | ETA: 00:00:32 |   5%server.log.txt            | 128 kB |  42.7 kB/s | ETA: 00:00:22 |  11%server.log.txt            | 160 kB |  40.0 kB/s | ETA: 00:00:23 |  14%server.log.txt            | 224 kB |  44.8 kB/s | ETA: 00:00:19 |  20%server.log.txt            | 352 kB |  58.7 kB/s | ETA: 00:00:12 |  32%server.log.txt            | 416 kB |  59.4 kB/s | ETA: 00:00:11 |  37%server.log.txt            | 640 kB |  80.0 kB/s | ETA: 00:00:05 |  58%server.log.txt            | 928 kB | 103.1 kB/s | ETA: 00:00:01 |  84%Assertion failed: actuallen <= len, file ../pscp.c, line 1506
+Mon 03/24/2025 21:41:30.48: ERROR: Failed to fetch server.log after 6 retries 
+Mon 03/24/2025 21:41:30.51: Fetched server.log - 1114112 bytes 
+Mon 03/24/2025 21:41:30.52: Fetching skippys_messups.log 
+skippys_messups.log.txt   | 32 kB |  32.0 kB/s | ETA: 00:00:00 |  70%skippys_messups.log.txt   | 45 kB |  45.4 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:41:31.56: Fetched skippys_messups.log - 46465 bytes 
+Mon 03/24/2025 21:41:31.62: Fetching fake_direwolf_pi4.log 
+fake_direwolf_pi4.log.txt | 32 kB |  32.0 kB/s | ETA: 00:00:02 |  32%fake_direwolf_pi4.log.txt | 97 kB |  97.6 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:41:32.94: Fetched fake_direwolf_pi4.log - 99971 bytes 
+Mon 03/24/2025 21:41:32.96: Fetching fake_direwolf_debian.log 
+fake_direwolf_debian.log. | 32 kB |  32.0 kB/s | ETA: 00:00:01 |  34%fake_direwolf_debian.log. | 93 kB |  93.7 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:41:34.65: Fetched fake_direwolf_debian.log - 95978 bytes 
+Mon 03/24/2025 21:41:34.66: Fetching ax25_sender_pi4.log 
+ax25_sender_pi4.log.txt   | 10 kB |  10.9 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:41:35.39: Fetched ax25_sender_pi4.log - 11115 bytes 
+Mon 03/24/2025 21:41:35.40: Fetching ax25_sender_debian.log 
+ax25_sender_debian.log.tx | 7 kB |   7.7 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:41:36.31: Fetched ax25_sender_debian.log - 7897 bytes 
+Mon 03/24/2025 21:41:36.33: Fetching all .csv files from server_data 
+Mon 03/24/2025 21:41:36.81: Fetching GB_submissions.csv 
+GB_submissions.csv        | 0 kB |   0.2 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:41:37.47: Fetched GB_submissions.csv - 168 bytes 
+Mon 03/24/2025 21:41:37.50: Fetching people.csv 
+people.csv                | 0 kB |   0.1 kB/s | ETA: 00:00:00 | 100%
+Mon 03/24/2025 21:41:38.12: Fetched people.csv - 106 bytes 
+Mon 03/24/2025 21:41:36.79: Fetched CSVs with sizes: 
+BB01_submissions.csv - 40 bytes 
+GB01_submissions.csv - 34 bytes 
+GB_submissions.csv - 168 bytes 
+LG01_submissions.csv - 57 bytes 
+MD01_submissions.csv - 258 bytes 
+people.csv - 106 bytes 
+ST01_submissions.csv - 351 bytes 
+Mon 03/24/2025 21:41:38.34: GrabLogs.bat completed 

@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+# fake_direwolf.py - Mimics Direwolf's KISS interface over TCP with a status display
+# Note: DNS and TCP reliability are known issues due to Google mesh routers (no fix available).
+#       This script pings and retries to maintain peer connection.
+
+import socket
+import threading
+import sys
+import time
+import os
+import curses
+import logging
+from collections import deque
+
+# Configuration
+KISS_PORT = 8001          # Port for server/client KISS connection
+PEER_HOST = 'debian.lan'  # Peer Fake Direwolf (debian.lan for pi4, pi4.lan for debian)
+PEER_PORT = 8002          # Port to connect to peer (8002 for pi4, 8001 for debian)
+BUFFER_SIZE = 1024
+RETRY_INTERVAL = 5
+PING_INTERVAL = 10
+MAX_LOG_LINES = 20        # Max lines for packet log
+
+# Global state
+peer_status = "Disconnected"
+packet_log = deque(maxlen=MAX_LOG_LINES)  # Stores (timestamp, direction, frame_hex)
+screen_lock = threading.Lock()
+
+# Logging setup
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+log = logging.info
+
+def ping_peer(host):
+    try:
+        response = os.system(f"ping -c 1 -W 2 {host} > /dev/null 2>&1")
+        return response == 0
+    except Exception:
+        return False
+
+def escape_kiss_frame(frame):
+    return frame.replace(b'\xC0', b'\xDB\xDC').replace(b'\xDB', b'\xDB\xDD')
+
+def unescape_kiss_frame(frame):
+    return frame.replace(b'\xDB\xDD', b'\xDB').replace(b'\xDB\xDC', b'\xC0')
+
+def handle_kiss_client(kiss_socket, peer_socket):
+    addr = kiss_socket.getpeername()
+    log(f"KISS client connected: {addr}")
+    buffer = b""
+    while True:
+        try:
+            data = kiss_socket.recv(BUFFER_SIZE)
+            if not data:
+                log(f"KISS client {addr} disconnected")
+                break
+            buffer += data
+            while b'\xC0' in buffer[1:]:
+                end = buffer.find(b'\xC0', 1)
+                if end == -1:
+                    break
+                frame = buffer[:end + 1]
+                buffer = buffer[end + 1:]
+                if len(frame) > 2 and frame[0] == 0xC0 and frame[-1] == 0xC0:
+                    unescaped = unescape_kiss_frame(frame[1:-1])
+                    with screen_lock:
+                        packet_log.append((time.strftime('%H:%M:%S'), "Sent to peer", frame.hex()))
+                    log(f"Received KISS from {addr}: {frame.hex()} (unescaped: {unescaped.hex()})")
+                    try:
+                        peer_socket.send(frame)
+                    except (BrokenPipeError, ConnectionError):
+                        log("Peer socket broken, waiting for reconnect")
+        except Exception as e:
+            log(f"KISS client {addr} error: {e}")
+            break
+    kiss_socket.close()
+
+def handle_peer(peer_socket, kiss_socket):
+    log(f"Connected to peer: {peer_socket.getpeername()}")
+    global peer_status
+    with screen_lock:
+        peer_status = f"Connected to {PEER_HOST}:{PEER_PORT}"
+    while True:
+        try:
+            data = peer_socket.recv(BUFFER_SIZE)
+            if not data:
+                log("Peer disconnected")
+                with screen_lock:
+                    peer_status = "Disconnected"
+                break
+            if data[0] == 0xC0 and data[-1] == 0xC0:
+                unescaped = unescape_kiss_frame(data[1:-1])
+                with screen_lock:
+                    packet_log.append((time.strftime('%H:%M:%S'), "Rcvd from peer", data.hex()))
+                log(f"Received KISS from peer: {data.hex()} (unescaped: {unescaped.hex()})")
+                try:
+                    kiss_socket.send(data)
+                except (BrokenPipeError, ConnectionError):
+                    log("KISS socket broken, client may reconnect")
+        except Exception as e:
+            log(f"Peer error: {e}")
+            with screen_lock:
+                peer_status = "Disconnected"
+            break
+    peer_socket.close()
+
+def kiss_server(peer_socket):
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server.bind(('0.0.0.0', KISS_PORT))
+    server.listen(1)
+    log(f"KISS server listening on port {KISS_PORT}")
+    while True:
+        try:
+            kiss_socket, addr = server.accept()
+            threading.Thread(target=handle_kiss_client, args=(kiss_socket, peer_socket), daemon=True).start()
+        except Exception as e:
+            log(f"KISS server error: {e}")
+            time.sleep(1)
+
+def peer_connection():
+    peer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    while True:
+        try:
+            if not ping_peer(PEER_HOST):
+                log(f"Ping to {PEER_HOST} failed")
+            peer_socket.connect((PEER_HOST, PEER_PORT))
+            log(f"Connected to peer {PEER_HOST}:{PEER_PORT}")
+            return peer_socket
+        except Exception as e:
+            log(f"Peer connection error: {e}, retrying in {RETRY_INTERVAL}s")
+            time.sleep(RETRY_INTERVAL)
+
+def peer_monitor(peer_socket, kiss_thread):
+    while True:
+        try:
+            if not ping_peer(PEER_HOST):
+                log(f"Peer {PEER_HOST} unresponsive, reconnecting")
+                peer_socket.close()
+                peer_socket = peer_connection()
+            time.sleep(PING_INTERVAL)
+        except Exception as e:
+            log(f"Monitor error: {e}, reconnecting")
+            peer_socket.close()
+            peer_socket = peer_connection()
+
+def status_display(stdscr):
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)    # Error
+    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)  # Normal
+    curses.init_pair(3, curses.COLOR_CYAN, curses.COLOR_BLACK)   # Header
+    stdscr.nodelay(True)
+    while True:
+        with screen_lock:
+            stdscr.clear()
+            max_y, max_x = stdscr.getmaxyx()
+            border = "=" * (max_x - 2)
+            stdscr.addstr(0, 0, border, curses.color_pair(1))
+            stdscr.addstr(1, 2, f"Fake Direwolf Status - KISS Port: {KISS_PORT}", curses.color_pair(3))
+            stdscr.addstr(2, 2, f"Peer: {PEER_HOST}:{PEER_PORT}", curses.color_pair(3))
+            stdscr.addstr(3, 2, f"Status: {peer_status}", curses.color_pair(2 if 'Connected' in peer_status else 1))
+            stdscr.addstr(4, 2, "Recent Packets:", curses.color_pair(3))
+            for i, (ts, direction, frame) in enumerate(packet_log, start=5):
+                if i < max_y - 2:
+                    line = f"{ts} {direction}: {frame[:max_x-20]}"
+                    stdscr.addstr(i, 4, line, curses.color_pair(2))
+            stdscr.addstr(max_y - 1, 0, border, curses.color_pair(1))
+            stdscr.refresh()
+        char = stdscr.getch()
+        if char == ord('q') or char == ord('Q'):
+            log("Shutting down via UI")
+            sys.exit(0)
+        time.sleep(0.1)
+
+def main():
+    peer_socket = peer_connection()
+    kiss_thread = threading.Thread(target=kiss_server, args=(peer_socket,), daemon=True)
+    kiss_thread.start()
+    monitor_thread = threading.Thread(target=peer_monitor, args=(peer_socket, kiss_thread), daemon=True)
+    monitor_thread.start()
+    curses.wrapper(status_display)
+
+if __name__ == "__main__":
+    main()
