@@ -1,4 +1,4 @@
-* Packet Radio Terminal Project
+# Packet Radio Terminal Project
 
 Bringing Mainframe Magic to 1200-Baud AX.25
 
