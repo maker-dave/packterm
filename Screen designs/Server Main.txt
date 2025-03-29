@@ -1,0 +1,41 @@
+==============================================================================
+   Packet Radio Server                   Direwolf [Connected]
+    Callsign:SVR001                  
+                                         Comms Log
+   Recent Clients:                       ===================
+    KC8QKU - 17:34:13                    0KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+                                         0SVR001>KC8QKU:A|SVR001|GB|SUCCESS - 
+                                         0KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+                                         0SVR001>KC8QKU:A|SVR001|GB|SUCCESS - 
+                                         0KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+                                         0SVR001>KC8QKU:A|SVR001|GB|SUCCESS - 
+                                         0KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+                                         0SVR001>KC8QKU:A|SVR001|GB|SUCCESS - 
+                                         0KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+                                         0SVR001>KC8QKU:A|SVR001|GB|SUCCESS - 
+                                         0KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+                                         0SVR001>KC8QKU:A|SVR001|GB|SUCCESS - 
+                                         0KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+                                         0SVR001>KC8QKU:A|SVR001|GB|SUCCESS - 
+
+
+                                         Last MD5 broadcast: 19:07
+  -= Commands: D=Menu =-                 MD5: 2f7983f0ca0841a2e0251a1bdcc12f1b
+==============================================================================
+==============================================================================
+   Packet Radio Server                 Direwolf [Connected]
+    Callsign:SVR001                      Comms Log
+   Recent Clients:                       ===================
+    KC8QKU - 20:51:34                    0KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+    N0CALL - 20:49:12                    0SVR001>KC8QKU:A|SVR001|GB|SUCCESS   
+    W1XYZ  - 20:47:55                    0KC8QKU>SVR001:S|KC8QKU|REG|L02=John 
+                                         0SVR001>KC8QKU:R|SVR001|REG|L02=John~
+                                         0N0CALL>SVR001:I|N0CALL|TM01|L03=Yes
+                                         0SVR001>N0CALL:A|SVR001|TM01|SUCCESS 
+                                         0W1XYZ>SVR001:I|W1XYZ|GB|L02=Team|L0
+                                         0SVR001>W1XYZ:A|SVR001|GB|SUCCESS   
+
+
+                                         Last MD5 broadcast: 20:51
+  -= Commands: D=Menu =-                 MD5: 81193b39aea0b7052292743468c93de2
+==============================================================================

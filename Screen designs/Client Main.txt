@@ -1,0 +1,25 @@
+==============================================================================
+    Packet Radio Client                   Direwolf [Connected]
+    Callsign: KC8QKU
+    Select a form:                        Comms Log
+    1: GB - GENERAL BROADCAST             ===============
+    2: TM01 - TOAST MANAGER               KC8QKU>SVR001:I|KC8QKU|GB|L02=All|L0
+                                          ```b>~p:A|SVR001|GB|SUCCESS
+                                          ```b>~@@@:M|SVR001|NONE|2f7983f0ca08
+                                          Received M (MD5) from SVR001: 2f7983
+                                          ```b>~@@@:M|SVR001|NONE|2f7983f0ca08
+                                          Received M (MD5) from SVR001: 2f7983
+                                          ```b>~@@@:M|SVR001|NONE|2f7983f0ca08
+                                          Received M (MD5) from SVR001: 2f7983
+                                          ```b>~@@@:M|SVR001|NONE|2f7983f0ca08
+                                          Received M (MD5) from SVR001: 2f7983
+                                          ```b>~@@@:M|SVR001|NONE|2f7983f0ca08
+                                          Received M (MD5) from SVR001: 2f7983
+                                          ```b>~@@@:M|SVR001|NONE|2f7983f0ca08
+                                          Received M (MD5) from SVR001: 2f7983
+                                          ```b>~@@@:M|SVR001|NONE|2f7983f0ca08
+                                          Received M (MD5) from SVR001: 2f7983
+                                          ```b>~@@@:M|SVR001|NONE|2f7983f0ca08
+                                          Received M (MD5) from SVR001: 2f7983
+ -= Commands: D=Menu 1-2=Select =-
+==============================================================================
